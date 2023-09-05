@@ -250,7 +250,7 @@ static uint16_t crc16(uint16_t poly, int refin, uint16_t init) {
     } else {
         init <<= 8;
         while(i--) {
-            init = (init << 1) ^ (poly & -((init >> 7) & 1));
+            init = (init << 1) ^ (poly & -((init >> 15) & 1));
         }
     }
 
@@ -267,7 +267,7 @@ static uint32_t crc32(uint32_t poly, int refin, uint32_t init) {
     } else {
         init <<= 24;
         while(i--) {
-            init = (init << 1) ^ (poly & -((init >> 7) & 1));
+            init = (init << 1) ^ (poly & -((init >> 31) & 1));
         }
     }
 
@@ -335,7 +335,7 @@ static uint8_t crc8_init_value(uint8_t init, int width, int refin) {
     if(refin) {
         return rev(init) >> (32 - width);
     } else {
-        return init << 8 - width;
+        return init << (8 - width);
     }
 }
 
@@ -343,7 +343,7 @@ static uint16_t crc16_init_value(uint16_t init, int width, int refin) {
     if(refin) {
         return rev(init) >> (32 - width);
     } else {
-        return init << 16 - width;
+        return init << (16 - width);
     }
 }
 
@@ -351,6 +351,6 @@ static uint32_t crc32_init_value(uint32_t init, int width, int refin) {
     if(refin) {
         return rev(init) >> (32 - width);
     } else {
-        return init << 32 - width;
+        return init << (32 - width);
     }
 }
