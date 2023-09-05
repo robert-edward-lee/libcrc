@@ -152,7 +152,7 @@ Crc16 crc;
 crc16_init_static(&crc, &CRC16_ARC, table);
 value = crc16_checksum(&crc, data, sizeof(data) - 1);
 // если стандарт языка поддерживает C11
-crc_init(&crc, &CRC16_ARC, table);
+crc_init_static(&crc, &CRC16_ARC, table);
 value = crc_checksum(&crc, data, sizeof(data) - 1);
 ```
 
