@@ -149,11 +149,11 @@ void crc32_update(Crc32 *crc, const void *bytes, size_t size) {
 
     if(crc->algo.refin) {
         for(i = 0; i < size; i++) {
-            crc->value = crc->table[crc->value ^ ((uint8_t *)bytes)[i]] ^ (crc->value >> 8);
+            crc->value = crc->table[(crc->value ^ ((uint8_t *)bytes)[i]) & 0xFF] ^ (crc->value >> 8);
         }
     } else {
         for(i = 0; i < size; i++) {
-            crc->value = crc->table[(crc->value >> 24) ^ ((uint8_t *)bytes)[i]] ^ (crc->value << 8);
+            crc->value = crc->table[((crc->value >> 24) ^ ((uint8_t *)bytes)[i]) & 0xFF] ^ (crc->value << 8);
         }
     }
 }
