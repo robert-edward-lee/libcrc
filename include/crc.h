@@ -4,6 +4,10 @@
 #include <stddef.h>
 #include <stdint.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct {
     int width;
     uint8_t poly;
@@ -75,5 +79,49 @@ uint32_t crc32_finalize(Crc32 *crc);
 uint8_t crc8_checksum(Crc8 *crc, const void *bytes, size_t size);
 uint16_t crc16_checksum(Crc16 *crc, const void *bytes, size_t size);
 uint32_t crc32_checksum(Crc32 *crc, const void *bytes, size_t size);
+
+#ifdef __cplusplus
+}
+#endif
+
+#if __STDC_VERSION__ >= 201112L // Generics C11 support
+
+#define crc_init_static(crc, algo, table) _Generic((crc), \
+    Crc8 *: crc8_init_static, \
+    Crc16 *: crc16_init_static, \
+    Crc32 *: crc32_init_static \
+)(crc, algo, table)
+
+#define crc_init(crc, algo) _Generic((crc), \
+    Crc8 *: crc8_init, \
+    Crc16 *: crc16_init, \
+    Crc32 *: crc32_init \
+)(crc, algo)
+
+#define crc_destroy(crc) _Generic((crc), \
+    Crc8 *: crc8_destroy, \
+    Crc16 *: crc16_destroy, \
+    Crc32 *: crc32_destroy \
+)(crc)
+
+#define crc_update(crc, bytes, size) _Generic((crc), \
+    Crc8 *: crc8_update, \
+    Crc16 *: crc16_update, \
+    Crc32 *: crc32_update \
+)(crc, bytes, size)
+
+#define crc_finalize(crc) _Generic((crc), \
+    Crc8 *: crc8_finalize, \
+    Crc16 *: crc16_finalize, \
+    Crc32 *: crc32_finalize \
+)(crc)
+
+#define crc_checksum(crc, bytes, size) _Generic((crc), \
+    Crc8 *: crc8_checksum, \
+    Crc16 *: crc16_checksum, \
+    Crc32 *: crc32_checksum \
+)(crc, bytes, size)
+
+#endif // Generics C11 support
 
 #endif // H_CRC
