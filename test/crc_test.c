@@ -44,6 +44,8 @@ int main(void) {
 #if __STDC_VERSION__ >= 201112L // Generics C11 support
     printf("Enable generics C11 support\n");
 #endif // Generics C11 support
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wpedantic"
     test(CRC3_GSM, 8);
     test(CRC3_ROHC, 8);
     test(CRC4_G_704, 8);
@@ -155,6 +157,6 @@ int main(void) {
     test(CRC64_REDIS, 64);
     test(CRC64_WE, 64);
     test(CRC64_XZ, 64);
-
+#pragma GCC diagnostic pop
     return 0;
 }

@@ -147,7 +147,7 @@ void crc64_destroy(Crc64 *crc) {
 
 
 void crc8_update(Crc8 *crc, const void *bytes, size_t size) {
-    int i;
+    unsigned i;
 
     if(!crc || !bytes) {
         return;
@@ -159,7 +159,7 @@ void crc8_update(Crc8 *crc, const void *bytes, size_t size) {
 }
 
 void crc16_update(Crc16 *crc, const void *bytes, size_t size) {
-    int i;
+    unsigned i;
 
     if(!crc || !bytes) {
         return;
@@ -177,7 +177,7 @@ void crc16_update(Crc16 *crc, const void *bytes, size_t size) {
 }
 
 void crc32_update(Crc32 *crc, const void *bytes, size_t size) {
-    int i;
+    unsigned i;
 
     if(!crc || !bytes) {
         return;
@@ -195,7 +195,7 @@ void crc32_update(Crc32 *crc, const void *bytes, size_t size) {
 }
 
 void crc64_update(Crc64 *crc, const void *bytes, size_t size) {
-    int i;
+    unsigned i;
 
     if(!crc || !bytes) {
         return;
