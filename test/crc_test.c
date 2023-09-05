@@ -1,3 +1,4 @@
+#include <inttypes.h>
 #include <stdio.h>
 
 #include "crc.h"
@@ -14,7 +15,7 @@ const char check_str[] = "123456789";
         crc_init(&crc, &__algo); \
         value = crc_checksum(&crc, check_str, sizeof(check_str) - 1); \
         if(crc.algo.check != value) { \
-            printf("Invalid CRC check for " #__algo ": %#X, expected = %#X\n", value, crc.algo.check); \
+            printf("Invalid CRC check for " #__algo ": %#" PRIX##__width ", expected = %#" PRIX##__width "\n", value, crc.algo.check); \
         } else { \
             printf(#__algo " passed\n"); \
         } \
@@ -30,7 +31,7 @@ const char check_str[] = "123456789";
         crc##__width##_init(&crc, &__algo); \
         value = crc##__width##_checksum(&crc, check_str, sizeof(check_str) - 1); \
         if(crc.algo.check != value) { \
-            printf("Invalid CRC check for " #__algo ": %#X, expected = %#X\n", value, crc.algo.check); \
+            printf("Invalid CRC check for " #__algo ": %#" PRIX##__width ", expected = %#" PRIX##__width "\n", value, crc.algo.check); \
         } else { \
             printf(#__algo " passed\n"); \
         } \
