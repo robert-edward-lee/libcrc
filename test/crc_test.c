@@ -41,7 +41,7 @@ const char check_str[] = "123456789";
 
 int main(void) {
 #if __STDC_VERSION__ >= 201112L // Generics C11 support
-printf("Enable generics C11 support\n");
+    printf("Enable generics C11 support\n");
 #endif // Generics C11 support
     test(CRC3_GSM, 8);
     test(CRC3_ROHC, 8);
@@ -147,6 +147,13 @@ printf("Enable generics C11 support\n");
     test(CRC32_MEF, 32);
     test(CRC32_MPEG2, 32);
     test(CRC32_XFER, 32);
+    test(CRC40_GSM, 64);
+    test(CRC64_ECMA_182, 64);
+    test(CRC64_GO_ISO, 64);
+    test(CRC64_MS, 64);
+    test(CRC64_REDIS, 64);
+    test(CRC64_WE, 64);
+    test(CRC64_XZ, 64);
 
     return 0;
 }
