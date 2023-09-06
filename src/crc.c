@@ -2,20 +2,20 @@
 
 #include <stdlib.h>
 
-static uint32_t rev(uint32_t x);
-static uint64_t rev64(uint64_t x);
-static uint8_t crc8(uint8_t poly, int refin, uint8_t init);
-static uint16_t crc16(uint16_t poly, int refin, uint16_t init);
-static uint32_t crc32(uint32_t poly, int refin, uint32_t init);
-static uint64_t crc64(uint64_t poly, int refin, uint64_t init);
+static inline uint32_t rev(uint32_t x);
+static inline uint64_t rev64(uint64_t x);
+static inline uint8_t crc8(uint8_t poly, int refin, uint8_t init);
+static inline uint16_t crc16(uint16_t poly, int refin, uint16_t init);
+static inline uint32_t crc32(uint32_t poly, int refin, uint32_t init);
+static inline uint64_t crc64(uint64_t poly, int refin, uint64_t init);
 static void crc8_table_init(uint8_t *table, int width, uint8_t poly, int refin);
 static void crc16_table_init(uint16_t *table, int width, uint16_t poly, int refin);
 static void crc32_table_init(uint32_t *table, int width, uint32_t poly, int refin);
 static void crc64_table_init(uint64_t *table, int width, uint64_t poly, int refin);
-static uint8_t crc8_init_value(uint8_t init, int width, int refin);
-static uint16_t crc16_init_value(uint16_t init, int width, int refin);
-static uint32_t crc32_init_value(uint32_t init, int width, int refin);
-static uint64_t crc64_init_value(uint64_t init, int width, int refin);
+static inline uint8_t crc8_init_value(uint8_t init, int width, int refin);
+static inline uint16_t crc16_init_value(uint16_t init, int width, int refin);
+static inline uint32_t crc32_init_value(uint32_t init, int width, int refin);
+static inline uint64_t crc64_init_value(uint64_t init, int width, int refin);
 
 void crc8_init_static(Crc8 *crc, Crc8BasedAlgo *algo, uint8_t *table) {
     if(!crc || !algo || !table) {
@@ -129,6 +129,7 @@ void crc16_destroy(Crc16 *crc) {
         return;
     }
     free((void *)crc->table);
+    crc->table = NULL;
 }
 
 void crc32_destroy(Crc32 *crc) {
@@ -136,6 +137,7 @@ void crc32_destroy(Crc32 *crc) {
         return;
     }
     free((void *)crc->table);
+    crc->table = NULL;
 }
 
 void crc64_destroy(Crc64 *crc) {
@@ -143,6 +145,7 @@ void crc64_destroy(Crc64 *crc) {
         return;
     }
     free((void *)crc->table);
+    crc->table = NULL;
 }
 
 
@@ -289,7 +292,7 @@ uint64_t crc64_checksum(Crc64 *crc, const void *bytes, size_t size) {
 }
 
 
-static uint32_t rev(uint32_t x) {
+static inline uint32_t rev(uint32_t x) {
     x = ((x & 0x55555555) << 1) | ((x >> 1) & 0x55555555);
     x = ((x & 0x33333333) << 2) | ((x >> 2) & 0x33333333);
     x = ((x & 0x0F0F0F0F) << 4) | ((x >> 4) & 0x0F0F0F0F);
@@ -297,22 +300,22 @@ static uint32_t rev(uint32_t x) {
     return x;
 }
 
-static uint64_t rev64(uint64_t x) {
+static inline uint64_t rev64(uint64_t x) {
    uint64_t t;
 
    x = (x << 31) | (x >> 33); // shlr(x, 31).
-   t = (x ^ (x >> 20)) & 0x00000FFF800007FFLL;
+   t = (x ^ (x >> 20)) & 0x00000FFF800007FF;
    x = (t | (t << 20)) ^ x;
-   t = (x ^ (x >> 8)) & 0x00F8000F80700807LL;
+   t = (x ^ (x >> 8)) & 0x00F8000F80700807;
    x = (t | (t << 8)) ^ x;
-   t = (x ^ (x >> 4)) & 0x0808708080807008LL;
+   t = (x ^ (x >> 4)) & 0x0808708080807008;
    x = (t | (t << 4)) ^ x;
-   t = (x ^ (x >> 2)) & 0x1111111111111111LL;
+   t = (x ^ (x >> 2)) & 0x1111111111111111;
    x = (t | (t << 2)) ^ x;
    return x;
 }
 
-static uint8_t crc8(uint8_t poly, int refin, uint8_t init) {
+static inline uint8_t crc8(uint8_t poly, int refin, uint8_t init) {
     int i = 8;
 
     if(refin) {
@@ -328,7 +331,7 @@ static uint8_t crc8(uint8_t poly, int refin, uint8_t init) {
     return init;
 }
 
-static uint16_t crc16(uint16_t poly, int refin, uint16_t init) {
+static inline uint16_t crc16(uint16_t poly, int refin, uint16_t init) {
     int i = 8;
 
     if(refin) {
@@ -345,7 +348,7 @@ static uint16_t crc16(uint16_t poly, int refin, uint16_t init) {
     return init;
 }
 
-static uint32_t crc32(uint32_t poly, int refin, uint32_t init) {
+static inline uint32_t crc32(uint32_t poly, int refin, uint32_t init) {
     int i = 8;
 
     if(refin) {
@@ -362,7 +365,7 @@ static uint32_t crc32(uint32_t poly, int refin, uint32_t init) {
     return init;
 }
 
-static uint64_t crc64(uint64_t poly, int refin, uint64_t init) {
+static inline uint64_t crc64(uint64_t poly, int refin, uint64_t init) {
     int i = 8;
 
     if(refin) {
@@ -455,34 +458,18 @@ static void crc64_table_init(uint64_t *table, int width, uint64_t poly, int refi
     }
 }
 
-static uint8_t crc8_init_value(uint8_t init, int width, int refin) {
-    if(refin) {
-        return rev(init) >> (32 - width);
-    } else {
-        return init << (8 - width);
-    }
+static inline uint8_t crc8_init_value(uint8_t init, int width, int refin) {
+    return refin ? (uint8_t)(rev(init) >> (32 - width)) : init << (8 - width);
 }
 
-static uint16_t crc16_init_value(uint16_t init, int width, int refin) {
-    if(refin) {
-        return rev(init) >> (32 - width);
-    } else {
-        return init << (16 - width);
-    }
+static inline uint16_t crc16_init_value(uint16_t init, int width, int refin) {
+    return refin ? (uint16_t)(rev(init) >> (32 - width)) : init << (16 - width);
 }
 
-static uint32_t crc32_init_value(uint32_t init, int width, int refin) {
-    if(refin) {
-        return rev(init) >> (32 - width);
-    } else {
-        return init << (32 - width);
-    }
+static inline uint32_t crc32_init_value(uint32_t init, int width, int refin) {
+    return refin ? rev(init) >> (32 - width) : init << (32 - width);
 }
 
-static uint64_t crc64_init_value(uint64_t init, int width, int refin) {
-    if(refin) {
-        return rev64(init) >> (64 - width);
-    } else {
-        return init << (64 - width);
-    }
+static inline uint64_t crc64_init_value(uint64_t init, int width, int refin) {
+    return refin ? rev64(init) >> (64 - width) : init << (64 - width);
 }
