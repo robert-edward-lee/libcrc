@@ -1,3 +1,3 @@
-crc_test:
-	@gcc -Wall -Wextra -pedantic -I$(CURDIR)/include -I$(CURDIR)/src $(CURDIR)/test/crc_test.c $(CURDIR)/src/crc.c -o $(CURDIR)/test/test
-	@$(CURDIR)/test/test
+test: static_lib
+	@gcc $(CFLAGS) $(CURDIR)/test/crc_test.c $(BUILDDIR)/lib$(LIB).a -o $(CURDIR)/$(BUILDDIR)/$@
+	@$(CURDIR)/$(BUILDDIR)/$@
