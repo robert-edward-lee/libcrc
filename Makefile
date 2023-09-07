@@ -53,3 +53,7 @@ $(BUILDDIR):
 
 clean:
 	@rm -rf $(BUILDDIR)
+
+dox:
+	@mkdir -p doc
+	@doxygen doxyfile

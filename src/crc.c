@@ -1,23 +1,111 @@
+/**
+    \file crc.c
+    \brief Реализация библиотеки расчёта циклического избыточного кода
+*/
 #include "crc.h"
 
 #include <stdlib.h>
 
 #include "rev.h"
 
+/**
+    \param poly Порождающий многочлен
+    \param refin Начало и направление вычислений
+    \param init Стартовые данные
+    \return Контрольную сумму
+    \brief Ручное вычисление контрольной суммы. Необходимо для заполнения таблицы в \ref crc8_init_value
+*/
 static inline uint8_t crc8(uint8_t poly, int refin, uint8_t init);
+/**
+    \param poly Порождающий многочлен
+    \param refin Начало и направление вычислений
+    \param init Стартовые данные
+    \return Контрольную сумму
+    \brief Ручное вычисление контрольной суммы. Необходимо для заполнения таблицы в \ref crc16_init_value
+*/
 static inline uint16_t crc16(uint16_t poly, int refin, uint16_t init);
+/**
+    \param poly Порождающий многочлен
+    \param refin Начало и направление вычислений
+    \param init Стартовые данные
+    \return Контрольную сумму
+    \brief Ручное вычисление контрольной суммы. Необходимо для заполнения таблицы в \ref crc32_init_value
+*/
 static inline uint32_t crc32(uint32_t poly, int refin, uint32_t init);
+/**
+    \param poly Порождающий многочлен
+    \param refin Начало и направление вычислений
+    \param init Стартовые данные
+    \return Контрольную сумму
+    \brief Ручное вычисление контрольной суммы. Необходимо для заполнения таблицы в \ref crc64_init_value
+*/
 static inline uint64_t crc64(uint64_t poly, int refin, uint64_t init);
+/**
+    \param[out] table Таблица для заполнения
+    \param width Степень порождающего многочлена
+    \param poly Порождающий многочлен
+    \param refin Начало и направление вычислений
+    \brief Инициализация таблицы
+*/
 static void crc8_table_init(uint8_t *table, int width, uint8_t poly, int refin);
+/**
+    \param[out] table Таблица для заполнения
+    \param width Степень порождающего многочлена
+    \param poly Порождающий многочлен
+    \param refin Начало и направление вычислений
+    \brief Инициализация таблицы
+*/
 static void crc16_table_init(uint16_t *table, int width, uint16_t poly, int refin);
+/**
+    \param[out] table Таблица для заполнения
+    \param width Степень порождающего многочлена
+    \param poly Порождающий многочлен
+    \param refin Начало и направление вычислений
+    \brief Инициализация таблицы
+*/
 static void crc32_table_init(uint32_t *table, int width, uint32_t poly, int refin);
+/**
+    \param[out] table Таблица для заполнения
+    \param width Степень порождающего многочлена
+    \param poly Порождающий многочлен
+    \param refin Начало и направление вычислений
+    \brief Инициализация таблицы
+*/
 static void crc64_table_init(uint64_t *table, int width, uint64_t poly, int refin);
+/**
+    \param init Стартовые данные
+    \param width Степень порождающего многочлена
+    \param refin Начало и направление вычислений
+    \return Значение контрольной суммы с которой будет начинаться вычисление \ref Crc8::value
+    \brief Инициализация \ref Crc8::value
+*/
 static inline uint8_t crc8_init_value(uint8_t init, int width, int refin);
+/**
+    \param init Стартовые данные
+    \param width Степень порождающего многочлена
+    \param refin Начало и направление вычислений
+    \return Значение контрольной суммы с которой будет начинаться вычисление \ref Crc16::value
+    \brief Инициализация \ref Crc16::value
+*/
 static inline uint16_t crc16_init_value(uint16_t init, int width, int refin);
+/**
+    \param init Стартовые данные
+    \param width Степень порождающего многочлена
+    \param refin Начало и направление вычислений
+    \return Значение контрольной суммы с которой будет начинаться вычисление \ref Crc32::value
+    \brief Инициализация \ref Crc32::value
+*/
 static inline uint32_t crc32_init_value(uint32_t init, int width, int refin);
+/**
+    \param init Стартовые данные
+    \param width Степень порождающего многочлена
+    \param refin Начало и направление вычислений
+    \return Значение контрольной суммы с которой будет начинаться вычисление \ref Crc64::value
+    \brief Инициализация \ref Crc64::value
+*/
 static inline uint64_t crc64_init_value(uint64_t init, int width, int refin);
 
-void crc8_init_static(Crc8 *crc, Crc8BasedAlgo *algo, uint8_t *table) {
+void crc8_init_static(Crc8 *crc, const Crc8BasedAlgo *algo, uint8_t *table) {
     if(!crc || !algo || !table) {
         return;
     }
@@ -28,7 +116,7 @@ void crc8_init_static(Crc8 *crc, Crc8BasedAlgo *algo, uint8_t *table) {
     crc->value = crc8_init_value(algo->init, algo->width, algo->refin);
 }
 
-void crc16_init_static(Crc16 *crc, Crc16BasedAlgo *algo, uint16_t *table) {
+void crc16_init_static(Crc16 *crc, const Crc16BasedAlgo *algo, uint16_t *table) {
     if(!crc || !algo || !table) {
         return;
     }
@@ -39,7 +127,7 @@ void crc16_init_static(Crc16 *crc, Crc16BasedAlgo *algo, uint16_t *table) {
     crc->value = crc16_init_value(algo->init, algo->width, algo->refin);
 }
 
-void crc32_init_static(Crc32 *crc, Crc32BasedAlgo *algo, uint32_t *table) {
+void crc32_init_static(Crc32 *crc, const Crc32BasedAlgo *algo, uint32_t *table) {
     if(!crc || !algo || !table) {
         return;
     }
@@ -50,7 +138,7 @@ void crc32_init_static(Crc32 *crc, Crc32BasedAlgo *algo, uint32_t *table) {
     crc->value = crc32_init_value(algo->init, algo->width, algo->refin);
 }
 
-void crc64_init_static(Crc64 *crc, Crc64BasedAlgo *algo, uint64_t *table) {
+void crc64_init_static(Crc64 *crc, const Crc64BasedAlgo *algo, uint64_t *table) {
     if(!crc || !algo || !table) {
         return;
     }
@@ -61,7 +149,7 @@ void crc64_init_static(Crc64 *crc, Crc64BasedAlgo *algo, uint64_t *table) {
     crc->value = crc64_init_value(algo->init, algo->width, algo->refin);
 }
 
-void crc8_init(Crc8 *crc, Crc8BasedAlgo *algo) {
+void crc8_init(Crc8 *crc, const Crc8BasedAlgo *algo) {
     uint8_t *table;
 
     if(!crc || !algo) {
@@ -75,7 +163,7 @@ void crc8_init(Crc8 *crc, Crc8BasedAlgo *algo) {
     crc8_init_static(crc, algo, table);
 }
 
-void crc16_init(Crc16 *crc, Crc16BasedAlgo *algo) {
+void crc16_init(Crc16 *crc, const Crc16BasedAlgo *algo) {
     uint16_t *table;
 
     if(!crc || !algo) {
@@ -89,7 +177,7 @@ void crc16_init(Crc16 *crc, Crc16BasedAlgo *algo) {
     crc16_init_static(crc, algo, table);
 }
 
-void crc32_init(Crc32 *crc, Crc32BasedAlgo *algo) {
+void crc32_init(Crc32 *crc, const Crc32BasedAlgo *algo) {
     uint32_t *table;
 
     if(!crc || !algo) {
@@ -103,7 +191,7 @@ void crc32_init(Crc32 *crc, Crc32BasedAlgo *algo) {
     crc32_init_static(crc, algo, table);
 }
 
-void crc64_init(Crc64 *crc, Crc64BasedAlgo *algo) {
+void crc64_init(Crc64 *crc, const Crc64BasedAlgo *algo) {
     uint64_t *table;
 
     if(!crc || !algo) {
@@ -147,7 +235,6 @@ void crc64_destroy(Crc64 *crc) {
     free((void *)crc->table);
     crc->table = NULL;
 }
-
 
 void crc8_update(Crc8 *crc, const void *bytes, size_t size) {
     unsigned i;
