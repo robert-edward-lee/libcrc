@@ -8,35 +8,41 @@ const char check_str[] = "123456789";
 
 #if __STDC_VERSION__ >= 201112L // Generics C11 support
 
-#define test(__algo, __width) \
-    void test_##__algo(void) { \
-        uint##__width##_t value; \
-        Crc##__width crc; \
-        crc_init(&crc, &__algo); \
-        value = crc_checksum(&crc, check_str, sizeof(check_str) - 1); \
-        if(crc.algo.check != value) { \
-            printf("Invalid CRC check for " #__algo ": %#" PRIX##__width ", expected = %#" PRIX##__width "\n", value, crc.algo.check); \
-        } else { \
-            printf(#__algo " passed\n"); \
-        } \
-        crc_destroy(&crc); \
-    } test_##__algo()
+#define test(__algo, __width)                                                                                  \
+    void test_##__algo(void) {                                                                                 \
+        uint##__width##_t value;                                                                               \
+        Crc##__width crc;                                                                                      \
+        crc_init(&crc, &__algo);                                                                               \
+        value = crc_checksum(&crc, check_str, sizeof(check_str) - 1);                                          \
+        if(crc.algo.check != value) {                                                                          \
+            printf("Invalid CRC check for " #__algo ": %#" PRIX##__width ", expected = %#" PRIX##__width "\n", \
+                   value,                                                                                      \
+                   crc.algo.check);                                                                            \
+        } else {                                                                                               \
+            printf(#__algo " passed\n");                                                                       \
+        }                                                                                                      \
+        crc_destroy(&crc);                                                                                     \
+    }                                                                                                          \
+    test_##__algo()
 
 #else // Generics C11 support
 
-#define test(__algo, __width) \
-    void test_##__algo(void) { \
-        uint##__width##_t value; \
-        Crc##__width crc; \
-        crc##__width##_init(&crc, &__algo); \
-        value = crc##__width##_checksum(&crc, check_str, sizeof(check_str) - 1); \
-        if(crc.algo.check != value) { \
-            printf("Invalid CRC check for " #__algo ": %#" PRIX##__width ", expected = %#" PRIX##__width "\n", value, crc.algo.check); \
-        } else { \
-            printf(#__algo " passed\n"); \
-        } \
-        crc##__width##_destroy(&crc); \
-    } test_##__algo()
+#define test(__algo, __width)                                                                                  \
+    void test_##__algo(void) {                                                                                 \
+        uint##__width##_t value;                                                                               \
+        Crc##__width crc;                                                                                      \
+        crc##__width##_init(&crc, &__algo);                                                                    \
+        value = crc##__width##_checksum(&crc, check_str, sizeof(check_str) - 1);                               \
+        if(crc.algo.check != value) {                                                                          \
+            printf("Invalid CRC check for " #__algo ": %#" PRIX##__width ", expected = %#" PRIX##__width "\n", \
+                   value,                                                                                      \
+                   crc.algo.check);                                                                            \
+        } else {                                                                                               \
+            printf(#__algo " passed\n");                                                                       \
+        }                                                                                                      \
+        crc##__width##_destroy(&crc);                                                                          \
+    }                                                                                                          \
+    test_##__algo()
 
 #endif // Generics C11 support
 

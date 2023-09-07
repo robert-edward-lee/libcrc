@@ -1,12 +1,13 @@
 /**
     \file crc_catalog.h
-    \brief Перечень всех <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm">стандартных и общепринятых CRC алгоритмов</a> шириной вплоть до 64 бит
+    \brief Перечень всех <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm">стандартных и общепринятых CRC
+    алгоритмов</a> шириной вплоть до 64 бит
 */
 #ifndef H_CRC_CATALOG
 #define H_CRC_CATALOG
 
 #include <stdbool.h>
-
+// clang-format off
 //                                               Width              Poly                Init  RefIn  RefOut              XorOut              Check               Residue
 #define CRC3_GSM                (( Crc8BasedAlgo){ 3,                0x3,                0x0, false, false,                0x7,                0x4,                0x2})
 #define CRC3_ROHC               (( Crc8BasedAlgo){ 3,                0x3,                0x7,  true,  true,                0x0,                0x6,                0x0})
@@ -119,5 +120,5 @@
 #define CRC64_REDIS             ((Crc64BasedAlgo){64, 0xAD93D23594C935A9, 0x0000000000000000,  true,  true, 0x0000000000000000, 0xE9C6D914C4B8D9CA, 0x0000000000000000})
 #define CRC64_WE                ((Crc64BasedAlgo){64, 0x42F0E1EBA9EA3693, 0xFFFFFFFFFFFFFFFF, false, false, 0xFFFFFFFFFFFFFFFF, 0x62EC59E3F1A4F00A, 0xFCACBEBD5931A992})
 #define CRC64_XZ                ((Crc64BasedAlgo){64, 0x42F0E1EBA9EA3693, 0xFFFFFFFFFFFFFFFF,  true,  true, 0xFFFFFFFFFFFFFFFF, 0x995DC9BBDF1939FA, 0x49958C9ABD7D353F})
-
+// clang-format on
 #endif // H_CRC_CATALOG

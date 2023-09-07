@@ -57,3 +57,8 @@ clean:
 dox:
 	@mkdir -p doc
 	@doxygen doxyfile
+
+format:
+	@clang-format \
+		-style=file:.clang-format \
+		-i $(wildcard src/*.c) $(wildcard src/*.h) $(wildcard include/*.h) $(wildcard test/*.c)
