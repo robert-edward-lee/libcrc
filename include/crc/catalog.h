@@ -1,7 +1,7 @@
 /**
-    \file crc_catalog.h
-    \brief Перечень всех <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm">стандартных и общепринятых CRC
-    алгоритмов</a> шириной вплоть до 64 бит
+    \file catalog.h
+    \brief <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm">Перечень</a> всех стандартных и общепринятых
+    CRC алгоритмов шириной вплоть до 64 бит
 */
 #ifndef H_CRC_CATALOG
 #define H_CRC_CATALOG

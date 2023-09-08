@@ -1,9 +1,9 @@
 /**
-    \file crc.h
+    \file lib.h
     \brief Интерфейс библиотеки расчёта циклического избыточного кода
 */
-#ifndef H_CRC
-#define H_CRC
+#ifndef H_CRC_LIB
+#define H_CRC_LIB
 
 #include <stddef.h>
 #include <stdint.h>
@@ -339,4 +339,4 @@ uint64_t crc64_checksum(Crc64 *crc, const void *bytes, size_t size);
 
 #endif // Generics C11 support
 
-#endif // H_CRC
+#endif // H_CRC_LIB

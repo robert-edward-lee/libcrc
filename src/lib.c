@@ -1,8 +1,8 @@
 /**
-    \file crc.c
+    \file lib.c
     \brief Реализация библиотеки расчёта циклического избыточного кода
 */
-#include "crc.h"
+#include "crc/lib.h"
 
 #include <stdlib.h>
 

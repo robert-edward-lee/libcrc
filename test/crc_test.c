@@ -1,8 +1,8 @@
 #include <inttypes.h>
 #include <stdio.h>
 
-#include "crc.h"
-#include "crc_catalog.h"
+#include "crc/catalog.h"
+#include "crc/lib.h"
 
 const char check_str[] = "123456789";
 
