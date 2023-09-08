@@ -1,8 +1,16 @@
 LIB = crc
-CC = gcc
-AR = ar rcs
+STATICLIB = $(BUILDDIR)/lib$(LIB).a
+SHAREDLIB = $(BUILDDIR)/lib$(LIB).dll
+IMPLIB = $(BUILDDIR)/lib$(LIB).dll.a
+
+TOOLCHAIN_PREFIX =
+CC = $(TOOLCHAIN_PREFIX)gcc
 CFLAGS =
-LFLAGS =
+LD = $(CC)
+LDFLAGS =
+AR = $(TOOLCHAIN_PREFIX)ar
+ARFLAGS = rcs
+STRIP = $(TOOLCHAIN_PREFIX)strip
 
 BUILDDIR = build
 SRCDIRS = src
@@ -36,13 +44,21 @@ DEPENDS = $(patsubst %.o,%.d,$(OBJECTS))
 
 include test/test.mk
 
-.DEFAULT_GOAL = static_lib
+.DEFAULT_GOAL = all
 
-static_lib: $(BUILDDIR) lib$(LIB).a
+all: $(BUILDDIR) $(STATICLIB) $(SHAREDLIB) $(IMPLIB)
 
-lib$(LIB).a: $(OBJECTS)
-	@$(AR) $(LFLAGS) $(BUILDDIR)/$@ $^
-	@echo '  AR      ' $(BUILDDIR)/$@
+$(STATICLIB): $(OBJECTS)
+	@$(AR) $(ARFLAGS) $@ $^
+	@echo '  AR      ' $@
+
+$(SHAREDLIB): $(OBJECTS)
+	@$(CC) -shared -Wl,--out-implib,$(IMPLIB) $(LDFLAGS) -o $@ $^
+	@echo '  CC      ' $@
+	@$(STRIP) $@
+	@echo '  STRIP   ' $@
+
+$(IMPLIB): $(SHAREDLIB)
 
 $(BUILDDIR)/%.o: %.c
 	@$(CC) -c $(CFLAGS) -o $@ $<
@@ -61,4 +77,4 @@ dox:
 format:
 	@clang-format \
 		-style=file:.clang-format \
-		-i $(wildcard src/*.c) $(wildcard src/*.h) $(wildcard include/*.h) $(wildcard test/*.c)
+		-i $(wildcard src/*.c) $(wildcard src/*.h) $(wildcard include/crc/*.h) $(wildcard test/*.c)
