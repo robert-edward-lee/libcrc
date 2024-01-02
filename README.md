@@ -194,18 +194,13 @@ make TOOLCHAIN_PREFIX=arm-none-eabi- EXTRAFLAGS="-mtune=arm8 -mthumb" static
 Собранная библиотека будет находится в папке *build/$TOOLCHAIN_PREFIX*
 
 ### Печать готовой таблицы
-Если необходимо получить только таблицу конкретного алгоритма для использовании её в своих, более оптимальных
-вычисления, то делается это примерно так:
-```c
-#include <stdio.h>
-#include "crc/catalog.h"
-#include "crc/lib.h"
-
-crc16_print_table(CRC16_ARC);
+Если необходимо распечатать только таблицу конкретного алгоритма, то делается это целью `print`, передав имя алгоритма и ширину через переменные `CRC_NAME` и `CRC_WIDTH`, например:
+```bash
+make print CRC_NAME=CRC16_ARC CRC_WIDTH=16
 ```
 Вывод:
 ```c
-static const uint16_t CRC16_ARC_TABLE[256] = {
+static const uint16_t CRC_TABLE[256] = {
     0x0000, 0xC0C1, 0xC181, 0x0140, 0xC301, 0x03C0, 0x0280, 0xC241,
     0xC601, 0x06C0, 0x0780, 0xC741, 0x0500, 0xC5C1, 0xC481, 0x0440,
     0xCC01, 0x0CC0, 0x0D80, 0xCD41, 0x0F00, 0xCFC1, 0xCE81, 0x0E40,

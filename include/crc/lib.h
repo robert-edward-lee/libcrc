@@ -339,45 +339,4 @@ uint64_t crc64_checksum(Crc64 *crc, const void *bytes, size_t size);
 
 #endif // Generics C11 support
 
-/**
-    \param algo Каталожный алгоритм \ref Crc8BasedAlgo из файла crc/catalog.h или свой собственный
-    \brief Печать таблицы crc8
-*/
-#define crc8_print_table(algo) ({ \
-    Crc8 crc; crc8_init(&crc, &algo); \
-    printf("static const uint8_t " #algo "_TABLE[256] = {\n"); \
-    for(int i = 0; i < 256; i++) printf("%s0x%02X,%s", i % 8 ? "" : "    ", crc.table[i], (i + 1) % 8 ? " " : "\n"); \
-    printf("};\n"); \
-})
-/**
-    \param algo Каталожный алгоритм \ref Crc16BasedAlgo из файла crc/catalog.h или свой собственный
-    \brief Печать таблицы crc16
-*/
-#define crc16_print_table(algo) ({ \
-    Crc16 crc; crc16_init(&crc, &algo); \
-    printf("static const uint16_t " #algo "_TABLE[256] = {\n"); \
-    for(int i = 0; i < 256; i++) printf("%s0x%04X,%s", i % 8 ? "" : "    ", crc.table[i], (i + 1) % 8 ? " " : "\n"); \
-    printf("};\n"); \
-})
-/**
-    \param algo Каталожный алгоритм \ref Crc32BasedAlgo из файла crc/catalog.h или свой собственный
-    \brief Печать таблицы crc32
-*/
-#define crc32_print_table(algo) ({ \
-    Crc32 crc; crc32_init(&crc, &algo); \
-    printf("static const uint32_t " #algo "_TABLE[256] = {\n"); \
-    for(int i = 0; i < 256; i++) printf("%s0x%08X,%s", i % 8 ? "" : "    ", crc.table[i], (i + 1) % 8 ? " " : "\n"); \
-    printf("};\n"); \
-})
-/**
-    \param algo Каталожный алгоритм \ref Crc64BasedAlgo из файла crc/catalog.h или свой собственный
-    \brief Печать таблицы crc64
-*/
-#define crc64_print_table(algo) ({ \
-    Crc64 crc; crc64_init(&crc, &algo); \
-    printf("static const uint64_t " #algo "_TABLE[256] = {\n"); \
-    for(int i = 0; i < 256; i++) printf("%s0x%016llX,%s", i % 8 ? "" : "    ", crc.table[i], (i + 1) % 8 ? " " : "\n"); \
-    printf("};\n"); \
-})
-
 #endif // H_CRC_LIB
