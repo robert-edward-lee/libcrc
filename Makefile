@@ -12,7 +12,7 @@ AR = $(TOOLCHAIN_PREFIX)ar
 ARFLAGS = rcs
 STRIP = $(TOOLCHAIN_PREFIX)strip
 
-BUILDDIR = build
+BUILDDIR = build/$(TOOLCHAIN_PREFIX)
 SRCDIRS = src
 INCDIRS = include src
 
@@ -35,6 +35,7 @@ CFLAGS += $(addprefix -I,$(INCDIRS))
 CFLAGS += $(WARNFLAGS)
 CFLAGS += $(OPTFLAGS)
 CFLAGS += $(DEPENDFLAGS)
+CFLAGS += $(EXTRAFLAGS)
 
 VPATH = $(BUILDDIR):$(subst $() $(),:,$(SRCDIRS)):$(subst $() $(),:,$(INCDIRS))
 SOURCES = $(wildcard $(SRCDIRS)/*.c)
@@ -46,7 +47,11 @@ include test/test.mk
 
 .DEFAULT_GOAL = all
 
-all: $(BUILDDIR) $(STATICLIB) $(SHAREDLIB) $(IMPLIB)
+all: static shared
+
+static: $(BUILDDIR) $(STATICLIB)
+
+shared: $(BUILDDIR) $(SHAREDLIB)
 
 $(STATICLIB): $(OBJECTS)
 	@$(AR) $(ARFLAGS) $@ $^
