@@ -60,6 +60,21 @@ typedef struct {
     uint64_t check; /**< Значение CRC для строки «123456789» */
     uint64_t residue;
 } Crc64BasedAlgo;
+#ifdef _INT128_DEFINED
+/**
+    \brief Спецификация алгоритма расчёта циклического избыточного кода ширины не более 128 бит
+*/
+typedef struct {
+    int width; /**< Степень порождающего многочлена */
+    __uint128_t poly; /**< Порождающий многочлен */
+    __uint128_t init; /**< Стартовые данные */
+    int refin; /**< Начало и направление вычислений */
+    int refout; /**< Инвертируется ли порядок битов при складывании по модулю 2 полученного результата */
+    __uint128_t xorout; /**< Число, с которым складывается по модулю 2 полученный результат */
+    __uint128_t check; /**< Значение CRC для строки «123456789» */
+    __uint128_t residue;
+} Crc128BasedAlgo;
+#endif
 /**
     \brief "Объект" для расчёта контрольной суммы ширины не более 8 бит
 */
@@ -92,6 +107,16 @@ typedef struct {
     const uint64_t *table; /**< Таблица для вычисления */
     uint64_t value; /**< Промежуточное значение контрольной суммы */
 } Crc64;
+#ifdef _INT128_DEFINED
+/**
+    \brief "Объект" для расчёта контрольной суммы ширины не более 128 бит
+*/
+typedef struct {
+    Crc128BasedAlgo algo; /**< Алгоритм вычисления */
+    const __uint128_t *table; /**< Таблица для вычисления */
+    __uint128_t value; /**< Промежуточное значение контрольной суммы */
+} Crc128;
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -264,6 +289,52 @@ uint32_t crc32_checksum(Crc32 *crc, const void *bytes, size_t size);
     \brief Вычисление контрольной суммы "за один присест"
 */
 uint64_t crc64_checksum(Crc64 *crc, const void *bytes, size_t size);
+
+#ifdef _INT128_DEFINED
+/**
+    \param[in,out] crc Предварительно созданный экземпляр \ref Crc128
+    \param[in] algo Каталожный алгоритм из файла crc/catalog.h или свой собственный
+    \param[in] table Предварительно выделенная память размером 8x256 байт для хранения таблицы расчёта
+    \brief Инициализация "объекта" \ref Crc128
+*/
+void crc128_init_static(Crc128 *crc, const Crc128BasedAlgo *algo, __uint128_t *table);
+/**
+    \param[in,out] crc Предварительно созданный экземпляр \ref Crc128
+    \param[in] algo Каталожный алгоритм из файла crc/catalog.h или свой собственный
+    \brief Инициализация "объекта" \ref Crc128, таблица при этом будет создана динамически
+*/
+void crc128_init(Crc128 *crc, const Crc128BasedAlgo *algo);
+/**
+    \param[in,out] crc Экземпляр \ref Crc128
+    \brief Очистка памяти если crc инициализирован при помощи \ref crc128_init
+*/
+void crc128_destroy(Crc128 *crc);
+/**
+    \param[in,out] crc Экземпляр \ref Crc128
+    \param[in] bytes Данные для вычисления
+    \param size Размер данных
+    \brief Обновление промежуточного значения контрольной суммы в \ref Crc128::value. Функция позволяет вычислять CRC
+    итеративно
+*/
+void crc128_update(Crc128 *crc, const void *bytes, size_t size);
+/**
+    \param[in,out] crc Экземпляр \ref Crc128
+    \return Контрольная сумма
+    \brief Функция возвращает конечное вычисленное значение контрольной суммы данных, предварительно вычисленных с
+    помощью \ref crc128_update. Также происходит очистка значения \ref Crc128::value и "объект" crc можно использовать
+   для нового вычисления
+*/
+__uint128_t crc128_finalize(Crc128 *crc);
+/**
+    \param[in,out] crc Экземпляр \ref Crc128
+    \param[in] bytes Данные для вычисления
+    \param size Размер данных
+    \return Контрольная сумма
+    \brief Вычисление контрольной суммы "за один присест"
+*/
+__uint128_t crc128_checksum(Crc128 *crc, const void *bytes, size_t size);
+#endif
+
 #ifdef __cplusplus
 }
 #endif

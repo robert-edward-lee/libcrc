@@ -46,6 +46,35 @@ const char check_str[] = "123456789";
 
 #endif // Generics C11 support
 
+void test128(const Crc128BasedAlgo *__algo, const char *name) {
+    __uint128_t value;
+    Crc128 crc;
+    crc128_init(&crc, __algo);
+    value = crc128_checksum(&crc, check_str, sizeof(check_str) - 1);
+    if(crc.algo.check != value) {
+        uint8_t *as_u8;
+
+        printf("Invalid CRC check for %s: 0x", name);
+        as_u8 = (uint8_t *)&value;
+        for(unsigned i = 0; i < sizeof(__uint128_t); i++) {
+            printf("%02X", as_u8[i]);
+        }
+
+        printf(", expected = 0x");
+        as_u8 = (uint8_t *)&crc.algo.check;
+        for(unsigned i = 0; i < sizeof(__uint128_t); i++) {
+            printf("%02X", as_u8[i]);
+        }
+
+        printf("\n");
+
+    } else {
+        printf("%s passed\n", name);
+    }
+    crc128_destroy(&crc);
+}
+#define test128_wrapper(__algo) test128(&__algo, #__algo)
+
 int main(void) {
 #if __STDC_VERSION__ >= 201112L // Generics C11 support
     printf("Enable generics C11 support\n");
@@ -163,6 +192,7 @@ int main(void) {
     test(CRC64_REDIS, 64);
     test(CRC64_WE, 64);
     test(CRC64_XZ, 64);
+    test128_wrapper(CRC82_DARC);
 #pragma GCC diagnostic pop
     return 0;
 }

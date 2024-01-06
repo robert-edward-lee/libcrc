@@ -465,3 +465,123 @@ static inline uint32_t crc32_init_value(uint32_t init, int width, int refin) {
 static inline uint64_t crc64_init_value(uint64_t init, int width, int refin) {
     return refin ? rev64(init) >> (64 - width) : init << (64 - width);
 }
+
+#ifdef _INT128_DEFINED
+/**
+    \param poly Порождающий многочлен
+    \param refin Начало и направление вычислений
+    \param init Стартовые данные
+    \return Контрольную сумму
+    \brief Ручное вычисление контрольной суммы. Необходимо для заполнения таблицы в \ref crc128_init_value
+*/
+static inline __uint128_t crc128(__uint128_t poly, int refin, __uint128_t init) {
+    int i = 8;
+
+    if(refin) {
+        while(i--) {
+            init = (init >> 1) ^ (poly & -(init & 1));
+        }
+    } else {
+        init <<= 120;
+        while(i--) {
+            init = (init << 1) ^ (poly & -((init >> 127) & 1));
+        }
+    }
+
+    return init;
+}
+/**
+    \param[out] table Таблица для заполнения
+    \param width Степень порождающего многочлена
+    \param poly Порождающий многочлен
+    \param refin Начало и направление вычислений
+    \brief Инициализация таблицы
+*/
+static void crc128_table_init(__uint128_t *table, int width, __uint128_t poly, int refin) {
+    int i = 256;
+
+    if(!table) return;
+
+    if(refin) {
+        poly = rev128(poly);
+        poly >>= 128 - width;
+    } else {
+        poly <<= 128 - width;
+    }
+
+    while(i--) {
+        table[i] = crc128(poly, refin, i);
+    }
+}
+/**
+    \param init Стартовые данные
+    \param width Степень порождающего многочлена
+    \param refin Начало и направление вычислений
+    \return Значение контрольной суммы с которой будет начинаться вычисление \ref Crc128::value
+    \brief Инициализация \ref Crc128::value
+*/
+static inline __uint128_t crc128_init_value(__uint128_t init, int width, int refin) {
+    return refin ? rev128(init) >> (128 - width) : init << (128 - width);
+}
+
+void crc128_init_static(Crc128 *crc, const Crc128BasedAlgo *algo, __uint128_t *table) {
+    if(!crc || !algo || !table) return;
+    crc->algo = *algo;
+
+    // изменение порядка байтов в связи с особенностью инициализации 128битных литералов
+    crc->algo.poly = swap128(crc->algo.poly);
+    crc->algo.init = swap128(crc->algo.init);
+    crc->algo.xorout = swap128(crc->algo.xorout);
+    crc->algo.check = swap128(crc->algo.check);
+
+    crc128_table_init(table, crc->algo.width, crc->algo.poly, crc->algo.refin);
+    crc->table = table;
+    crc->value = crc128_init_value(crc->algo.init, crc->algo.width, crc->algo.refin);
+}
+
+void crc128_init(Crc128 *crc, const Crc128BasedAlgo *algo) {
+    __uint128_t *table;
+
+    if(!crc || !algo) return;
+    table = malloc(256 * sizeof(*table));
+    if(!table) return;
+    crc128_init_static(crc, algo, table);
+}
+
+void crc128_destroy(Crc128 *crc) {
+    if(!crc || !crc->table) return;
+    free((void *)crc->table);
+    crc->table = NULL;
+}
+
+void crc128_update(Crc128 *crc, const void *bytes, size_t size) {
+    unsigned i;
+
+    if(!crc || !bytes) return;
+    if(crc->algo.refin) {
+        for(i = 0; i < size; i++) {
+            crc->value = crc->table[(crc->value ^ ((uint8_t *)bytes)[i]) & 0xFF] ^ (crc->value >> 8);
+        }
+    } else {
+        for(i = 0; i < size; i++) {
+            crc->value = crc->table[((crc->value >> 120) ^ ((uint8_t *)bytes)[i]) & 0xFF] ^ (crc->value << 8);
+        }
+    }
+}
+
+__uint128_t crc128_finalize(Crc128 *crc) {
+    __uint128_t ret;
+
+    ret = crc->value; // сохраняем значение CRC и восстанавливаем начальное
+    crc->value = crc128_init_value(crc->algo.init, crc->algo.width, crc->algo.refin);
+
+    if(crc->algo.refin ^ crc->algo.refout) ret = rev128(ret);
+    if(!crc->algo.refout) ret >>= 128 - crc->algo.width;
+    return ret ^ crc->algo.xorout;
+}
+
+__uint128_t crc128_checksum(Crc128 *crc, const void *bytes, size_t size) {
+    crc128_update(crc, bytes, size);
+    return crc128_finalize(crc);
+}
+#endif

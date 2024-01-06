@@ -54,4 +54,30 @@ static inline uint64_t rev64(uint64_t x) {
     return x;
 }
 
+#ifdef _INT128_DEFINED
+/**
+    \param x Слово шириной 128 бит
+    \return Отзеркаленное слово
+*/
+static inline __uint128_t rev128(__uint128_t x) {
+    return (__uint128_t)rev64(x & 0xFFFFFFFFFFFFFFFF) << 64 | rev64(x >> 64);
+}
+/**
+    \param x Слово шириной 64 бит
+    \return Слово с обратным порядком байт
+*/
+static inline uint64_t swap64(uint64_t x) {
+    x = ((x & 0x00FF00FF00FF00FF) << 8) | ((x & 0xFF00FF00FF00FF00) >> 8);
+    x = ((x & 0x0000FFFF0000FFFF) << 16) | ((x & 0xFFFF0000FFFF0000) >> 16);
+    return (x << 32) | (x >> 32);
+}
+/**
+    \param x Слово шириной 128 бит
+    \return Слово с обратным порядком байт
+*/
+static inline __uint128_t swap128(__uint128_t x) {
+    return (__uint128_t)swap64(x) << 64 | swap64(x >> 64);
+}
+#endif
+
 #endif // H_REV
