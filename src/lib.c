@@ -505,10 +505,10 @@ void crc128_init_static(Crc128 *crc, const Crc128BasedAlgo *algo, __uint128_t *t
     crc->algo = *algo;
 
     // изменение порядка байтов в связи с особенностью инициализации 128битных литералов
-    crc->algo.poly = swap128(crc->algo.poly);
-    crc->algo.init = swap128(crc->algo.init);
-    crc->algo.xorout = swap128(crc->algo.xorout);
-    crc->algo.check = swap128(crc->algo.check);
+    crc->algo.poly = bswap128(crc->algo.poly);
+    crc->algo.init = bswap128(crc->algo.init);
+    crc->algo.xorout = bswap128(crc->algo.xorout);
+    crc->algo.check = bswap128(crc->algo.check);
 
     crc128_table_init(table, crc->algo.width, crc->algo.poly, crc->algo.refin);
     crc->table = table;

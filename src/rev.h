@@ -58,11 +58,27 @@ static inline uint64_t rev64(uint64_t x) {
 static inline __uint128_t rev128(__uint128_t x) {
     return (__uint128_t)rev64(x) << 64 | rev64(x >> 64);
 }
+
+#ifdef __has_builtin
+#if __has_builtin(__builtin_bswap128)
+#define __has_builtin_bswap128
+#endif
+#endif
+
+#ifdef __has_builtin_bswap128
+/**
+    \param x Слово шириной 128 бит
+    \return Слово с обратным порядком байт
+*/
+static inline __uint128_t bswap128(__uint128_t x) {
+    return __builtin_bswap128(x);
+}
+#else
 /**
     \param x Слово шириной 64 бит
     \return Слово с обратным порядком байт
 */
-static inline uint64_t swap64(uint64_t x) {
+static inline uint64_t bswap64(uint64_t x) {
     x = ((x & 0x00FF00FF00FF00FF) << 8) | ((x & 0xFF00FF00FF00FF00) >> 8);
     x = ((x & 0x0000FFFF0000FFFF) << 16) | ((x & 0xFFFF0000FFFF0000) >> 16);
     return x << 32 | x >> 32;
@@ -71,9 +87,10 @@ static inline uint64_t swap64(uint64_t x) {
     \param x Слово шириной 128 бит
     \return Слово с обратным порядком байт
 */
-static inline __uint128_t swap128(__uint128_t x) {
-    return (__uint128_t)swap64(x) << 64 | swap64(x >> 64);
+static inline __uint128_t bswap128(__uint128_t x) {
+    return (__uint128_t)bswap64(x) << 64 | bswap64(x >> 64);
 }
-#endif
+#endif // __has_builtin_bswap128
+#endif // _INT128_DEFINED
 
 #endif // H_REV
