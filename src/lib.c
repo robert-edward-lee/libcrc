@@ -351,7 +351,7 @@ void crc16_update(Crc16 *crc, const void *bytes, size_t size) {
 void crc32_update(Crc32 *crc, const void *bytes, size_t size) {
     unsigned i;
 
-    if(unlikely(!crc || !bytes)) return;
+    if(!crc || !bytes) return;
     if(crc->algo.refin) {
         for(i = 0; i < size; i++) {
             crc->value = crc->table[(crc->value & 0xFF) ^ ((uint8_t *)bytes)[i]] ^ (crc->value >> 8);
