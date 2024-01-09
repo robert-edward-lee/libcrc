@@ -339,11 +339,11 @@ void crc16_update(Crc16 *crc, const void *bytes, size_t size) {
     if(!crc || !bytes) return;
     if(crc->algo.refin) {
         for(i = 0; i < size; i++) {
-            crc->value = crc->table[(crc->value ^ ((uint8_t *)bytes)[i]) & 0xFF] ^ (crc->value >> 8);
+            crc->value = crc->table[(crc->value & 0xFF) ^ ((uint8_t *)bytes)[i]] ^ (crc->value >> 8);
         }
     } else {
         for(i = 0; i < size; i++) {
-            crc->value = crc->table[((crc->value >> 8) ^ ((uint8_t *)bytes)[i]) & 0xFF] ^ (crc->value << 8);
+            crc->value = crc->table[(crc->value >> 8) ^ ((uint8_t *)bytes)[i]] ^ (crc->value << 8);
         }
     }
 }
@@ -351,14 +351,14 @@ void crc16_update(Crc16 *crc, const void *bytes, size_t size) {
 void crc32_update(Crc32 *crc, const void *bytes, size_t size) {
     unsigned i;
 
-    if(!crc || !bytes) return;
+    if(unlikely(!crc || !bytes)) return;
     if(crc->algo.refin) {
         for(i = 0; i < size; i++) {
-            crc->value = crc->table[(crc->value ^ ((uint8_t *)bytes)[i]) & 0xFF] ^ (crc->value >> 8);
+            crc->value = crc->table[(crc->value & 0xFF) ^ ((uint8_t *)bytes)[i]] ^ (crc->value >> 8);
         }
     } else {
         for(i = 0; i < size; i++) {
-            crc->value = crc->table[((crc->value >> 24) ^ ((uint8_t *)bytes)[i]) & 0xFF] ^ (crc->value << 8);
+            crc->value = crc->table[(crc->value >> 24) ^ ((uint8_t *)bytes)[i]] ^ (crc->value << 8);
         }
     }
 }
@@ -369,11 +369,11 @@ void crc64_update(Crc64 *crc, const void *bytes, size_t size) {
     if(!crc || !bytes) return;
     if(crc->algo.refin) {
         for(i = 0; i < size; i++) {
-            crc->value = crc->table[(crc->value ^ ((uint8_t *)bytes)[i]) & 0xFF] ^ (crc->value >> 8);
+            crc->value = crc->table[(crc->value & 0xFF) ^ ((uint8_t *)bytes)[i]] ^ (crc->value >> 8);
         }
     } else {
         for(i = 0; i < size; i++) {
-            crc->value = crc->table[((crc->value >> 56) ^ ((uint8_t *)bytes)[i]) & 0xFF] ^ (crc->value << 8);
+            crc->value = crc->table[(crc->value >> 56) ^ ((uint8_t *)bytes)[i]] ^ (crc->value << 8);
         }
     }
 }
@@ -536,11 +536,11 @@ void crc128_update(Crc128 *crc, const void *bytes, size_t size) {
     if(!crc || !bytes) return;
     if(crc->algo.refin) {
         for(i = 0; i < size; i++) {
-            crc->value = crc->table[(crc->value ^ ((uint8_t *)bytes)[i]) & 0xFF] ^ (crc->value >> 8);
+            crc->value = crc->table[(crc->value & 0xFF) ^ ((uint8_t *)bytes)[i]] ^ (crc->value >> 8);
         }
     } else {
         for(i = 0; i < size; i++) {
-            crc->value = crc->table[((crc->value >> 120) ^ ((uint8_t *)bytes)[i]) & 0xFF] ^ (crc->value << 8);
+            crc->value = crc->table[(crc->value >> 120) ^ ((uint8_t *)bytes)[i]] ^ (crc->value << 8);
         }
     }
 }
