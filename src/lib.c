@@ -442,7 +442,7 @@ uint64_t crc64_checksum(Crc64 *crc, const void *bytes, size_t size) {
     return crc64_finalize(crc);
 }
 
-#ifdef _INT128_DEFINED
+#ifdef __SIZEOF_INT128__
 /**
     \param poly Порождающий многочлен
     \param refin Начало и направление вычислений
@@ -560,4 +560,4 @@ __uint128_t crc128_checksum(Crc128 *crc, const void *bytes, size_t size) {
     crc128_update(crc, bytes, size);
     return crc128_finalize(crc);
 }
-#endif
+#endif // __SIZEOF_INT128__

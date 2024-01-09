@@ -40,7 +40,7 @@ const char check_str[] = "123456789";
     }
 #endif // Generics C11 support
 
-#ifdef _INT128_DEFINED
+#ifdef __SIZEOF_INT128__
 void test128(const Crc128BasedAlgo *__algo, const char *name) {
     __uint128_t value;
     Crc128 crc;

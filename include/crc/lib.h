@@ -266,7 +266,7 @@ uint32_t crc32_checksum(Crc32 *crc, const void *bytes, size_t size);
 */
 uint64_t crc64_checksum(Crc64 *crc, const void *bytes, size_t size);
 
-#ifdef _INT128_DEFINED
+#ifdef __SIZEOF_INT128__
 /**
     \brief Спецификация алгоритма расчёта циклического избыточного кода ширины не более 128 бит
 */
@@ -331,14 +331,14 @@ __uint128_t crc128_finalize(Crc128 *crc);
     \brief Вычисление контрольной суммы "за один присест"
 */
 __uint128_t crc128_checksum(Crc128 *crc, const void *bytes, size_t size);
-#endif
+#endif // __SIZEOF_INT128__
 
 #ifdef __cplusplus
 }
 #endif
 
 #if __STDC_VERSION__ >= 201112L // Generics C11 support
-#ifdef _INT128_DEFINED
+#ifdef __SIZEOF_INT128__
 /**
     \param[in,out] crc Предварительно созданный экземпляр \ref Crc8, \ref Crc16, \ref Crc32 или \ref Crc64
     \param[in] algo Каталожный алгоритм из файла crc/catalog.h или свой собственный
@@ -426,7 +426,7 @@ __uint128_t crc128_checksum(Crc128 *crc, const void *bytes, size_t size);
         Crc32 *: crc32_checksum,       \
         Crc64 *: crc64_checksum,       \
         Crc128 *: crc128_checksum)(crc, bytes, size)
-#else
+#else // __SIZEOF_INT128__
 /**
     \param[in,out] crc Предварительно созданный экземпляр \ref Crc8, \ref Crc16, \ref Crc32 или \ref Crc64
     \param[in] algo Каталожный алгоритм из файла crc/catalog.h или свой собственный
@@ -494,7 +494,7 @@ __uint128_t crc128_checksum(Crc128 *crc, const void *bytes, size_t size);
         crc,                                                                                                           \
         bytes,                                                                                                         \
         size)
-#endif // _INT128_DEFINED
+#endif // __SIZEOF_INT128__
 #endif // Generics C11 support
 
 #endif // H_CRC_LIB

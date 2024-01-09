@@ -50,7 +50,7 @@ static inline uint64_t rev64(uint64_t x) {
     return x << 32 | x >> 32;
 }
 
-#ifdef _INT128_DEFINED
+#ifdef __SIZEOF_INT128__
 /**
     \param x Слово шириной 128 бит
     \return Отзеркаленное слово
@@ -91,6 +91,6 @@ static inline __uint128_t bswap128(__uint128_t x) {
     return (__uint128_t)bswap64(x) << 64 | bswap64(x >> 64);
 }
 #endif // __has_builtin_bswap128
-#endif // _INT128_DEFINED
+#endif // __SIZEOF_INT128__
 
 #endif // H_REV
