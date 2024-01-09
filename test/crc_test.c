@@ -7,9 +7,8 @@
 const char check_str[] = "123456789";
 
 #if __STDC_VERSION__ >= 201112L // Generics C11 support
-
 #define test(__algo, __width)                                                                                  \
-    void test_##__algo(void) {                                                                                 \
+    {                                                                                                          \
         uint##__width##_t value;                                                                               \
         Crc##__width crc;                                                                                      \
         crc_init(&crc, &__algo);                                                                               \
@@ -22,13 +21,10 @@ const char check_str[] = "123456789";
             printf(#__algo " passed\n");                                                                       \
         }                                                                                                      \
         crc_destroy(&crc);                                                                                     \
-    }                                                                                                          \
-    test_##__algo()
-
+    }
 #else // Generics C11 support
-
 #define test(__algo, __width)                                                                                  \
-    void test_##__algo(void) {                                                                                 \
+    {                                                                                                          \
         uint##__width##_t value;                                                                               \
         Crc##__width crc;                                                                                      \
         crc##__width##_init(&crc, &__algo);                                                                    \
@@ -41,11 +37,10 @@ const char check_str[] = "123456789";
             printf(#__algo " passed\n");                                                                       \
         }                                                                                                      \
         crc##__width##_destroy(&crc);                                                                          \
-    }                                                                                                          \
-    test_##__algo()
-
+    }
 #endif // Generics C11 support
 
+#ifdef _INT128_DEFINED
 void test128(const Crc128BasedAlgo *__algo, const char *name) {
     __uint128_t value;
     Crc128 crc;
@@ -74,13 +69,14 @@ void test128(const Crc128BasedAlgo *__algo, const char *name) {
     crc128_destroy(&crc);
 }
 #define test128_wrapper(__algo) test128(&__algo, #__algo)
+#else
+#define test128_wrapper(__algo)
+#endif
 
 int main(void) {
 #if __STDC_VERSION__ >= 201112L // Generics C11 support
     printf("Enable generics C11 support\n");
 #endif // Generics C11 support
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wpedantic"
     test(CRC3_GSM, 8);
     test(CRC3_ROHC, 8);
     test(CRC4_G_704, 8);
@@ -193,6 +189,5 @@ int main(void) {
     test(CRC64_WE, 64);
     test(CRC64_XZ, 64);
     test128_wrapper(CRC82_DARC);
-#pragma GCC diagnostic pop
     return 0;
 }

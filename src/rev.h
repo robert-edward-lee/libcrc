@@ -14,8 +14,7 @@
 static inline uint8_t rev8(uint8_t x) {
     x = ((x & 0x55) << 1) | ((x & 0xAA) >> 1);
     x = ((x & 0x33) << 2) | ((x & 0xCC) >> 2);
-    x = ((x & 0x0F) << 4) | ((x & 0xF0) >> 4);
-    return x;
+    return x << 4 | x >> 4;
 }
 /**
     \param x Слово шириной 16 бит
@@ -25,8 +24,7 @@ static inline uint16_t rev16(uint16_t x) {
     x = ((x & 0x5555) << 1) | ((x & 0xAAAA) >> 1);
     x = ((x & 0x3333) << 2) | ((x & 0xCCCC) >> 2);
     x = ((x & 0x0F0F) << 4) | ((x & 0xF0F0) >> 4);
-    x = ((x & 0x00FF) << 8) | ((x & 0xFF00) >> 8);
-    return x;
+    return x << 8 | x >> 8;
 }
 /**
     \param x Слово шириной 32 бит
@@ -37,8 +35,7 @@ static inline uint32_t rev32(uint32_t x) {
     x = ((x & 0x33333333) << 2) | ((x & 0xCCCCCCCC) >> 2);
     x = ((x & 0x0F0F0F0F) << 4) | ((x & 0xF0F0F0F0) >> 4);
     x = ((x & 0x00FF00FF) << 8) | ((x & 0xFF00FF00) >> 8);
-    x = ((x & 0x0000FFFF) << 16) | ((x & 0xFFFF0000) >> 16);
-    return x;
+    return x << 16 | x >> 16;
 }
 /**
     \param x Слово шириной 64 бит
@@ -50,8 +47,7 @@ static inline uint64_t rev64(uint64_t x) {
     x = ((x & 0x0F0F0F0F0F0F0F0F) << 4) | ((x & 0xF0F0F0F0F0F0F0F0) >> 4);
     x = ((x & 0x00FF00FF00FF00FF) << 8) | ((x & 0xFF00FF00FF00FF00) >> 8);
     x = ((x & 0x0000FFFF0000FFFF) << 16) | ((x & 0xFFFF0000FFFF0000) >> 16);
-    x = ((x & 0x00000000FFFFFFFF) << 32) | ((x & 0xFFFFFFFF00000000) >> 32);
-    return x;
+    return x << 32 | x >> 32;
 }
 
 #ifdef _INT128_DEFINED
@@ -60,7 +56,7 @@ static inline uint64_t rev64(uint64_t x) {
     \return Отзеркаленное слово
 */
 static inline __uint128_t rev128(__uint128_t x) {
-    return (__uint128_t)rev64(x & 0xFFFFFFFFFFFFFFFF) << 64 | rev64(x >> 64);
+    return (__uint128_t)rev64(x) << 64 | rev64(x >> 64);
 }
 /**
     \param x Слово шириной 64 бит
@@ -69,7 +65,7 @@ static inline __uint128_t rev128(__uint128_t x) {
 static inline uint64_t swap64(uint64_t x) {
     x = ((x & 0x00FF00FF00FF00FF) << 8) | ((x & 0xFF00FF00FF00FF00) >> 8);
     x = ((x & 0x0000FFFF0000FFFF) << 16) | ((x & 0xFFFF0000FFFF0000) >> 16);
-    return (x << 32) | (x >> 32);
+    return x << 32 | x >> 32;
 }
 /**
     \param x Слово шириной 128 бит
