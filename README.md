@@ -182,6 +182,33 @@ value = crc_finalize(&crc);
 crc_destroy(&crc);
 ```
 
+#### Использование нестандартного алгоритма
+```c
+#include "crc/lib.h"
+
+char data[] = "123456789";
+uint16_t value;
+Crc16 crc;
+
+Crc16BasedAlgo algo = {
+    .width = <castom_width>
+    .poly = <castom_poly>
+    .init = <castom_init>
+    .refin = <castom_refin>
+    .refout = <castom_refout>
+    .xorout = <castom_xorout>
+};
+
+// если компилятор не поддерживает C11
+crc16_init(&crc, &algo);
+value = crc16_checksum(&crc, data, sizeof(data) - 1);
+crc16_destroy(&crc);
+// если компилятор поддерживает C11
+crc_init(&crc, &algo);
+value = crc_checksum(&crc, data, sizeof(data) - 1);
+crc_destroy(&crc);
+```
+
 ### Сборка и использование в проекте
 Для сборки в качестве статической библиотеки: `make static`. Собранная библиотека будет находится в папке *build*
 
@@ -236,3 +263,4 @@ static const uint16_t CRC_TABLE[256] = {
     0x8201, 0x42C0, 0x4380, 0x8341, 0x4100, 0x81C1, 0x8081, 0x4040,
 };
 ```
+> `CRC_WIDTH` является максимальной шириной типа в который входит реальная ширина алгоритма. Например для `CRC5_USB` ширина будет `8`, а для `CRC11_UMTS` - `16`
