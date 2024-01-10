@@ -7,6 +7,42 @@
 
 #include <stdint.h>
 
+#ifdef __has_builtin
+#if __has_builtin(__builtin_convertvector) && __clang__
+#define __has_builtin_bitreverse
+#endif
+#endif
+
+#ifdef __has_builtin_bitreverse
+/**
+    \param x Слово шириной 8 бит
+    \return Отзеркаленное слово
+*/
+static inline uint8_t rev8(uint8_t x) {
+    return __builtin_bitreverse8(x);
+}
+/**
+    \param x Слово шириной 16 бит
+    \return Отзеркаленное слово
+*/
+static inline uint16_t rev16(uint16_t x) {
+    return __builtin_bitreverse16(x);
+}
+/**
+    \param x Слово шириной 32 бит
+    \return Отзеркаленное слово
+*/
+static inline uint32_t rev32(uint32_t x) {
+    return __builtin_bitreverse32(x);
+}
+/**
+    \param x Слово шириной 64 бит
+    \return Отзеркаленное слово
+*/
+static inline uint64_t rev64(uint64_t x) {
+    return __builtin_bitreverse64(x);
+}
+#else // __has_builtin_bitreverse
 /**
     \param x Слово шириной 8 бит
     \return Отзеркаленное слово
@@ -49,6 +85,7 @@ static inline uint64_t rev64(uint64_t x) {
     x = ((x & 0x0000FFFF0000FFFF) << 16) | ((x & 0xFFFF0000FFFF0000) >> 16);
     return x << 32 | x >> 32;
 }
+#endif // __has_builtin_bitreverse
 
 #ifdef __SIZEOF_INT128__
 /**
