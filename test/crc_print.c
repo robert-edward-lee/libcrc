@@ -26,22 +26,15 @@
     }
 
 #ifdef __SIZEOF_INT128__
-void print128(__uint128_t a) {
-    uint8_t *as_u8 = (uint8_t *)&a;
-    printf("0x");
-    for(int i = sizeof(a) - 1; i >= 0; i--) {
-        printf("%02X", as_u8[i]);
-    }
-}
 
 void crc128_print_table(const Crc128BasedAlgo *__algo) {
     Crc128 crc;
     crc128_init(&crc, __algo);
     printf("static const __uint128_t CRC_TABLE[256] = {\n");
     for(int i = 0; i < 256; i++) {
-        printf("%s", i % 8 ? "" : "    ");
-        print128(crc.table[i]);
-        printf(",%s", (i + 1) % 8 ? " " : "\n");
+        printf("    (__uint128_t)0x%016" PRIX64 " << 64 | 0x%016" PRIX64 ",\n",
+               (uint64_t)(crc.table[i] >> 64),
+               (uint64_t)crc.table[i]);
     }
     printf("};\n");
 }

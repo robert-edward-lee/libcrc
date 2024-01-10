@@ -168,12 +168,12 @@
 #ifdef __SIZEOF_INT128__
 // 128bit literal is only allowed on 128bit machines
 // #define CRC82_DARC ((Crc128BasedAlgo){82, 0x0308C0111011401440411, 0x000000000000000000000, true, true, 0x000000000000000000000, 0x09EA83F625023801FD612, 0x000000000000000000000})
-#define CRC82_DARC              ((Crc128BasedAlgo){82,  *(__uint128_t *)"\x00\x00\x00\x00\x00\x00\x30\x8C\x01\x11\x01\x14\x01\x44\x04\x11", \
-                                                        *(__uint128_t *)"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00", \
+#define CRC82_DARC              ((Crc128BasedAlgo){82,  (__uint128_t)0x0308C << 64 | 0x0111011401440411, \
+                                                        (__uint128_t)0x00000 << 64 | 0x0000000000000000, \
                                                         true, true, \
-                                                        *(__uint128_t *)"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00", \
-                                                        *(__uint128_t *)"\x00\x00\x00\x00\x00\x00\x9E\xA8\x3F\x62\x50\x23\x80\x1F\xD6\x12", \
-                                                        *(__uint128_t *)"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"})
+                                                        (__uint128_t)0x00000 << 64 | 0x0000000000000000, \
+                                                        (__uint128_t)0x09EA8 << 64 | 0x3F625023801FD612, \
+                                                        (__uint128_t)0x00000 << 64 | 0x0000000000000000})
 #endif // __SIZEOF_INT128__
 // clang-format on
 #endif // H_CRC_CATALOG
