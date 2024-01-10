@@ -25,6 +25,7 @@
         printf("};\n");                                                     \
     }
 
+#ifdef __SIZEOF_INT128__
 void print128(__uint128_t a) {
     uint8_t *as_u8 = (uint8_t *)&a;
     printf("0x");
@@ -44,12 +45,15 @@ void crc128_print_table(const Crc128BasedAlgo *__algo) {
     }
     printf("};\n");
 }
+#endif // __SIZEOF_INT128__
 
 int main(void) {
 #if CRC_WIDTH < 128
     crc_print_table(CRC_NAME, CRC_WIDTH);
-#else
+#elif __SIZEOF_INT128__
     crc128_print_table(&CRC_NAME);
+#else
+#error "Crc algorithm with width 128 bits is not supported"
 #endif
     return 0;
 }
