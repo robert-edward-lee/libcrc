@@ -26,7 +26,6 @@
     }
 
 #ifdef __SIZEOF_INT128__
-
 void crc128_print_table(const Crc128BasedAlgo *__algo) {
     Crc128 crc;
     crc128_init(&crc, __algo);
