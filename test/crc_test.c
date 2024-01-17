@@ -51,35 +51,35 @@ int passed = 0;
 #endif // Generics C11 support
 
 #ifdef __SIZEOF_INT128__
-void print128(__uint128_t a) {
-    uint8_t *as_u8 = (uint8_t *)&a;
-    printf("0x");
-    for(int i = sizeof(a) - 1; i >= 0; i--) {
-        printf("%02X", as_u8[i]);
+#define print128(a)                               \
+    {                                             \
+        uint8_t *as_u8 = (uint8_t *)&a;           \
+        printf("0x");                             \
+        for(int i = sizeof(a) - 1; i >= 0; i--) { \
+            printf("%02X", as_u8[i]);             \
+        }                                         \
     }
-}
-
-void test128(const Crc128BasedAlgo *__algo, const char *name) {
-    __uint128_t value;
-    Crc128 crc;
-    crc128_init(&crc, __algo);
-    value = crc128_checksum(&crc, check_str, sizeof(check_str) - 1);
-    if(crc.algo.check != value) {
-        printf("Invalid CRC check for %s: ", name);
-        print128(value);
-        printf(", expected = ");
-        print128(crc.algo.check);
-        printf("\n");
-        errors++;
-    } else {
-        printf("%s passed\n", name);
-        passed++;
+#define test128(__algo)                                                  \
+    {                                                                    \
+        __uint128_t value;                                               \
+        Crc128 crc;                                                      \
+        crc128_init(&crc, &__algo);                                      \
+        value = crc128_checksum(&crc, check_str, sizeof(check_str) - 1); \
+        if(crc.algo.check != value) {                                    \
+            printf("Invalid CRC check for " #__algo ": ");               \
+            print128(value);                                             \
+            printf(", expected = ");                                     \
+            print128(crc.algo.check);                                    \
+            printf("\n");                                                \
+            errors++;                                                    \
+        } else {                                                         \
+            printf(#__algo " passed\n");                                 \
+            passed++;                                                    \
+        }                                                                \
+        crc128_destroy(&crc);                                            \
     }
-    crc128_destroy(&crc);
-}
-#define test128_wrapper(__algo) test128(&__algo, #__algo)
 #else // __SIZEOF_INT128__
-#define test128_wrapper(__algo)
+#define test128(__algo)
 #endif // __SIZEOF_INT128__
 
 int main(void) {
@@ -238,7 +238,7 @@ int main(void) {
     test(CRC64_WE, 64);
     test(CRC64_XZ, 64);
     test(CRC64_GO_ECMA, 64);
-    test128_wrapper(CRC82_DARC);
+    test128(CRC82_DARC);
 
     if(errors) {
         int percents = 100 * passed / (passed + errors);

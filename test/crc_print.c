@@ -26,24 +26,25 @@
     }
 
 #ifdef __SIZEOF_INT128__
-void crc128_print_table(const Crc128BasedAlgo *__algo) {
-    Crc128 crc;
-    crc128_init(&crc, __algo);
-    printf("static const __uint128_t CRC_TABLE[256] = {\n");
-    for(int i = 0; i < 256; i++) {
-        printf("    (__uint128_t)0x%016" PRIX64 " << 64 | 0x%016" PRIX64 ",\n",
-               (uint64_t)(crc.table[i] >> 64),
-               (uint64_t)crc.table[i]);
+#define crc128_print_table(__algo)                                                  \
+    {                                                                               \
+        Crc128 crc;                                                                 \
+        crc128_init(&crc, &__algo);                                                 \
+        printf("static const __uint128_t CRC_TABLE[256] = {\n");                    \
+        for(int i = 0; i < 256; i++) {                                              \
+            printf("    (__uint128_t)0x%016" PRIX64 " << 64 | 0x%016" PRIX64 ",\n", \
+                   (uint64_t)(crc.table[i] >> 64),                                  \
+                   (uint64_t)crc.table[i]);                                         \
+        }                                                                           \
+        printf("};\n");                                                             \
     }
-    printf("};\n");
-}
 #endif // __SIZEOF_INT128__
 
 int main(void) {
 #if CRC_WIDTH < 128
     crc_print_table(CRC_NAME, CRC_WIDTH);
 #elif __SIZEOF_INT128__
-    crc128_print_table(&CRC_NAME);
+    crc128_print_table(CRC_NAME);
 #else
 #error "Crc algorithm with width 128 bits is not supported"
 #endif
