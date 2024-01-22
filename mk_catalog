@@ -1,0 +1,102 @@
+#!/usr/bin/env python
+import sys
+
+import requests
+from bs4 import BeautifulSoup as bSoup
+
+BEGIN =r"""/**
+    \file catalog.h
+    \brief <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm">Перечень</a> всех стандартных и общепринятых
+    CRC алгоритмов шириной вплоть до 128 бит
+*/
+#ifndef H_CRC_CATALOG
+#define H_CRC_CATALOG
+
+#include <stdbool.h>
+// clang-format off
+//                                               Width              Poly                Init  RefIn  RefOut              XorOut              Check"""
+
+END = r"""// clang-format on
+#endif // H_CRC_CATALOG"""
+
+
+flag128 = False
+test_algos = []
+
+def print_algo(header: str, params: str):
+    global flag128
+
+    line = f'#define {header:23} ('
+
+    params = params[0:params.find('residue')]
+    params = params.split()
+
+    width = int(params[0].split('=')[1])
+    if width <= 8:
+        line += '( Crc8BasedAlgo)'
+        test_algos.append((header, 8))
+    elif width <= 16:
+        line += '(Crc16BasedAlgo)'
+        test_algos.append((header, 16))
+    elif width <= 32:
+        line += '(Crc32BasedAlgo)'
+        test_algos.append((header, 32))
+    elif width <= 64:
+        line += '(Crc64BasedAlgo)'
+        test_algos.append((header, 64))
+    elif width <= 128:
+        return
+        # TODO
+        line += '(Crc128BasedAlgo)'
+        test_algos.append((header, 128))
+
+        if not flag128:
+            flag128 = True
+
+            print('\n#ifdef __SIZEOF_INT128__')
+
+    line += f'{{{params[0].split('=')[1]:>2}, '                             # width
+    line += f'{params[1].split('=')[1].upper().replace('X', 'x'):>18}, '    # poly
+    line += f'{params[2].split('=')[1].upper().replace('X', 'x'):>18}, '    # init
+    line += f'{params[3].split('=')[1]:>5}, '                               # refin
+    line += f'{params[4].split('=')[1]:>5}, '                               # refout
+    line += f'{params[5].split('=')[1].upper().replace('X', 'x'):>18}, '    # xorout
+    line += f'{params[6].split('=')[1].upper().replace('X', 'x'):>18}}})'   # check
+
+    print(line)
+
+resp = requests.get('https://reveng.sourceforge.io/crc-catalogue/all.htm', verify=False)
+resp.raise_for_status()
+
+soup = bSoup(resp.content, 'html.parser')
+links = soup.find_all('h3')
+
+sys.stdout.reconfigure(encoding='utf-8')
+print(BEGIN)
+
+for link in links:
+    header = link.text
+    if 'CRC' in header:
+        header = header.replace('CRC-', 'CRC').replace('-', '_').replace('/', '_')
+        params = link.find_next('p').text
+
+        print_algo(header, params)
+
+        # handle aliases
+        descriptions = link.find_next('ul').text.split('\n')
+        for d in descriptions:
+            if 'Alias' in d:
+                d = d[7:]
+                aliases = d.split(', ')
+                for a in aliases:
+                    if '/' in a:
+                        a = a.replace('CRC-', 'CRC').replace('-', '_').replace('/', '_')
+                        print(f'#define {a:23} {header}')
+
+if flag128:
+    print('#endif // __SIZEOF_INT128__')
+print(END)
+
+with open('test_file.c', 'w+') as f:
+    for t in test_algos:
+        f.write(f'    test({t[0]}, {t[1]});\n')
