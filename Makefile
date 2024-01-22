@@ -82,4 +82,6 @@ dox:
 format:
 	@clang-format \
 		-style=file:.clang-format \
-		-i $(wildcard src/*.c) $(wildcard src/*.h) $(wildcard include/crc/*.h) $(wildcard test/*.c)
+		-i $(wildcard src/*.c) $(wildcard src/*.h) \
+		$(wildcard test/*.c) $(wildcard test/*.h) \
+		$(wildcard include/crc/*.h)

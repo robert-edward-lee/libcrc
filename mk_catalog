@@ -97,6 +97,31 @@ if flag128:
     print('#endif // __SIZEOF_INT128__')
 print(END)
 
-with open('test_file.c', 'w+') as f:
+# CREATE crc_test.c
+
+TEST_BEGIN = r"""#include "crc_test.h"
+
+const char check[9] = "123456789";
+int errors = 0;
+int passed = 0;
+
+int main(void) {
+"""
+
+TEST_END = r"""
+    if(errors) {
+        int percents = 100 * passed / (passed + errors);
+        printf("[%d%%] tests passed, %d errors\n", percents, errors);
+    } else {
+        printf("[100%%] tests passed, 0 errors\n");
+    }
+
+    return 0;
+}
+"""
+
+with open('test/crc_test.c', 'w+') as f:
+    f.write(TEST_BEGIN)
     for t in test_algos:
         f.write(f'    test({t[0]}, {t[1]});\n')
+    f.write(TEST_END)
