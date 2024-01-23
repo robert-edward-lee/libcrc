@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import sys
+from typing import Optional
 
 import requests
 from bs4 import BeautifulSoup as bSoup
@@ -14,16 +14,18 @@ BEGIN =r"""/**
 
 #include <stdbool.h>
 // clang-format off
-//                                               Width              Poly                Init  RefIn  RefOut              XorOut              Check"""
+//                                               Width              Poly                Init  RefIn  RefOut              XorOut              Check
+"""
 
 END = r"""// clang-format on
-#endif // H_CRC_CATALOG"""
+#endif // H_CRC_CATALOG
+"""
 
 
 flag128 = False
 test_algos = []
 
-def print_algo(header: str, params: str):
+def mk_algo(header: str, params: str) -> Optional[str]:
     global flag128
 
     line = f'#define {header:23} ('
@@ -45,7 +47,7 @@ def print_algo(header: str, params: str):
         line += '(Crc64BasedAlgo)'
         test_algos.append((header, 64))
     elif width <= 128:
-        return
+        return None
         # TODO
         line += '(Crc128BasedAlgo)'
         test_algos.append((header, 128))
@@ -63,7 +65,7 @@ def print_algo(header: str, params: str):
     line += f'{params[5].split('=')[1].upper().replace('X', 'x'):>18}, '    # xorout
     line += f'{params[6].split('=')[1].upper().replace('X', 'x'):>18}}})'   # check
 
-    print(line)
+    return line
 
 resp = requests.get('https://reveng.sourceforge.io/crc-catalogue/all.htm', verify=False)
 resp.raise_for_status()
@@ -71,37 +73,38 @@ resp.raise_for_status()
 soup = bSoup(resp.content, 'html.parser')
 links = soup.find_all('h3')
 
-sys.stdout.reconfigure(encoding='utf-8')
-print(BEGIN)
+with open('include/crc/catalog.h', 'w+', encoding='utf-8') as f:
+    f.write(BEGIN)
 
-for link in links:
-    header = link.text
-    if 'CRC' in header:
-        header = header.replace('CRC-', 'CRC').replace('-', '_').replace('/', '_')
-        params = link.find_next('p').text
+    for link in links:
+        header = link.text
+        if 'CRC' in header:
+            header = header.replace('CRC-', 'CRC').replace('-', '_').replace('/', '_')
+            params = link.find_next('p').text
 
-        print_algo(header, params)
+            algo = mk_algo(header, params)
+            if algo:
+                f.write(f'{algo}\n')
 
-        # handle aliases
-        descriptions = link.find_next('ul').text.split('\n')
-        for d in descriptions:
-            if 'Alias' in d:
-                d = d[7:]
-                aliases = d.split(', ')
-                for a in aliases:
-                    if '/' in a:
-                        a = a.replace('CRC-', 'CRC').replace('-', '_').replace('/', '_')
-                        print(f'#define {a:23} {header}')
+            # handle aliases
+            descriptions = link.find_next('ul').text.split('\n')
+            for d in descriptions:
+                if 'Alias' in d:
+                    d = d[7:]
+                    aliases = d.split(', ')
+                    for alias in aliases:
+                        if '/' in alias:
+                            alias = alias.replace('CRC-', 'CRC').replace('-', '_').replace('/', '_')
+                            f.write(f'#define {alias:23} {header}\n')
 
-if flag128:
-    print('#endif // __SIZEOF_INT128__')
-print(END)
+    if flag128:
+        f.write('#endif // __SIZEOF_INT128__')
+    f.write(END)
 
 # CREATE crc_test.c
 
 TEST_BEGIN = r"""#include "crc_test.h"
 
-const char check[9] = "123456789";
 int errors = 0;
 int passed = 0;
 
@@ -109,12 +112,8 @@ int main(void) {
 """
 
 TEST_END = r"""
-    if(errors) {
-        int percents = 100 * passed / (passed + errors);
-        printf("[%d%%] tests passed, %d errors\n", percents, errors);
-    } else {
-        printf("[100%%] tests passed, 0 errors\n");
-    }
+    int percents = 100 * passed / (passed + errors);
+    printf("[%d%%] tests passed, %d errors\n", percents, errors);
 
     return 0;
 }

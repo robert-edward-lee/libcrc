@@ -7,6 +7,8 @@
 #include "crc/catalog.h"
 #include "crc/lib.h"
 
+const char check[9] = "123456789";
+
 #if __STDC_VERSION__ >= 201112L // Generics C11 support
 #define test(__algo, __width)                                                                                        \
     {                                                                                                                \

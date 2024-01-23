@@ -1,6 +1,5 @@
 #include "crc_test.h"
 
-const char check[9] = "123456789";
 int errors = 0;
 int passed = 0;
 
@@ -117,12 +116,8 @@ int main(void) {
     test(CRC64_WE, 64);
     test(CRC64_XZ, 64);
 
-    if(errors) {
-        int percents = 100 * passed / (passed + errors);
-        printf("[%d%%] tests passed, %d errors\n", percents, errors);
-    } else {
-        printf("[100%%] tests passed, 0 errors\n");
-    }
+    int percents = 100 * passed / (passed + errors);
+    printf("[%d%%] tests passed, %d errors\n", percents, errors);
 
     return 0;
 }
