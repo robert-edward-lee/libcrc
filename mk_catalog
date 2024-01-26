@@ -4,9 +4,11 @@ from typing import List
 import requests
 from bs4 import BeautifulSoup as bSoup
 
-BEGIN =r"""/**
+URL = 'https://reveng.sourceforge.io/crc-catalogue/all.htm'
+
+BEGIN = rf"""/**
     \file catalog.h
-    \brief <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm">Перечень</a> всех стандартных и общепринятых
+    \brief <a href="{URL}">Перечень</a> всех стандартных и общепринятых
     CRC алгоритмов шириной вплоть до 128 бит
 */
 #ifndef H_CRC_CATALOG
@@ -134,10 +136,26 @@ class Algo(object):
             return f'    test128({self.name});\n'
         return f'    test({self.name}, {self.actual_width});\n'
 
+    def str_md(self) -> str:
+        ret = f'|`{self.name}`|`{self.width}`|'
+        align = self.width // 4 + bool(self.width % 4)
+        ret += f'`0x{self.poly:0{align}X}`|'
+        ret += f'`0x{self.init:0{align}X}`|'
+        ret += f'`{str(self.refin).lower()}`|'
+        ret += f'`{str(self.refout).lower()}`|'
+        ret += f'`0x{self.xorout:0{align}X}`|'
+        ret += f'`0x{self.check:0{align}X}`|'
+        for alias in self.aliases:
+            ret += f'`{alias}`, '
+        if len(self.aliases):
+            ret = ret[:-2]
+
+        ret += '|\n'
+        return ret
 
 test_algos = []
 
-resp = requests.get('https://reveng.sourceforge.io/crc-catalogue/all.htm', verify=False)
+resp = requests.get(URL, verify=False)
 resp.raise_for_status()
 
 soup = bSoup(resp.content, 'html.parser')
@@ -196,3 +214,19 @@ with open('test/crc_test.c', 'w+', encoding='utf-8') as f:
         f.write(algo.str_test())
 
     f.write(TEST_END)
+
+
+# CREATE CATALOG.md
+
+MD_BEGIN = rf"""### Спецификации алгоритмов
+Каталог алгоритмов взят отсюда: {URL}
+
+| Name | Width | Poly | Init | RefIn | RefOut | XorOut | Check | Aliases |
+| ---- | ----: | ---: | ---: | ----: | -----: | -----: | ----: | ------- |
+"""
+
+with open('CATALOG.md', 'w+', encoding='utf-8') as f:
+    f.write(MD_BEGIN)
+
+    for algo in test_algos:
+        f.write(algo.str_md())
