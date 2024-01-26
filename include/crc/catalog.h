@@ -17,12 +17,14 @@
 #define CRC5_EPC_C1G2           (( Crc8BasedAlgo){ 5,               0x09,               0x09, false, false,               0x00,               0x00})
 #define CRC5_EPC                CRC5_EPC_C1G2
 #define CRC5_G_704              (( Crc8BasedAlgo){ 5,               0x15,               0x00,  true,  true,               0x00,               0x07})
+#define CRC5_ITU                CRC5_G_704
 #define CRC5_USB                (( Crc8BasedAlgo){ 5,               0x05,               0x1F,  true,  true,               0x1F,               0x19})
 #define CRC6_CDMA2000_A         (( Crc8BasedAlgo){ 6,               0x27,               0x3F, false, false,               0x00,               0x0D})
 #define CRC6_CDMA2000_B         (( Crc8BasedAlgo){ 6,               0x07,               0x3F, false, false,               0x00,               0x3B})
 #define CRC6_DARC               (( Crc8BasedAlgo){ 6,               0x19,               0x00,  true,  true,               0x00,               0x26})
-#define CRC6_GSM                (( Crc8BasedAlgo){ 6,               0x2F,               0x00, false, false,               0x3F,               0x13})
 #define CRC6_G_704              (( Crc8BasedAlgo){ 6,               0x03,               0x00,  true,  true,               0x00,               0x06})
+#define CRC6_ITU                CRC6_G_704
+#define CRC6_GSM                (( Crc8BasedAlgo){ 6,               0x2F,               0x00, false, false,               0x3F,               0x13})
 #define CRC7_MMC                (( Crc8BasedAlgo){ 7,               0x09,               0x00, false, false,               0x00,               0x75})
 #define CRC7_ROHC               (( Crc8BasedAlgo){ 7,               0x4F,               0x7F,  true,  true,               0x00,               0x53})
 #define CRC7_UMTS               (( Crc8BasedAlgo){ 7,               0x45,               0x00, false, false,               0x00,               0x61})
@@ -35,6 +37,7 @@
 #define CRC8_GSM_B              (( Crc8BasedAlgo){ 8,               0x49,               0x00, false, false,               0xFF,               0x94})
 #define CRC8_HITAG              (( Crc8BasedAlgo){ 8,               0x1D,               0xFF, false, false,               0x00,               0xB4})
 #define CRC8_I_432_1            (( Crc8BasedAlgo){ 8,               0x07,               0x00, false, false,               0x55,               0xA1})
+#define CRC8_ITU                CRC8_I_432_1
 #define CRC8_I_CODE             (( Crc8BasedAlgo){ 8,               0x1D,               0xFD, false, false,               0x00,               0x7E})
 #define CRC8_LTE                (( Crc8BasedAlgo){ 8,               0x9B,               0x00, false, false,               0x00,               0xEA})
 #define CRC8_MAXIM_DOW          (( Crc8BasedAlgo){ 8,               0x31,               0x00,  true,  true,               0x00,               0xA1})
@@ -87,9 +90,7 @@
 #define CRC16_ISO_HDLC          CRC16_IBM_SDLC
 #define CRC16_ISO_IEC_14443_3_B CRC16_IBM_SDLC
 #define CRC16_X_25              CRC16_IBM_SDLC
-#define CRC16_B                 CRC16_IBM_SDLC
 #define CRC16_ISO_IEC_14443_3_A ((Crc16BasedAlgo){16,             0x1021,             0xC6C6,  true,  true,             0x0000,             0xBF05})
-#define CRC16_A                 CRC16_ISO_IEC_14443_3_A
 #define CRC16_KERMIT            ((Crc16BasedAlgo){16,             0x1021,             0x0000,  true,  true,             0x0000,             0x2189})
 #define CRC16_BLUETOOTH         CRC16_KERMIT
 #define CRC16_CCITT             CRC16_KERMIT
@@ -133,10 +134,8 @@
 #define CRC30_CDMA              ((Crc32BasedAlgo){30,         0x2030B9C7,         0x3FFFFFFF, false, false,         0x3FFFFFFF,         0x04C34ABF})
 #define CRC31_PHILIPS           ((Crc32BasedAlgo){31,         0x04C11DB7,         0x7FFFFFFF, false, false,         0x7FFFFFFF,         0x0CE9E46C})
 #define CRC32_AIXM              ((Crc32BasedAlgo){32,         0x814141AB,         0x00000000, false, false,         0x00000000,         0x3010BF7F})
-#define CRC32_Q                 CRC32_AIXM
 #define CRC32_AUTOSAR           ((Crc32BasedAlgo){32,         0xF4ACFB13,         0xFFFFFFFF,  true,  true,         0xFFFFFFFF,         0x1697D06A})
 #define CRC32_BASE91_D          ((Crc32BasedAlgo){32,         0xA833982B,         0xFFFFFFFF,  true,  true,         0xFFFFFFFF,         0x87315576})
-#define CRC32_D                 CRC32_BASE91_D
 #define CRC32_BZIP2             ((Crc32BasedAlgo){32,         0x04C11DB7,         0xFFFFFFFF, false, false,         0xFFFFFFFF,         0xFC891918})
 #define CRC32_AAL5              CRC32_BZIP2
 #define CRC32_DECT_B            CRC32_BZIP2
@@ -147,14 +146,13 @@
 #define CRC32_BASE91_C          CRC32_ISCSI
 #define CRC32_CASTAGNOLI        CRC32_ISCSI
 #define CRC32_INTERLAKEN        CRC32_ISCSI
-#define CRC32_C                 CRC32_ISCSI
 #define CRC32_ISO_HDLC          ((Crc32BasedAlgo){32,         0x04C11DB7,         0xFFFFFFFF,  true,  true,         0xFFFFFFFF,         0xCBF43926})
 #define CRC32_ADCCP             CRC32_ISO_HDLC
 #define CRC32_V_42              CRC32_ISO_HDLC
 #define CRC32_XZ                CRC32_ISO_HDLC
 #define CRC32_JAMCRC            ((Crc32BasedAlgo){32,         0x04C11DB7,         0xFFFFFFFF,  true,  true,         0x00000000,         0x340BC6D9})
 #define CRC32_MEF               ((Crc32BasedAlgo){32,         0x741B8CD7,         0xFFFFFFFF,  true,  true,         0x00000000,         0xD2C22F51})
-#define CRC32_MPEG2             ((Crc32BasedAlgo){32,         0x04C11DB7,         0xFFFFFFFF, false, false,         0x00000000,         0x0376E6E7})
+#define CRC32_MPEG_2            ((Crc32BasedAlgo){32,         0x04C11DB7,         0xFFFFFFFF, false, false,         0x00000000,         0x0376E6E7})
 #define CRC32_XFER              ((Crc32BasedAlgo){32,         0x000000AF,         0x00000000, false, false,         0x00000000,         0xBD0BE338})
 #define CRC40_GSM               ((Crc64BasedAlgo){40,       0x0004820009,       0x0000000000, false, false,       0xFFFFFFFFFF,       0xD4164FC646})
 #define CRC64_ECMA_182          ((Crc64BasedAlgo){64, 0x42F0E1EBA9EA3693, 0x0000000000000000, false, false, 0x0000000000000000, 0x6C40DF5F0B497347})
