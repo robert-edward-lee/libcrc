@@ -162,5 +162,13 @@
 #define CRC64_WE                ((Crc64BasedAlgo){64, 0x42F0E1EBA9EA3693, 0xFFFFFFFFFFFFFFFF, false, false, 0xFFFFFFFFFFFFFFFF, 0x62EC59E3F1A4F00A})
 #define CRC64_XZ                ((Crc64BasedAlgo){64, 0x42F0E1EBA9EA3693, 0xFFFFFFFFFFFFFFFF,  true,  true, 0xFFFFFFFFFFFFFFFF, 0x995DC9BBDF1939FA})
 #define CRC64_GO_ECMA           CRC64_XZ
+
+#ifdef __SIZEOF_INT128__
+#define CRC82_DARC              ((Crc128BasedAlgo){82,  (__uint128_t)0x0308C << 64 | 0x0111011401440411, \
+                                                        (__uint128_t)0x00000 << 64 | 0x0000000000000000, \
+                                                        true, true, \
+                                                        (__uint128_t)0x00000 << 64 | 0x0000000000000000, \
+                                                        (__uint128_t)0x09EA8 << 64 | 0x3F625023801FD612})
+#endif // __SIZEOF_INT128__
 // clang-format on
 #endif // H_CRC_CATALOG

@@ -115,6 +115,7 @@ int main(void) {
     test(CRC64_REDIS, 64);
     test(CRC64_WE, 64);
     test(CRC64_XZ, 64);
+    test128(CRC82_DARC);
 
     int percents = 100 * passed / (passed + errors);
     printf("[%d%%] tests passed, %d errors\n", percents, errors);

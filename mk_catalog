@@ -50,7 +50,7 @@ class Algo(object):
         elif self.width <= 64:
             self.actual_width = 64
         elif self.width <= 128:
-            self.actual_width = -1
+            self.actual_width = 128
         else:
             self.actual_width = -1
 
@@ -77,26 +77,49 @@ class Algo(object):
             ret += '(Crc32BasedAlgo)'
         elif self.actual_width == 64:
             ret += '(Crc64BasedAlgo)'
+        elif self.actual_width == 128:
+            ret += '(Crc128BasedAlgo)'
         else:
             return None
 
         ret += f'{{{self.width:>2},'
 
-        align = self.width // 4 + bool(self.width % 4)
-        ret += f'{' ':>{17 - align}}'
-        ret += f'0x{self.poly:0{align}X},'
+        if self.actual_width == 128:
+            align = (self.width - 64) // 4 + bool((self.width - 64) % 4)
+            mask = (1 << 65) - 1
+            ret += f'  (__uint128_t)0x{self.poly >> 64:0{align}X} << 64 |'
+            ret += f' 0x{self.poly & mask:016X}, \\\n'
 
-        ret += f'{' ':>{17 - align}}'
-        ret += f'0x{self.init:0{align}X},'
+            ret += f'{' ':56}'
+            ret += f'(__uint128_t)0x{self.init >> 64:0{align}X} << 64 |'
+            ret += f' 0x{self.init & mask:016X}, \\\n'
 
-        ret += f'{str(self.refin).lower():>6},'
-        ret += f'{str(self.refout).lower():>6},'
+            ret += f'{' ':56}'
+            ret += f'{str(self.refin).lower()}, {str(self.refout).lower()}, \\\n'
 
-        ret += f'{' ':>{17 - align}}'
-        ret += f'0x{self.xorout:0{align}X},'
+            ret += f'{' ':56}'
+            ret += f'(__uint128_t)0x{self.xorout >> 64:0{align}X} << 64 |'
+            ret += f' 0x{self.xorout & mask:016X}, \\\n'
 
-        ret += f'{' ':>{17 - align}}'
-        ret += f'0x{self.check:0{align}X}}})\n'
+            ret += f'{' ':56}'
+            ret += f'(__uint128_t)0x{self.check >> 64:0{align}X} << 64 |'
+            ret += f' 0x{self.check & mask:016X}}})\n'
+        else:
+            align = self.width // 4 + bool(self.width % 4)
+            ret += f'{' ':>{17 - align}}'
+            ret += f'0x{self.poly:0{align}X},'
+
+            ret += f'{' ':>{17 - align}}'
+            ret += f'0x{self.init:0{align}X},'
+
+            ret += f'{str(self.refin).lower():>6},'
+            ret += f'{str(self.refout).lower():>6},'
+
+            ret += f'{' ':>{17 - align}}'
+            ret += f'0x{self.xorout:0{align}X},'
+
+            ret += f'{' ':>{17 - align}}'
+            ret += f'0x{self.check:0{align}X}}})\n'
 
         for alias in self.aliases:
             ret += f'#define {alias:23} {self.name}\n'
@@ -107,6 +130,8 @@ class Algo(object):
         return self.actual_width != -1
 
     def str_test(self) -> str:
+        if self.actual_width == 128:
+            return f'    test128({self.name});\n'
         return f'    test({self.name}, {self.actual_width});\n'
 
 
@@ -129,11 +154,19 @@ for link in links:
             test_algos.append(algo)
 
 
+flag128 = False
 with open('include/crc/catalog.h', 'w+', encoding='utf-8') as f:
     f.write(BEGIN)
 
     for algo in test_algos:
+        if algo.actual_width == 128 and not flag128:
+            flag128 = True
+            f.write('\n#ifdef __SIZEOF_INT128__\n')
+
         f.write(str(algo))
+
+    if flag128:
+        f.write('#endif // __SIZEOF_INT128__\n')
 
     f.write(END)
 
