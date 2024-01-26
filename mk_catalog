@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from typing import Optional
+from typing import List
 
 import requests
 from bs4 import BeautifulSoup as bSoup
@@ -21,51 +21,96 @@ END = r"""// clang-format on
 #endif // H_CRC_CATALOG
 """
 
+def str2bool(s: str) -> bool:
+    if s.lower() == 'true':
+        return True
+    return False
 
-flag128 = False
+class Algo(object):
+    def __init__(self, header: str, params: str, desc: str) -> None:
+        self.name = header.replace('CRC-', 'CRC').replace('-', '_').replace('/', '_')
+
+        params = params[0:params.find('residue')]
+        params = params.split()
+
+        self.width = int(params[0].split('=')[1])
+        self.poly = int(params[1].split('=')[1], base=16)
+        self.init = int(params[2].split('=')[1], base=16)
+        self.refin = str2bool(params[3].split('=')[1])
+        self.refout = str2bool(params[4].split('=')[1])
+        self.xorout = int(params[5].split('=')[1], base=16)
+        self.check = int(params[6].split('=')[1], base=16)
+
+        if self.width <= 8:
+            self.actual_width = 8
+        elif self.width <= 16:
+            self.actual_width = 16
+        elif self.width <= 32:
+            self.actual_width = 32
+        elif self.width <= 64:
+            self.actual_width = 64
+        elif self.width <= 128:
+            self.actual_width = -1
+        else:
+            self.actual_width = -1
+
+        # handle aliases
+        self.aliases = []
+        for d in desc:
+            if 'Alias' in d:
+                d = d[7:]
+                aliases = d.split(', ')
+
+                for alias in aliases:
+                    if '/' in alias:
+                        alias = alias.replace('CRC-', 'CRC').replace('-', '_').replace('/', '_')
+                        self.aliases.append(alias)
+
+    def __str__(self) -> str:
+        ret = f'#define {self.name:23} ('
+
+        if self.actual_width == 8:
+            ret += '( Crc8BasedAlgo)'
+        elif self.actual_width == 16:
+            ret += '(Crc16BasedAlgo)'
+        elif self.actual_width == 32:
+            ret += '(Crc32BasedAlgo)'
+        elif self.actual_width == 64:
+            ret += '(Crc64BasedAlgo)'
+        else:
+            return None
+
+        ret += f'{{{self.width:>2},'
+
+        align = self.width // 4 + bool(self.width % 4)
+        ret += f'{' ':>{17 - align}}'
+        ret += f'0x{self.poly:0{align}X},'
+
+        ret += f'{' ':>{17 - align}}'
+        ret += f'0x{self.init:0{align}X},'
+
+        ret += f'{str(self.refin).lower():>6},'
+        ret += f'{str(self.refout).lower():>6},'
+
+        ret += f'{' ':>{17 - align}}'
+        ret += f'0x{self.xorout:0{align}X},'
+
+        ret += f'{' ':>{17 - align}}'
+        ret += f'0x{self.check:0{align}X}}})\n'
+
+        for alias in self.aliases:
+            ret += f'#define {alias:23} {self.name}\n'
+
+        return ret
+
+    def is_valid(self) -> bool:
+        return self.actual_width != -1
+
+    def str_test(self) -> str:
+        return f'    test({self.name}, {self.actual_width});\n'
+
+
 test_algos = []
-
-def mk_algo(header: str, params: str) -> Optional[str]:
-    global flag128
-
-    line = f'#define {header:23} ('
-
-    params = params[0:params.find('residue')]
-    params = params.split()
-
-    width = int(params[0].split('=')[1])
-    if width <= 8:
-        line += '( Crc8BasedAlgo)'
-        test_algos.append((header, 8))
-    elif width <= 16:
-        line += '(Crc16BasedAlgo)'
-        test_algos.append((header, 16))
-    elif width <= 32:
-        line += '(Crc32BasedAlgo)'
-        test_algos.append((header, 32))
-    elif width <= 64:
-        line += '(Crc64BasedAlgo)'
-        test_algos.append((header, 64))
-    elif width <= 128:
-        return None
-        # TODO
-        line += '(Crc128BasedAlgo)'
-        test_algos.append((header, 128))
-
-        if not flag128:
-            flag128 = True
-
-            print('\n#ifdef __SIZEOF_INT128__')
-
-    line += f'{{{params[0].split('=')[1]:>2}, '                             # width
-    line += f'{params[1].split('=')[1].upper().replace('X', 'x'):>18}, '    # poly
-    line += f'{params[2].split('=')[1].upper().replace('X', 'x'):>18}, '    # init
-    line += f'{params[3].split('=')[1]:>5}, '                               # refin
-    line += f'{params[4].split('=')[1]:>5}, '                               # refout
-    line += f'{params[5].split('=')[1].upper().replace('X', 'x'):>18}, '    # xorout
-    line += f'{params[6].split('=')[1].upper().replace('X', 'x'):>18}}})'   # check
-
-    return line
 
 resp = requests.get('https://reveng.sourceforge.io/crc-catalogue/all.htm', verify=False)
 resp.raise_for_status()
@@ -73,33 +118,25 @@ resp.raise_for_status()
 soup = bSoup(resp.content, 'html.parser')
 links = soup.find_all('h3')
 
+for link in links:
+    header = link.text
+    if 'CRC' in header:
+        params = link.find_next('p').text
+        desc = link.find_next('ul').text.split('\n')
+        algo = Algo(header, params, desc)
+
+        if algo.is_valid():
+            test_algos.append(algo)
+
+
 with open('include/crc/catalog.h', 'w+', encoding='utf-8') as f:
     f.write(BEGIN)
 
-    for link in links:
-        header = link.text
-        if 'CRC' in header:
-            header = header.replace('CRC-', 'CRC').replace('-', '_').replace('/', '_')
-            params = link.find_next('p').text
+    for algo in test_algos:
+        f.write(str(algo))
 
-            algo = mk_algo(header, params)
-            if algo:
-                f.write(f'{algo}\n')
-
-            # handle aliases
-            descriptions = link.find_next('ul').text.split('\n')
-            for d in descriptions:
-                if 'Alias' in d:
-                    d = d[7:]
-                    aliases = d.split(', ')
-                    for alias in aliases:
-                        if '/' in alias:
-                            alias = alias.replace('CRC-', 'CRC').replace('-', '_').replace('/', '_')
-                            f.write(f'#define {alias:23} {header}\n')
-
-    if flag128:
-        f.write('#endif // __SIZEOF_INT128__')
     f.write(END)
+
 
 # CREATE crc_test.c
 
@@ -119,8 +156,10 @@ TEST_END = r"""
 }
 """
 
-with open('test/crc_test.c', 'w+') as f:
+with open('test/crc_test.c', 'w+', encoding='utf-8') as f:
     f.write(TEST_BEGIN)
-    for t in test_algos:
-        f.write(f'    test({t[0]}, {t[1]});\n')
+
+    for algo in test_algos:
+        f.write(algo.str_test())
+
     f.write(TEST_END)
