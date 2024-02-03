@@ -63,35 +63,20 @@ typedef struct {
 /**
     \brief "Объект" для расчёта контрольной суммы ширины не более 8 бит
 */
-typedef struct {
-    Crc8BasedAlgo algo; /**< Алгоритм вычисления */
-    const uint8_t *table; /**< Таблица для вычисления */
-    uint8_t value; /**< Промежуточное значение контрольной суммы */
-} Crc8;
+typedef struct Crc8 Crc8;
 /**
     \brief "Объект" для расчёта контрольной суммы ширины не более 16 бит
 */
-typedef struct {
-    Crc16BasedAlgo algo; /**< Алгоритм вычисления */
-    const uint16_t *table; /**< Таблица для вычисления */
-    uint16_t value; /**< Промежуточное значение контрольной суммы */
-} Crc16;
+typedef struct Crc16 Crc16;
 /**
     \brief "Объект" для расчёта контрольной суммы ширины не более 32 бит
 */
-typedef struct {
-    Crc32BasedAlgo algo; /**< Алгоритм вычисления */
-    const uint32_t *table; /**< Таблица для вычисления */
-    uint32_t value; /**< Промежуточное значение контрольной суммы */
-} Crc32;
+typedef struct Crc32 Crc32;
 /**
     \brief "Объект" для расчёта контрольной суммы ширины не более 64 бит
 */
-typedef struct {
-    Crc64BasedAlgo algo; /**< Алгоритм вычисления */
-    const uint64_t *table; /**< Таблица для вычисления */
-    uint64_t value; /**< Промежуточное значение контрольной суммы */
-} Crc64;
+typedef struct Crc64 Crc64;
+
 
 /**
     \param[in,out] crc Предварительно созданный экземпляр \ref Crc8
@@ -278,11 +263,7 @@ typedef struct {
 /**
     \brief "Объект" для расчёта контрольной суммы ширины не более 128 бит
 */
-typedef struct {
-    Crc128BasedAlgo algo; /**< Алгоритм вычисления */
-    const __uint128_t *table; /**< Таблица для вычисления */
-    __uint128_t value; /**< Промежуточное значение контрольной суммы */
-} Crc128;
+typedef struct Crc128 Crc128;
 
 /**
     \param[in,out] crc Предварительно созданный экземпляр \ref Crc128

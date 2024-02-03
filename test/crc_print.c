@@ -3,6 +3,7 @@
 
 #include "crc/catalog.h"
 #include "crc/lib.h"
+#include "../src/lib.c"
 
 #define _CONCAT(a, b) a##b
 #define CONCAT(a, b) _CONCAT(a, b)

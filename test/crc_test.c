@@ -1,4 +1,5 @@
 #include "crc_test.h"
+#include "../src/lib.c"
 
 int errors = 0;
 int passed = 0;

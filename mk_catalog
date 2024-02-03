@@ -192,6 +192,7 @@ with open('include/crc/catalog.h', 'w+', encoding='utf-8') as f:
 # CREATE crc_test.c
 
 TEST_BEGIN = r"""#include "crc_test.h"
+#include "../src/lib.c"
 
 int errors = 0;
 int passed = 0;
