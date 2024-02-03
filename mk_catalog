@@ -173,7 +173,7 @@ for link in links:
 
 
 flag128 = False
-with open('include/crc/catalog.h', 'w+', encoding='utf-8') as f:
+with open('include/crc/catalog.h', 'w+', encoding='utf-8', newline='\n') as f:
     f.write(BEGIN)
 
     for algo in test_algos:
@@ -208,7 +208,7 @@ TEST_END = r"""
 }
 """
 
-with open('test/crc_test.c', 'w+', encoding='utf-8') as f:
+with open('test/crc_test.c', 'w+', encoding='utf-8', newline='\n') as f:
     f.write(TEST_BEGIN)
 
     for algo in test_algos:
@@ -226,7 +226,7 @@ MD_BEGIN = rf"""### Спецификации алгоритмов
 | ---- | ----: | ---: | ---: | ----: | -----: | -----: | ----: | ------- |
 """
 
-with open('CATALOG.md', 'w+', encoding='utf-8') as f:
+with open('CATALOG.md', 'w+', encoding='utf-8', newline='\n') as f:
     f.write(MD_BEGIN)
 
     for algo in test_algos:
