@@ -7,33 +7,7 @@
 #include <cstdint>
 #include <type_traits>
 
-namespace try_1 {
-
-template<typename ValueType>
-struct CrcAlgo {
-    std::size_t width;
-    ValueType poly;
-    ValueType init;
-    bool refin;
-    bool refout;
-    ValueType xorout;
-    ValueType check;
-};
-
-template<typename ValueType>
-class Crc {
-public:
-    using value_t = ValueType;
-
-private:
-    CrcAlgo<value_t> m_algo;
-    const value_t *m_table;
-    value_t m_value;
-};
-
-} // namespace try_1
-
-namespace try_2 {
+namespace crc {
 
 static inline uint8_t rev(uint8_t x) {
     x = ((x & 0x55) << 1) | ((x & 0xAA) >> 1);
@@ -232,6 +206,6 @@ private:
     value_t m_value;
 };
 
-} // namespace try_2
+} // namespace crc
 
 #endif // HPP_CRC

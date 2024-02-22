@@ -4,7 +4,7 @@
 
 #include "crc.hpp"
 
-using namespace try_2;
+using namespace crc;
 
 #define pr_expr(e) std::cout << #e << " = " << std::hex << e << std::endl
 

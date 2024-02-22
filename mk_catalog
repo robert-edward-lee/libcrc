@@ -153,6 +153,68 @@ class Algo(object):
         ret += '|\n'
         return ret
 
+    def str_cxx(self) -> str:
+        ret = f'using {self.name:23} = CrcAlgo<'
+
+        if self.actual_width == 8:
+            ret += 'uint8_t, '
+        elif self.actual_width == 16:
+            ret += 'uint16_t, '
+        elif self.actual_width == 32:
+            ret += 'uint32_t, '
+        elif self.actual_width == 64:
+            ret += 'uint64_t, '
+        elif self.actual_width == 128:
+            ret += '__uint128_t, '
+        else:
+            return None
+
+        ret += f'{self.width:>2},'
+
+        if self.actual_width == 128:
+            align = (self.width - 64) // 4 + bool((self.width - 64) % 4)
+            mask = (1 << 65) - 1
+            ret += f'\n{' ':39}'
+            ret += f'(__uint128_t)0x{self.poly >> 64:0{align}X} << 64 |'
+            ret += f' 0x{self.poly & mask:016X},\n'
+
+            ret += f'{' ':39}'
+            ret += f'(__uint128_t)0x{self.init >> 64:0{align}X} << 64 |'
+            ret += f' 0x{self.init & mask:016X},\n'
+
+            ret += f'{' ':39}'
+            ret += f'{str(self.refin).lower()}, {str(self.refout).lower()},\n'
+
+            ret += f'{' ':39}'
+            ret += f'(__uint128_t)0x{self.xorout >> 64:0{align}X} << 64 |'
+            ret += f' 0x{self.xorout & mask:016X},\n'
+
+            ret += f'{' ':39}'
+            ret += f'(__uint128_t)0x{self.check >> 64:0{align}X} << 64 |'
+            ret += f' 0x{self.check & mask:016X}>;\n'
+        else:
+            ret += ' '
+            align = self.width // 4 + bool(self.width % 4)
+            ret += f'{' ':>{17 - align}}'
+            ret += f'0x{self.poly:0{align}X},'
+
+            ret += f'{' ':>{17 - align}}'
+            ret += f'0x{self.init:0{align}X},'
+
+            ret += f'{str(self.refin).lower():>6},'
+            ret += f'{str(self.refout).lower():>6},'
+
+            ret += f'{' ':>{17 - align}}'
+            ret += f'0x{self.xorout:0{align}X},'
+
+            ret += f'{' ':>{17 - align}}'
+            ret += f'0x{self.check:0{align}X}>;\n'
+
+        for alias in self.aliases:
+            ret += f'using {alias:23} = {self.name};\n'
+
+        return ret
+
 test_algos = []
 
 resp = requests.get(URL, verify=False)
@@ -231,3 +293,43 @@ with open('CATALOG.md', 'w+', encoding='utf-8', newline='\n') as f:
 
     for algo in test_algos:
         f.write(algo.str_md())
+
+
+# create cxx lib
+
+CXX_BEGIN = rf"""/**
+    \file catalog.hpp
+    \brief <a href="{URL}">Перечень</a> всех стандартных и общепринятых
+    CRC алгоритмов шириной вплоть до 128 бит
+*/
+#ifndef HPP_CRC_CATALOG
+#define HPP_CRC_CATALOG
+
+#include "crc.hpp"
+// clang-format off
+namespace crc {{
+//                                    ValueType Width               Poly                Init  RefIn RefOut              XorOut               Check
+"""
+
+CXX_END = r"""} // namespace crc
+// clang-format on
+
+#endif // HPP_CRC_CATALOG
+"""
+
+
+flag128 = False
+with open('cxx/catalog.hpp', 'w+', encoding='utf-8', newline='\n') as f:
+    f.write(CXX_BEGIN)
+
+    for algo in test_algos:
+        if algo.actual_width == 128 and not flag128:
+            flag128 = True
+            f.write('\n#ifdef __SIZEOF_INT128__\n')
+
+        f.write(algo.str_cxx())
+
+    if flag128:
+        f.write('#endif // __SIZEOF_INT128__\n')
+
+    f.write(CXX_END)
