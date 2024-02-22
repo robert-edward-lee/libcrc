@@ -1,9 +1,9 @@
 #include <inttypes.h>
 #include <stdio.h>
 
+#include "../src/lib.c"
 #include "crc/catalog.h"
 #include "crc/lib.h"
-#include "../src/lib.c"
 
 #define _CONCAT(a, b) a##b
 #define CONCAT(a, b) _CONCAT(a, b)
@@ -47,7 +47,7 @@ int main(void) {
 #elif __SIZEOF_INT128__
     crc128_print_table(CRC_NAME);
 #else
-#error "Crc algorithm with width 128 bits is not supported"
+#error "The 128-bit wide Crc algorithm is not supported"
 #endif
     return 0;
 }

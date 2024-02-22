@@ -15,11 +15,11 @@ AllowAllArgumentsOnNextLine: false
 AllowAllParametersOfDeclarationOnNextLine: false
 BinPackArguments: false
 BinPackParameters: false
-AllowShortBlocksOnASingleLine: Always
-AllowShortFunctionsOnASingleLine: Inline
-AllowShortIfStatementsOnASingleLine: AllIfsAndElse
+AllowShortBlocksOnASingleLine: Empty
+AllowShortFunctionsOnASingleLine: Empty
 BreakBeforeBinaryOperators: NonAssignment
 BreakBeforeBraces: Attach
+InsertBraces: true
 # insert/remove spaces settings
 BitFieldColonSpacing: After
 SpaceAfterTemplateKeyword: false
