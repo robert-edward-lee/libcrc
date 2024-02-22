@@ -6,6 +6,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <iostream>
+#include <memory>
 #include <type_traits>
 
 namespace crc {
@@ -111,7 +112,7 @@ template<typename CrcAlgoType> class Crc {
 public:
     using value_t = typename CrcAlgoType::value_t;
 
-    Crc(): m_value(init_value(init)) {
+    Crc() noexcept: m_value(init_value(init)), m_table(new value_t[256]) {
         table_init();
     }
 
@@ -174,7 +175,7 @@ private:
     static constexpr value_t xorout = CrcAlgoType::xorout;
     static constexpr value_t check = CrcAlgoType::check;
 
-    static constexpr value_t init_value(value_t init) {
+    static constexpr value_t init_value(value_t init) noexcept {
         return refin ? rev(init) >> (real_width - width) : init << (real_width - width);
     }
 
@@ -203,8 +204,8 @@ private:
         }
     }
 
-    std::array<value_t, 256> m_table;
     value_t m_value;
+    std::unique_ptr<value_t[]> m_table;
 };
 
 } // namespace crc
