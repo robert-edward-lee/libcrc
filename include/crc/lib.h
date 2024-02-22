@@ -77,7 +77,6 @@ typedef struct Crc32 Crc32;
 */
 typedef struct Crc64 Crc64;
 
-
 /**
     \param[in,out] crc Предварительно созданный экземпляр \ref Crc8
     \param[in] algo Каталожный алгоритм из файла crc/catalog.h или свой собственный
@@ -312,8 +311,8 @@ __uint128_t crc128_checksum(Crc128 *crc, const void *bytes, size_t size);
 #ifdef __cplusplus
 }
 #endif
-
-#if __STDC_VERSION__ >= 201112L // Generics C11 support
+// Generics C11 support
+#if defined(__STDC_VERSION__) && __STDC_VERSION__ >= 201112L
 #ifdef __SIZEOF_INT128__
 /**
     \param[in,out] crc Предварительно созданный экземпляр \ref Crc8, \ref Crc16, \ref Crc32 или \ref Crc64

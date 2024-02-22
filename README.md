@@ -77,12 +77,12 @@ uint16_t value;
 Crc16 crc;
 
 Crc16BasedAlgo algo = {
-    .width = <castom_width>
-    .poly = <castom_poly>
-    .init = <castom_init>
-    .refin = <castom_refin>
-    .refout = <castom_refout>
-    .xorout = <castom_xorout>
+    .width = <castom_width>,
+    .poly = <castom_poly>,
+    .init = <castom_init>,
+    .refin = <castom_refin>,
+    .refout = <castom_refout>,
+    .xorout = <castom_xorout>,
 };
 
 // если компилятор не поддерживает C11

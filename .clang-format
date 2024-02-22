@@ -17,9 +17,9 @@ BinPackArguments: false
 BinPackParameters: false
 AllowShortBlocksOnASingleLine: Empty
 AllowShortFunctionsOnASingleLine: Empty
-AllowShortIfStatementsOnASingleLine: AllIfsAndElse
 BreakBeforeBinaryOperators: NonAssignment
 BreakBeforeBraces: Attach
+InsertBraces: true
 # insert/remove spaces settings
 BitFieldColonSpacing: After
 SpaceAfterTemplateKeyword: false
