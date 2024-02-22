@@ -62,6 +62,13 @@ static inline uint64_t rev(uint64_t x) {
     return x << 32 | x >> 32;
 }
 
+#ifdef __SIZEOF_INT128__
+static inline __uint128_t rev(__uint128_t x) {
+    return static_cast<__uint128_t>(rev(static_cast<uint64_t>(x))) << 64 | rev(static_cast<uint64_t>(x >> 64));
+}
+#endif
+
+
 template<typename ValueType,
          size_t Width,
          ValueType Poly,
@@ -73,8 +80,13 @@ template<typename ValueType,
 struct CrcAlgo {
     static_assert(std::is_integral<ValueType>::value,
                  "ValueType must be integral");
+#ifdef __SIZEOF_INT128__
+    static_assert(sizeof(ValueType) <= sizeof(__uint128_t),
+                 "ValueType size can not exceed 128 bit yet");
+#else
     static_assert(sizeof(ValueType) <= sizeof(uint64_t),
                  "ValueType size can not exceed 64 bit yet");
+#endif
     static_assert(Width, "Width can not be a 0");
     static_assert(Width <= 8 * sizeof(ValueType),
                  "CrcAlgo Width can not exceed the bitwidth of ValueType");
@@ -94,6 +106,12 @@ using CRC5_USB = CrcAlgo<uint8_t, 5, 0x05, 0x1F, true, true, 0x1F, 0x19>;
 using CRC10_GSM = CrcAlgo<uint16_t, 10, 0x175, 0x000, false, false, 0x3FF, 0x12A>;
 using CRC16_ARC = CrcAlgo<uint16_t, 16, 0x8005, 0x0000, true, true, 0x0000, 0xBB3D>;
 using CRC14_DARC = CrcAlgo<uint16_t, 14, 0x0805, 0x0000, true, true, 0x0000, 0x082D>;
+using CRC82_DARC = CrcAlgo<__uint128_t, 82,
+                          (__uint128_t)0x0308C << 64 | 0x0111011401440411,
+                          (__uint128_t)0x00000 << 64 | 0x0000000000000000,
+                          true, true,
+                          (__uint128_t)0x00000 << 64 | 0x0000000000000000,
+                          (__uint128_t)0x09EA8 << 64 | 0x3F625023801FD612>;
 
 template <typename> struct isCrcAlgo_: public std::false_type {};
 template<typename ValueType,
