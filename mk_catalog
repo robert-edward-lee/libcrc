@@ -333,3 +333,32 @@ with open('cxx/catalog.hpp', 'w+', encoding='utf-8', newline='\n') as f:
         f.write('#endif // __SIZEOF_INT128__\n')
 
     f.write(CXX_END)
+
+# CREATE crc_test.cpp
+
+CXX_TEST_BEGIN = r"""#include "test.hpp"
+#include "catalog.hpp"
+
+using namespace crc;
+
+int errors = 0;
+int passed = 0;
+
+int main(void) {
+"""
+
+CXX_TEST_END = r"""
+    int percents = 100 * passed / (passed + errors);
+    printf("[%d%%] tests passed, %d errors\n", percents, errors);
+
+    return 0;
+}
+"""
+
+with open('cxx/test.cpp', 'w+', encoding='utf-8', newline='\n') as f:
+    f.write(CXX_TEST_BEGIN)
+
+    for algo in test_algos:
+        f.write(algo.str_test())
+
+    f.write(CXX_TEST_END)

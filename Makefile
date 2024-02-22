@@ -84,4 +84,5 @@ format:
 		-style=file:.clang-format \
 		-i $(wildcard src/*.c) $(wildcard src/*.h) \
 		$(wildcard test/*.c) $(wildcard test/*.h) \
-		$(wildcard include/crc/*.h)
+		$(wildcard include/crc/*.h) \
+		$(wildcard cxx/*.hpp) $(wildcard cxx/*.cpp)

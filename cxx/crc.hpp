@@ -5,6 +5,7 @@
 #include <climits>
 #include <cstddef>
 #include <cstdint>
+#include <iostream>
 #include <type_traits>
 
 namespace crc {
@@ -42,7 +43,6 @@ static inline __uint128_t rev(__uint128_t x) {
 }
 #endif
 
-
 template<typename ValueType,
          size_t Width,
          ValueType Poly,
@@ -52,18 +52,14 @@ template<typename ValueType,
          ValueType XorOut,
          ValueType Check>
 struct CrcAlgo {
-    static_assert(std::is_integral<ValueType>::value,
-                 "ValueType must be integral");
+    static_assert(std::is_integral<ValueType>::value, "ValueType must be integral");
 #ifdef __SIZEOF_INT128__
-    static_assert(sizeof(ValueType) <= sizeof(__uint128_t),
-                 "ValueType size can not exceed 128 bit yet");
+    static_assert(sizeof(ValueType) <= sizeof(__uint128_t), "ValueType size can not exceed 128 bit yet");
 #else
-    static_assert(sizeof(ValueType) <= sizeof(uint64_t),
-                 "ValueType size can not exceed 64 bit yet");
+    static_assert(sizeof(ValueType) <= sizeof(uint64_t), "ValueType size can not exceed 64 bit yet");
 #endif
     static_assert(Width, "Width can not be a 0");
-    static_assert(Width <= 8 * sizeof(ValueType),
-                 "CrcAlgo Width can not exceed the bitwidth of ValueType");
+    static_assert(Width <= 8 * sizeof(ValueType), "CrcAlgo Width can not exceed the bitwidth of ValueType");
 
     using value_t = ValueType;
 
@@ -76,18 +72,7 @@ struct CrcAlgo {
     static constexpr value_t check = Check;
 };
 
-using CRC5_USB = CrcAlgo<uint8_t, 5, 0x05, 0x1F, true, true, 0x1F, 0x19>;
-using CRC10_GSM = CrcAlgo<uint16_t, 10, 0x175, 0x000, false, false, 0x3FF, 0x12A>;
-using CRC16_ARC = CrcAlgo<uint16_t, 16, 0x8005, 0x0000, true, true, 0x0000, 0xBB3D>;
-using CRC14_DARC = CrcAlgo<uint16_t, 14, 0x0805, 0x0000, true, true, 0x0000, 0x082D>;
-using CRC82_DARC = CrcAlgo<__uint128_t, 82,
-                          (__uint128_t)0x0308C << 64 | 0x0111011401440411,
-                          (__uint128_t)0x00000 << 64 | 0x0000000000000000,
-                          true, true,
-                          (__uint128_t)0x00000 << 64 | 0x0000000000000000,
-                          (__uint128_t)0x09EA8 << 64 | 0x3F625023801FD612>;
-
-template <typename> struct isCrcAlgo_: public std::false_type {};
+template<typename> struct isCrcAlgo_: public std::false_type {};
 template<typename ValueType,
          size_t Width,
          ValueType Poly,
@@ -96,12 +81,10 @@ template<typename ValueType,
          bool RefOut,
          ValueType XorOut,
          ValueType Check>
-struct isCrcAlgo_<CrcAlgo<ValueType, Width, Poly, Init, RefIn, RefOut, XorOut, Check>>:
-public std::true_type {};
+struct isCrcAlgo_<CrcAlgo<ValueType, Width, Poly, Init, RefIn, RefOut, XorOut, Check>>: public std::true_type {};
 
 template<typename CrcAlgoType> class Crc {
-    static_assert(isCrcAlgo_<CrcAlgoType>::value,
-                 "CrcAlgoType must be an instance of the CrcAlgo");
+    static_assert(isCrcAlgo_<CrcAlgoType>::value, "CrcAlgoType must be an instance of the CrcAlgo");
 
 public:
     using value_t = typename CrcAlgoType::value_t;
@@ -154,11 +137,7 @@ public:
     void print_table(void) const noexcept {
         printf("static const uint_t CRC_TABLE[256] = {\n");
         for(int i = 0; i < 256; i++) {
-            printf("%s0x%0*X,%s",
-                   i % 8 ? "" : "    ",
-                   (unsigned)real_width / 4,
-                   m_table[i],
-                   (i + 1) % 8 ? " " : "\n");
+            printf("%s0x%0*X,%s", i % 8 ? "" : "    ", (unsigned)real_width / 4, m_table[i], (i + 1) % 8 ? " " : "\n");
         }
         printf("};\n");
     }
