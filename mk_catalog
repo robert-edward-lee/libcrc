@@ -155,7 +155,7 @@ class Algo(object):
         ret = f'using {self.name:23} = CrcAlgo<'
 
         if self.actual_width == 8:
-            ret += 'uint8_t, '
+            ret += ' uint8_t, '
         elif self.actual_width == 16:
             ret += 'uint16_t, '
         elif self.actual_width == 32:
@@ -191,7 +191,6 @@ class Algo(object):
             ret += f'(__uint128_t)0x{self.check >> 64:0{align}X} << 64 |'
             ret += f' 0x{self.check & mask:016X}>;\n'
         else:
-            ret += ' '
             align = self.width // 4 + bool(self.width % 4)
             ret += f'{' ':>{17 - align}}'
             ret += f'0x{self.poly:0{align}X},'
@@ -306,7 +305,7 @@ CXX_BEGIN = rf"""/**
 #include "crc.hpp"
 // clang-format off
 namespace crc {{
-//                                    ValueType Width               Poly                Init  RefIn RefOut              XorOut               Check
+//                                    ValueType  Width              Poly                Init  RefIn RefOut              XorOut               Check
 """
 
 CXX_END = r"""} // namespace crc
