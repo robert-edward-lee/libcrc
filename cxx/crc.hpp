@@ -17,7 +17,7 @@ namespace crc {
 #endif
 #endif
 
-static inline uint8_t rev(uint8_t x) {
+static inline uint8_t rev(uint8_t x) noexcept {
 #ifdef __has_builtin_bitreverse
     return __builtin_bitreverse8(x);
 #else
@@ -26,7 +26,7 @@ static inline uint8_t rev(uint8_t x) {
     return x << 4 | x >> 4;
 #endif
 }
-static inline uint16_t rev(uint16_t x) {
+static inline uint16_t rev(uint16_t x) noexcept {
 #ifdef __has_builtin_bitreverse
     return __builtin_bitreverse16(x);
 #else
@@ -36,7 +36,7 @@ static inline uint16_t rev(uint16_t x) {
     return x << 8 | x >> 8;
 #endif
 }
-static inline uint32_t rev(uint32_t x) {
+static inline uint32_t rev(uint32_t x) noexcept {
 #ifdef __has_builtin_bitreverse
     return __builtin_bitreverse32(x);
 #else
@@ -47,7 +47,7 @@ static inline uint32_t rev(uint32_t x) {
     return x << 16 | x >> 16;
 #endif
 }
-static inline uint64_t rev(uint64_t x) {
+static inline uint64_t rev(uint64_t x) noexcept {
 #ifdef __has_builtin_bitreverse
     return __builtin_bitreverse64(x);
 #else
@@ -61,7 +61,7 @@ static inline uint64_t rev(uint64_t x) {
 }
 
 #ifdef __SIZEOF_INT128__
-static inline __uint128_t rev(__uint128_t x) {
+static inline __uint128_t rev(__uint128_t x) noexcept {
     return static_cast<__uint128_t>(rev(static_cast<uint64_t>(x))) << 64 | rev(static_cast<uint64_t>(x >> 64));
 }
 #endif
