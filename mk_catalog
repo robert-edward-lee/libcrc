@@ -131,8 +131,8 @@ class Algo(object):
 
     def str_test(self) -> str:
         if self.actual_width == 128:
-            return f'    test128({self.name});\n'
-        return f'    test({self.name}, {self.actual_width});\n'
+            return f'    crc_test128({self.name});\n'
+        return f'    crc_test({self.name}, {self.actual_width});\n'
 
     def str_md(self) -> str:
         ret = f'|`{self.name}`|`{self.width}`|'

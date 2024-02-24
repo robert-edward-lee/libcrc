@@ -75,7 +75,12 @@ template<typename ValueType,
          ValueType XorOut,
          ValueType Check>
 struct CrcAlgo {
-    static_assert(std::is_integral<ValueType>::value, "ValueType must be integral");
+    static_assert(std::is_integral<ValueType>::value
+#ifdef __SIZEOF_INT128__
+                      || std::is_same<ValueType, __uint128_t>::value
+#endif
+                  ,
+                  "ValueType must be integral");
 #ifdef __SIZEOF_INT128__
     static_assert(sizeof(ValueType) <= sizeof(__uint128_t), "ValueType size can not exceed 128 bit yet");
 #else

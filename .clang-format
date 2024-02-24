@@ -7,7 +7,7 @@ IndentWidth: 4
 AccessModifierOffset: -4
 IndentCaseLabels: true
 # alignment settings
-AlignEscapedNewlines: Left
+AlignEscapedNewlines: Right
 AlignOperands: AlignAfterOperator
 AlignTrailingComments: Never
 # break lines settings
