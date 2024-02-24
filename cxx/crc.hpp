@@ -1,15 +1,7 @@
 #ifndef HPP_CRC
 #define HPP_CRC
 
-#include <array>
-#include <climits>
-#include <cstddef>
-#include <cstdint>
-#include <iostream>
 #include <memory>
-#include <type_traits>
-
-namespace crc {
 
 #ifdef __has_builtin
 #if __has_builtin(__builtin_convertvector) && defined(__clang__)
@@ -17,7 +9,15 @@ namespace crc {
 #endif
 #endif
 
-static inline uint8_t rev(uint8_t x) noexcept {
+#if __cpp_constexpr >= 201304
+#define constexpr_14 constexpr
+#else
+#define constexpr_14 inline
+#endif
+
+namespace crc {
+
+static constexpr_14 uint8_t rev(uint8_t x) noexcept {
 #ifdef __has_builtin_bitreverse
     return __builtin_bitreverse8(x);
 #else
@@ -26,7 +26,7 @@ static inline uint8_t rev(uint8_t x) noexcept {
     return x << 4 | x >> 4;
 #endif
 }
-static inline uint16_t rev(uint16_t x) noexcept {
+static constexpr_14 uint16_t rev(uint16_t x) noexcept {
 #ifdef __has_builtin_bitreverse
     return __builtin_bitreverse16(x);
 #else
@@ -36,7 +36,7 @@ static inline uint16_t rev(uint16_t x) noexcept {
     return x << 8 | x >> 8;
 #endif
 }
-static inline uint32_t rev(uint32_t x) noexcept {
+static constexpr_14 uint32_t rev(uint32_t x) noexcept {
 #ifdef __has_builtin_bitreverse
     return __builtin_bitreverse32(x);
 #else
@@ -47,7 +47,7 @@ static inline uint32_t rev(uint32_t x) noexcept {
     return x << 16 | x >> 16;
 #endif
 }
-static inline uint64_t rev(uint64_t x) noexcept {
+static constexpr_14 uint64_t rev(uint64_t x) noexcept {
 #ifdef __has_builtin_bitreverse
     return __builtin_bitreverse64(x);
 #else
@@ -61,7 +61,7 @@ static inline uint64_t rev(uint64_t x) noexcept {
 }
 
 #ifdef __SIZEOF_INT128__
-static inline __uint128_t rev(__uint128_t x) noexcept {
+static constexpr_14 __uint128_t rev(__uint128_t x) noexcept {
     return static_cast<__uint128_t>(rev(static_cast<uint64_t>(x))) << 64 | rev(static_cast<uint64_t>(x >> 64));
 }
 #endif
@@ -80,7 +80,7 @@ struct CrcAlgo {
                       || std::is_same<ValueType, __uint128_t>::value
 #endif
                   ,
-                  "ValueType must be integral");
+                  "ValueType must be an integral");
 #ifdef __SIZEOF_INT128__
     static_assert(sizeof(ValueType) <= sizeof(__uint128_t), "ValueType size can not exceed 128 bit yet");
 #else
@@ -121,27 +121,6 @@ public:
         table_init();
     }
 
-    void update(const void *data, size_t size) noexcept {
-        if(!data || !size) {
-            return;
-        }
-
-        const uint8_t *bytes = reinterpret_cast<const uint8_t *>(data);
-        if(real_width == 8) {
-            for(size_t i = 0; i < size; i++) {
-                m_value = m_table[m_value ^ bytes[i]];
-            }
-        } else if(refin) {
-            for(size_t i = 0; i < size; i++) {
-                m_value = m_table[(m_value & 0xFF) ^ bytes[i]] ^ (m_value >> 8);
-            }
-        } else {
-            for(size_t i = 0; i < size; i++) {
-                m_value = m_table[(m_value >> (real_width - 8)) ^ bytes[i]] ^ (m_value << 8);
-            }
-        }
-    }
-
     value_t finalize(void) noexcept {
         value_t ret = m_value;
         m_value = init_value(init);
@@ -157,8 +136,43 @@ public:
         return ret ^ xorout;
     }
 
+    template<typename T>
+    constexpr_14 typename std::enable_if<std::is_same<T, int8_t>::value || std::is_same<T, uint8_t>::value>::type
+    update(T byte) noexcept {
+        if(real_width == 8) {
+            m_value = m_table[m_value ^ byte];
+        } else if(refin) {
+            m_value = m_table[(m_value & 0xFF) ^ byte] ^ (m_value >> 8);
+        } else {
+            m_value = m_table[(m_value >> (real_width - 8)) ^ byte] ^ (m_value << 8);
+        }
+    }
+
+    void update(const void *data, size_t size) noexcept {
+        if(!data) {
+            return;
+        }
+
+        for(size_t i = 0; i < size; i++) {
+            update(reinterpret_cast<const uint8_t *>(data)[i]);
+        }
+    }
     value_t checksum(const void *data, size_t size) noexcept {
         update(data, size);
+        return finalize();
+    }
+
+    void update(const void *begin, const void *end) noexcept {
+        if(!begin || !end) {
+            return;
+        }
+
+        for(const uint8_t *byte = reinterpret_cast<const uint8_t *>(begin); byte < end; byte++) {
+            update(*byte);
+        }
+    }
+    value_t checksum(const void *begin, const void *end) noexcept {
+        update(begin, end);
         return finalize();
     }
 
@@ -184,7 +198,7 @@ private:
         return refin ? rev(init) >> (real_width - width) : init << (real_width - width);
     }
 
-    static value_t crc(value_t poly, value_t init) noexcept {
+    static constexpr_14 value_t crc(value_t poly, value_t init) noexcept {
         int i = 8;
 
         if(refin) {
