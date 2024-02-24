@@ -74,7 +74,7 @@ template<typename ValueType,
          bool RefOut,
          ValueType XorOut,
          ValueType Check>
-struct CrcAlgo {
+class Crc {
     static_assert(std::is_integral<ValueType>::value
 #ifdef __SIZEOF_INT128__
                       || std::is_same<ValueType, __uint128_t>::value
@@ -89,8 +89,10 @@ struct CrcAlgo {
     static_assert(Width, "Width can not be a 0");
     static_assert(Width <= 8 * sizeof(ValueType), "CrcAlgo Width can not exceed the bitwidth of ValueType");
 
+public:
     using value_t = ValueType;
 
+    static constexpr size_t real_width = 8 * sizeof(value_t);
     static constexpr size_t width = Width;
     static constexpr value_t poly = Poly;
     static constexpr value_t init = Init;
@@ -98,26 +100,8 @@ struct CrcAlgo {
     static constexpr bool refout = RefOut;
     static constexpr value_t xorout = XorOut;
     static constexpr value_t check = Check;
-};
 
-template<typename> struct isCrcAlgo_: public std::false_type {};
-template<typename ValueType,
-         size_t Width,
-         ValueType Poly,
-         ValueType Init,
-         bool RefIn,
-         bool RefOut,
-         ValueType XorOut,
-         ValueType Check>
-struct isCrcAlgo_<CrcAlgo<ValueType, Width, Poly, Init, RefIn, RefOut, XorOut, Check>>: public std::true_type {};
-
-template<typename CrcAlgoType> class Crc {
-    static_assert(isCrcAlgo_<CrcAlgoType>::value, "CrcAlgoType must be an instance of the CrcAlgo");
-
-public:
-    using value_t = typename CrcAlgoType::value_t;
-
-    Crc() noexcept: m_value(init_value(init)), m_table(new value_t[256]) {
+    Crc(void) noexcept: m_value(init_value(init)), m_table(new value_t[256]) {
         table_init();
     }
 
@@ -185,15 +169,6 @@ public:
     }
 
 private:
-    static constexpr size_t real_width = 8 * sizeof(value_t);
-    static constexpr size_t width = CrcAlgoType::width;
-    static constexpr value_t poly = CrcAlgoType::poly;
-    static constexpr value_t init = CrcAlgoType::init;
-    static constexpr bool refin = CrcAlgoType::refin;
-    static constexpr bool refout = CrcAlgoType::refout;
-    static constexpr value_t xorout = CrcAlgoType::xorout;
-    static constexpr value_t check = CrcAlgoType::check;
-
     static constexpr value_t init_value(value_t init) noexcept {
         return refin ? rev(init) >> (real_width - width) : init << (real_width - width);
     }

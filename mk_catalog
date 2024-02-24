@@ -152,7 +152,7 @@ class Algo(object):
         return ret
 
     def str_cxx(self) -> str:
-        ret = f'using {self.name:23} = CrcAlgo<'
+        ret = f'using {self.name:23} = Crc<'
 
         if self.actual_width == 8:
             ret += ' uint8_t, '
@@ -172,22 +172,22 @@ class Algo(object):
         if self.actual_width == 128:
             align = (self.width - 64) // 4 + bool((self.width - 64) % 4)
             mask = (1 << 65) - 1
-            ret += f'\n{' ':39}'
+            ret += f'\n{' ':35}'
             ret += f'(__uint128_t)0x{self.poly >> 64:0{align}X} << 64 |'
             ret += f' 0x{self.poly & mask:016X},\n'
 
-            ret += f'{' ':39}'
+            ret += f'{' ':35}'
             ret += f'(__uint128_t)0x{self.init >> 64:0{align}X} << 64 |'
             ret += f' 0x{self.init & mask:016X},\n'
 
-            ret += f'{' ':39}'
+            ret += f'{' ':35}'
             ret += f'{str(self.refin).lower()}, {str(self.refout).lower()},\n'
 
-            ret += f'{' ':39}'
+            ret += f'{' ':35}'
             ret += f'(__uint128_t)0x{self.xorout >> 64:0{align}X} << 64 |'
             ret += f' 0x{self.xorout & mask:016X},\n'
 
-            ret += f'{' ':39}'
+            ret += f'{' ':35}'
             ret += f'(__uint128_t)0x{self.check >> 64:0{align}X} << 64 |'
             ret += f' 0x{self.check & mask:016X}>;\n'
         else:
@@ -305,7 +305,7 @@ CXX_BEGIN = rf"""/**
 #include "crc.hpp"
 // clang-format off
 namespace crc {{
-//                                    ValueType  Width              Poly                Init  RefIn RefOut              XorOut               Check
+//                                ValueType  Width              Poly                Init  RefIn RefOut              XorOut               Check
 """
 
 CXX_END = r"""} // namespace crc

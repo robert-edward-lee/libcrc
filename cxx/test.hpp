@@ -8,7 +8,7 @@ const char check[] = "123456789";
 
 #define crc_test(__algo, __width)                                                                                      \
     {                                                                                                                  \
-        Crc<__algo> crc;                                                                                               \
+        __algo crc;                                                                                                    \
         uint##__width##_t value = crc.checksum(check, &check[9]);                                                      \
         if(__algo::check != value) {                                                                                   \
             printf("Invalid CRC check for " #__algo ": 0x%0*" PRIX##__width ", expected = 0x%0*" PRIX##__width "\n",   \
@@ -35,7 +35,7 @@ const char check[] = "123456789";
     }
 #define crc_test128(__algo)                                                                                            \
     {                                                                                                                  \
-        Crc<__algo> crc;                                                                                               \
+        __algo crc;                                                                                                    \
         __uint128_t value = crc.checksum(check, &check[9]);                                                            \
         if(__algo::check != value) {                                                                                   \
             printf("Invalid CRC check for " #__algo ": ");                                                             \
