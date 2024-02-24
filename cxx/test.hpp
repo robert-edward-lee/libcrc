@@ -9,7 +9,7 @@ const char check[] = "123456789";
 #define crc_test(__algo, __width)                                                                                      \
     {                                                                                                                  \
         __algo crc;                                                                                                    \
-        uint##__width##_t value = crc.checksum(check, &check[9]);                                                      \
+        uint##__width##_t value = crc(check, &check[9]);                                                               \
         if(__algo::check != value) {                                                                                   \
             printf("Invalid CRC check for " #__algo ": 0x%0*" PRIX##__width ", expected = 0x%0*" PRIX##__width "\n",   \
                    __width / 4,                                                                                        \
@@ -36,7 +36,7 @@ const char check[] = "123456789";
 #define crc_test128(__algo)                                                                                            \
     {                                                                                                                  \
         __algo crc;                                                                                                    \
-        __uint128_t value = crc.checksum(check, &check[9]);                                                            \
+        __uint128_t value = crc(check, &check[9]);                                                                     \
         if(__algo::check != value) {                                                                                   \
             printf("Invalid CRC check for " #__algo ": ");                                                             \
             print128(value);                                                                                           \

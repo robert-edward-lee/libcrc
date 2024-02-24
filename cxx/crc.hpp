@@ -66,6 +66,10 @@ static constexpr_14 __uint128_t rev(__uint128_t x) noexcept {
 }
 #endif
 
+template<typename T> struct is_byte {
+    static constexpr bool value = std::is_same<T, int8_t>::value || std::is_same<T, uint8_t>::value;
+};
+
 template<typename ValueType,
          size_t Width,
          ValueType Poly,
@@ -87,7 +91,7 @@ class Crc {
     static_assert(sizeof(ValueType) <= sizeof(uint64_t), "ValueType size can not exceed 64 bit yet");
 #endif
     static_assert(Width, "Width can not be a 0");
-    static_assert(Width <= 8 * sizeof(ValueType), "CrcAlgo Width can not exceed the bitwidth of ValueType");
+    static_assert(Width <= 8 * sizeof(ValueType), "Crc Width can not exceed the bitwidth of ValueType");
 
 public:
     using value_t = ValueType;
@@ -120,9 +124,7 @@ public:
         return ret ^ xorout;
     }
 
-    template<typename T>
-    constexpr_14 typename std::enable_if<std::is_same<T, int8_t>::value || std::is_same<T, uint8_t>::value>::type
-    update(T byte) noexcept {
+    template<typename T> constexpr_14 typename std::enable_if<is_byte<T>::value>::type update(T byte) noexcept {
         if(real_width == 8) {
             m_value = m_table[m_value ^ byte];
         } else if(refin) {
@@ -130,6 +132,13 @@ public:
         } else {
             m_value = m_table[(m_value >> (real_width - 8)) ^ byte] ^ (m_value << 8);
         }
+    }
+    template<typename T> constexpr_14 typename std::enable_if<is_byte<T>::value>::type checksum(T byte) noexcept {
+        update(byte);
+        return finalize();
+    }
+    template<typename T> constexpr_14 typename std::enable_if<is_byte<T>::value>::type operator()(T byte) noexcept {
+        return checksum(byte);
     }
 
     void update(const void *data, size_t size) noexcept {
@@ -141,9 +150,12 @@ public:
             update(reinterpret_cast<const uint8_t *>(data)[i]);
         }
     }
-    value_t checksum(const void *data, size_t size) noexcept {
+    constexpr_14 value_t checksum(const void *data, size_t size) noexcept {
         update(data, size);
         return finalize();
+    }
+    constexpr_14 value_t operator()(const void *data, size_t size) noexcept {
+        return checksum(data, size);
     }
 
     void update(const void *begin, const void *end) noexcept {
@@ -155,9 +167,12 @@ public:
             update(*byte);
         }
     }
-    value_t checksum(const void *begin, const void *end) noexcept {
+    constexpr_14 value_t checksum(const void *begin, const void *end) noexcept {
         update(begin, end);
         return finalize();
+    }
+    constexpr_14 value_t operator()(const void *begin, const void *end) noexcept {
+        return checksum(begin, end);
     }
 
     void print_table(void) const noexcept {
@@ -168,33 +183,35 @@ public:
         printf("};\n");
     }
 
+    Crc(const Crc &) = delete;
+    Crc &operator=(const Crc &) = delete;
+
 private:
     static constexpr value_t init_value(value_t init) noexcept {
         return refin ? rev(init) >> (real_width - width) : init << (real_width - width);
     }
 
-    static constexpr_14 value_t crc(value_t poly, value_t init) noexcept {
+    static constexpr_14 value_t crc(value_t value) noexcept {
         int i = 8;
 
         if(refin) {
             while(i--) {
-                init = (init >> 1) ^ (poly & -(init & 1));
+                value = (value >> 1) ^ (init_value(poly) & -(value & 1));
             }
         } else {
-            init <<= real_width - 8;
+            value <<= real_width - 8;
             while(i--) {
-                init = (init << 1) ^ (poly & -((init >> (real_width - 1)) & 1));
+                value = (value << 1) ^ (init_value(poly) & -((value >> (real_width - 1)) & 1));
             }
         }
 
-        return init;
+        return value;
     }
 
     void table_init(void) noexcept {
         int i = 256;
-        value_t real_poly = init_value(poly);
         while(i--) {
-            m_table[i] = crc(real_poly, i);
+            m_table[i] = crc(i);
         }
     }
 
