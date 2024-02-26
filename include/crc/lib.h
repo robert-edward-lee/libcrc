@@ -63,19 +63,35 @@ typedef struct {
 /**
     \brief "Объект" для расчёта контрольной суммы ширины не более 8 бит
 */
-typedef struct Crc8 Crc8;
+typedef struct {
+    Crc8BasedAlgo algo; /**< Алгоритм вычисления */
+    const uint8_t *table; /**< Таблица для вычисления */
+    uint8_t value; /**< Промежуточное значение контрольной суммы */
+} Crc8;
 /**
     \brief "Объект" для расчёта контрольной суммы ширины не более 16 бит
 */
-typedef struct Crc16 Crc16;
+typedef struct {
+    Crc16BasedAlgo algo; /**< Алгоритм вычисления */
+    const uint16_t *table; /**< Таблица для вычисления */
+    uint16_t value; /**< Промежуточное значение контрольной суммы */
+} Crc16;
 /**
     \brief "Объект" для расчёта контрольной суммы ширины не более 32 бит
 */
-typedef struct Crc32 Crc32;
+typedef struct {
+    Crc32BasedAlgo algo; /**< Алгоритм вычисления */
+    const uint32_t *table; /**< Таблица для вычисления */
+    uint32_t value; /**< Промежуточное значение контрольной суммы */
+} Crc32;
 /**
     \brief "Объект" для расчёта контрольной суммы ширины не более 64 бит
 */
-typedef struct Crc64 Crc64;
+typedef struct {
+    Crc64BasedAlgo algo; /**< Алгоритм вычисления */
+    const uint64_t *table; /**< Таблица для вычисления */
+    uint64_t value; /**< Промежуточное значение контрольной суммы */
+} Crc64;
 
 /**
     \param[in,out] crc Предварительно созданный экземпляр \ref Crc8
@@ -262,7 +278,11 @@ typedef struct {
 /**
     \brief "Объект" для расчёта контрольной суммы ширины не более 128 бит
 */
-typedef struct Crc128 Crc128;
+typedef struct {
+    Crc128BasedAlgo algo; /**< Алгоритм вычисления */
+    const __uint128_t *table; /**< Таблица для вычисления */
+    __uint128_t value; /**< Промежуточное значение контрольной суммы */
+} Crc128;
 
 /**
     \param[in,out] crc Предварительно созданный экземпляр \ref Crc128
@@ -322,12 +342,12 @@ __uint128_t crc128_checksum(Crc128 *crc, const void *bytes, size_t size);
     \brief Инициализация "объекта" crc. Обёртка над функциями \ref crc8_init_static, \ref crc16_init_static, \ref
     crc32_init_static и \ref crc64_init_static. В зависимости от типа crc будет вызвана соответствующая функция
 */
-#define crc_init_static(crc, algo, table) \
-    _Generic((crc),                       \
-        Crc8 *: crc8_init_static,         \
-        Crc16 *: crc16_init_static,       \
-        Crc32 *: crc32_init_static,       \
-        Crc64 *: crc64_init_static,       \
+#define crc_init_static(crc, algo, table)                                                                              \
+    _Generic((crc),                                                                                                    \
+        Crc8 *: crc8_init_static,                                                                                      \
+        Crc16 *: crc16_init_static,                                                                                    \
+        Crc32 *: crc32_init_static,                                                                                    \
+        Crc64 *: crc64_init_static,                                                                                    \
         Crc128 *: crc128_init_static)(crc, algo, table)
 /**
     \param[in,out] crc Предварительно созданный экземпляр \ref Crc8, \ref Crc16, \ref Crc32 или \ref Crc64
@@ -335,12 +355,12 @@ __uint128_t crc128_checksum(Crc128 *crc, const void *bytes, size_t size);
     \brief Инициализация crc, таблица при этом будет создана динамически. Обёртка над функциями \ref crc8_init, \ref
     crc16_init, \ref crc32_init и \ref crc64_init. В зависимости от  типа crc будет вызвана соответствующая функция
 */
-#define crc_init(crc, algo)  \
-    _Generic((crc),          \
-        Crc8 *: crc8_init,   \
-        Crc16 *: crc16_init, \
-        Crc32 *: crc32_init, \
-        Crc64 *: crc64_init, \
+#define crc_init(crc, algo)                                                                                            \
+    _Generic((crc),                                                                                                    \
+        Crc8 *: crc8_init,                                                                                             \
+        Crc16 *: crc16_init,                                                                                           \
+        Crc32 *: crc32_init,                                                                                           \
+        Crc64 *: crc64_init,                                                                                           \
         Crc128 *: crc128_init)(crc, algo)
 /**
     \param[in,out] crc Экземпляр \ref Crc8, \ref Crc16, \ref Crc32 или \ref Crc64
@@ -348,12 +368,12 @@ __uint128_t crc128_checksum(Crc128 *crc, const void *bytes, size_t size);
     \ref crc16_destroy, \ref crc32_destroy и \ref crc64_destroy. В зависимости от  типа crc будет вызвана
     соответствующая функция
 */
-#define crc_destroy(crc)        \
-    _Generic((crc),             \
-        Crc8 *: crc8_destroy,   \
-        Crc16 *: crc16_destroy, \
-        Crc32 *: crc32_destroy, \
-        Crc64 *: crc64_destroy, \
+#define crc_destroy(crc)                                                                                               \
+    _Generic((crc),                                                                                                    \
+        Crc8 *: crc8_destroy,                                                                                          \
+        Crc16 *: crc16_destroy,                                                                                        \
+        Crc32 *: crc32_destroy,                                                                                        \
+        Crc64 *: crc64_destroy,                                                                                        \
         Crc128 *: crc128_destroy)(crc)
 /**
     \param[in,out] crc Экземпляр \ref Crc8, \ref Crc16, \ref Crc32 или \ref Crc64
@@ -363,12 +383,12 @@ __uint128_t crc128_checksum(Crc128 *crc, const void *bytes, size_t size);
     итеративно. Обёртка над функциями \ref crc8_update, \ref crc16_update, \ref crc32_update и \ref crc64_update. В
     зависимости от  типа crc будет вызвана соответствующая функция
 */
-#define crc_update(crc, bytes, size) \
-    _Generic((crc),                  \
-        Crc8 *: crc8_update,         \
-        Crc16 *: crc16_update,       \
-        Crc32 *: crc32_update,       \
-        Crc64 *: crc64_update,       \
+#define crc_update(crc, bytes, size)                                                                                   \
+    _Generic((crc),                                                                                                    \
+        Crc8 *: crc8_update,                                                                                           \
+        Crc16 *: crc16_update,                                                                                         \
+        Crc32 *: crc32_update,                                                                                         \
+        Crc64 *: crc64_update,                                                                                         \
         Crc128 *: crc128_update)(crc, bytes, size)
 /**
     \param[in,out] crc Экземпляр \ref Crc8, \ref Crc16, \ref Crc32 или \ref Crc64
@@ -378,12 +398,12 @@ __uint128_t crc128_checksum(Crc128 *crc, const void *bytes, size_t size);
     нового вычисления. Обёртка над функциями \ref crc8_finalize, \ref crc16_finalize, \ref crc32_finalize и \ref
     crc64_finalize. В зависимости от  типа crc будет вызвана соответствующая функция
 */
-#define crc_finalize(crc)        \
-    _Generic((crc),              \
-        Crc8 *: crc8_finalize,   \
-        Crc16 *: crc16_finalize, \
-        Crc32 *: crc32_finalize, \
-        Crc64 *: crc64_finalize, \
+#define crc_finalize(crc)                                                                                              \
+    _Generic((crc),                                                                                                    \
+        Crc8 *: crc8_finalize,                                                                                         \
+        Crc16 *: crc16_finalize,                                                                                       \
+        Crc32 *: crc32_finalize,                                                                                       \
+        Crc64 *: crc64_finalize,                                                                                       \
         Crc128 *: crc128_finalize)(crc)
 /**
     \param[in,out] crc Экземпляр \ref Crc8, \ref Crc16, \ref Crc32 или \ref Crc64
@@ -394,12 +414,12 @@ __uint128_t crc128_checksum(Crc128 *crc, const void *bytes, size_t size);
     crc16_checksum, \ref crc32_checksum и \ref crc64_checksum. В зависимости от  типа crc будет вызвана соответствующая
     функция
 */
-#define crc_checksum(crc, bytes, size) \
-    _Generic((crc),                    \
-        Crc8 *: crc8_checksum,         \
-        Crc16 *: crc16_checksum,       \
-        Crc32 *: crc32_checksum,       \
-        Crc64 *: crc64_checksum,       \
+#define crc_checksum(crc, bytes, size)                                                                                 \
+    _Generic((crc),                                                                                                    \
+        Crc8 *: crc8_checksum,                                                                                         \
+        Crc16 *: crc16_checksum,                                                                                       \
+        Crc32 *: crc32_checksum,                                                                                       \
+        Crc64 *: crc64_checksum,                                                                                       \
         Crc128 *: crc128_checksum)(crc, bytes, size)
 #else // __SIZEOF_INT128__
 /**
@@ -410,11 +430,11 @@ __uint128_t crc128_checksum(Crc128 *crc, const void *bytes, size_t size);
     \brief Инициализация "объекта" crc. Обёртка над функциями \ref crc8_init_static, \ref crc16_init_static, \ref
     crc32_init_static и \ref crc64_init_static. В зависимости от типа crc будет вызвана соответствующая функция
 */
-#define crc_init_static(crc, algo, table) \
-    _Generic((crc),                       \
-        Crc8 *: crc8_init_static,         \
-        Crc16 *: crc16_init_static,       \
-        Crc32 *: crc32_init_static,       \
+#define crc_init_static(crc, algo, table)                                                                              \
+    _Generic((crc),                                                                                                    \
+        Crc8 *: crc8_init_static,                                                                                      \
+        Crc16 *: crc16_init_static,                                                                                    \
+        Crc32 *: crc32_init_static,                                                                                    \
         Crc64 *: crc64_init_static)(crc, algo, table)
 /**
     \param[in,out] crc Предварительно созданный экземпляр \ref Crc8, \ref Crc16, \ref Crc32 или \ref Crc64
@@ -422,7 +442,7 @@ __uint128_t crc128_checksum(Crc128 *crc, const void *bytes, size_t size);
     \brief Инициализация crc, таблица при этом будет создана динамически. Обёртка над функциями \ref crc8_init, \ref
     crc16_init, \ref crc32_init и \ref crc64_init. В зависимости от  типа crc будет вызвана соответствующая функция
 */
-#define crc_init(crc, algo) \
+#define crc_init(crc, algo)                                                                                            \
     _Generic((crc), Crc8 *: crc8_init, Crc16 *: crc16_init, Crc32 *: crc32_init, Crc64 *: crc64_init)(crc, algo)
 /**
     \param[in,out] crc Экземпляр \ref Crc8, \ref Crc16, \ref Crc32 или \ref Crc64
@@ -430,7 +450,7 @@ __uint128_t crc128_checksum(Crc128 *crc, const void *bytes, size_t size);
     \ref crc16_destroy, \ref crc32_destroy и \ref crc64_destroy. В зависимости от  типа crc будет вызвана
     соответствующая функция
 */
-#define crc_destroy(crc) \
+#define crc_destroy(crc)                                                                                               \
     _Generic((crc), Crc8 *: crc8_destroy, Crc16 *: crc16_destroy, Crc32 *: crc32_destroy, Crc64 *: crc64_destroy)(crc)
 /**
     \param[in,out] crc Экземпляр \ref Crc8, \ref Crc16, \ref Crc32 или \ref Crc64
@@ -440,9 +460,9 @@ __uint128_t crc128_checksum(Crc128 *crc, const void *bytes, size_t size);
     итеративно. Обёртка над функциями \ref crc8_update, \ref crc16_update, \ref crc32_update и \ref crc64_update. В
     зависимости от  типа crc будет вызвана соответствующая функция
 */
-#define crc_update(crc, bytes, size)                                                                                 \
-    _Generic((crc), Crc8 *: crc8_update, Crc16 *: crc16_update, Crc32 *: crc32_update, Crc64 *: crc64_update)(crc,   \
-                                                                                                              bytes, \
+#define crc_update(crc, bytes, size)                                                                                   \
+    _Generic((crc), Crc8 *: crc8_update, Crc16 *: crc16_update, Crc32 *: crc32_update, Crc64 *: crc64_update)(crc,     \
+                                                                                                              bytes,   \
                                                                                                               size)
 /**
     \param[in,out] crc Экземпляр \ref Crc8, \ref Crc16, \ref Crc32 или \ref Crc64

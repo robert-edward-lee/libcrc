@@ -8,27 +8,6 @@
 
 #include "rev.h"
 
-struct Crc8 {
-    Crc8BasedAlgo algo; /**< Алгоритм вычисления */
-    const uint8_t *table; /**< Таблица для вычисления */
-    uint8_t value; /**< Промежуточное значение контрольной суммы */
-};
-struct Crc16 {
-    Crc16BasedAlgo algo; /**< Алгоритм вычисления */
-    const uint16_t *table; /**< Таблица для вычисления */
-    uint16_t value; /**< Промежуточное значение контрольной суммы */
-};
-struct Crc32 {
-    Crc32BasedAlgo algo; /**< Алгоритм вычисления */
-    const uint32_t *table; /**< Таблица для вычисления */
-    uint32_t value; /**< Промежуточное значение контрольной суммы */
-};
-struct Crc64 {
-    Crc64BasedAlgo algo; /**< Алгоритм вычисления */
-    const uint64_t *table; /**< Таблица для вычисления */
-    uint64_t value; /**< Промежуточное значение контрольной суммы */
-};
-
 /**
     \param poly Порождающий многочлен
     \param refin Начало и направление вычислений
@@ -528,12 +507,6 @@ uint64_t crc64_checksum(Crc64 *crc, const void *bytes, size_t size) {
 }
 
 #ifdef __SIZEOF_INT128__
-struct Crc128 {
-    Crc128BasedAlgo algo; /**< Алгоритм вычисления */
-    const __uint128_t *table; /**< Таблица для вычисления */
-    __uint128_t value; /**< Промежуточное значение контрольной суммы */
-};
-
 /**
     \param poly Порождающий многочлен
     \param refin Начало и направление вычислений
