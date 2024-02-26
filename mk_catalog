@@ -316,7 +316,7 @@ CXX_END = r"""} // namespace crc
 
 
 flag128 = False
-with open('cxx/catalog.hpp', 'w+', encoding='utf-8', newline='\n') as f:
+with open('include/crcxx/catalog.hpp', 'w+', encoding='utf-8', newline='\n') as f:
     f.write(CXX_BEGIN)
 
     for algo in test_algos:
@@ -333,8 +333,8 @@ with open('cxx/catalog.hpp', 'w+', encoding='utf-8', newline='\n') as f:
 
 # CREATE crc_test.cpp
 
-CXX_TEST_BEGIN = r"""#include "test.hpp"
-#include "catalog.hpp"
+CXX_TEST_BEGIN = r"""#include "crcxx/catalog.hpp"
+#include "crcxx_test.hpp"
 
 using namespace crc;
 
@@ -352,7 +352,7 @@ CXX_TEST_END = r"""
 }
 """
 
-with open('cxx/test.cpp', 'w+', encoding='utf-8', newline='\n') as f:
+with open('test/crcxx_test.cpp', 'w+', encoding='utf-8', newline='\n') as f:
     f.write(CXX_TEST_BEGIN)
 
     for algo in test_algos:

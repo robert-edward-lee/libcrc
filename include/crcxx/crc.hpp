@@ -62,7 +62,7 @@ static constexpr_14 uint64_t rev(uint64_t x) noexcept {
 
 #ifdef __SIZEOF_INT128__
 static constexpr_14 __uint128_t rev(__uint128_t x) noexcept {
-    return static_cast<__uint128_t>(rev(x)) << 64 | rev(x >> 64);
+    return static_cast<__uint128_t>(rev(static_cast<uint64_t>(x))) << 64 | rev(static_cast<uint64_t>(x >> 64));
 }
 #endif
 
@@ -170,14 +170,6 @@ public:
     }
     constexpr_14 value_t operator()(const void *begin, const void *end) noexcept {
         return checksum(begin, end);
-    }
-
-    void print_table(void) const noexcept {
-        printf("static const uint_t CRC_TABLE[256] = {\n");
-        for(int i = 0; i < 256; i++) {
-            printf("%s0x%0*X,%s", i % 8 ? "" : "    ", (unsigned)real_width / 4, m_table[i], (i + 1) % 8 ? " " : "\n");
-        }
-        printf("};\n");
     }
 
     Crc(const Crc &) = delete;
