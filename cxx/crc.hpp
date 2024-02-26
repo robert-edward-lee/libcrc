@@ -62,7 +62,7 @@ static constexpr_14 uint64_t rev(uint64_t x) noexcept {
 
 #ifdef __SIZEOF_INT128__
 static constexpr_14 __uint128_t rev(__uint128_t x) noexcept {
-    return static_cast<__uint128_t>(rev(static_cast<uint64_t>(x))) << 64 | rev(static_cast<uint64_t>(x >> 64));
+    return static_cast<__uint128_t>(rev(x)) << 64 | rev(x >> 64);
 }
 #endif
 
@@ -79,15 +79,12 @@ template<typename ValueType,
          ValueType XorOut,
          ValueType Check>
 class Crc {
-    static_assert(std::is_integral<ValueType>::value
 #ifdef __SIZEOF_INT128__
-                      || std::is_same<ValueType, __uint128_t>::value
-#endif
-                  ,
+    static_assert(std::is_integral<ValueType>::value || std::is_same<ValueType, __uint128_t>::value,
                   "ValueType must be an integral");
-#ifdef __SIZEOF_INT128__
     static_assert(sizeof(ValueType) <= sizeof(__uint128_t), "ValueType size can not exceed 128 bit yet");
 #else
+    static_assert(std::is_integral<ValueType>::value, "ValueType must be an integral");
     static_assert(sizeof(ValueType) <= sizeof(uint64_t), "ValueType size can not exceed 64 bit yet");
 #endif
     static_assert(Width, "Width can not be a 0");
@@ -159,7 +156,7 @@ public:
     }
 
     void update(const void *begin, const void *end) noexcept {
-        if(!begin || !end) {
+        if(!begin) {
             return;
         }
 
