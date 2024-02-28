@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+from typing import List
+
 import requests
 from bs4 import BeautifulSoup as bSoup
 
@@ -130,8 +132,6 @@ class Algo(object):
         return self.actual_width != -1
 
     def str_test(self) -> str:
-        if self.actual_width == 128:
-            return f'    crc_test128({self.name});\n'
         return f'    crc_test({self.name}, {self.actual_width});\n'
 
     def str_md(self) -> str:
@@ -212,7 +212,7 @@ class Algo(object):
 
         return ret
 
-test_algos = []
+test_algos: List[Algo] = []
 
 resp = requests.get(URL, verify=False)
 resp.raise_for_status()
@@ -243,7 +243,7 @@ with open('include/crc/catalog.h', 'w+', encoding='utf-8', newline='\n') as f:
         f.write(str(algo))
 
     if flag128:
-        f.write('#endif // __SIZEOF_INT128__\n')
+        f.write('#endif\n')
 
     f.write(END)
 
@@ -266,11 +266,19 @@ TEST_END = r"""
 }
 """
 
+flag128 = False
 with open('test/crc_test.c', 'w+', encoding='utf-8', newline='\n') as f:
     f.write(TEST_BEGIN)
 
     for algo in test_algos:
+        if algo.actual_width == 128 and not flag128:
+            flag128 = True
+            f.write('\n#ifdef __SIZEOF_INT128__\n')
+
         f.write(algo.str_test())
+
+    if flag128:
+        f.write('#endif\n')
 
     f.write(TEST_END)
 
@@ -326,7 +334,7 @@ with open('include/crcxx/catalog.hpp', 'w+', encoding='utf-8', newline='\n') as 
         f.write(algo.str_cxx())
 
     if flag128:
-        f.write('#endif // __SIZEOF_INT128__\n')
+        f.write('#endif\n')
 
     f.write(CXX_END)
 
@@ -351,10 +359,18 @@ CXX_TEST_END = r"""
 }
 """
 
+flag128 = False
 with open('test/crcxx_test.cpp', 'w+', encoding='utf-8', newline='\n') as f:
     f.write(CXX_TEST_BEGIN)
 
     for algo in test_algos:
+        if algo.actual_width == 128 and not flag128:
+            flag128 = True
+            f.write('\n#ifdef __SIZEOF_INT128__\n')
+
         f.write(algo.str_test())
+
+    if flag128:
+        f.write('#endif\n')
 
     f.write(CXX_TEST_END)

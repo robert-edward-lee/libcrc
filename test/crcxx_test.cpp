@@ -118,7 +118,10 @@ int main(void) {
     crc_test(CRC64_REDIS, 64);
     crc_test(CRC64_WE, 64);
     crc_test(CRC64_XZ, 64);
-    crc_test128(CRC82_DARC);
+
+#ifdef __SIZEOF_INT128__
+    crc_test(CRC82_DARC, 128);
+#endif
 
     int percents = 100 * passed / (passed + errors);
     printf("[%d%%] tests passed, %d errors\n", percents, errors);

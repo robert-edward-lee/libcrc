@@ -12,7 +12,7 @@
 #include "crcxx/crc.hpp"
 
 char data[] = "123456789";
-Crc<CRC16_ARC> crc;
+CRC16_ARC crc;
 uint16_t value;
 
 // стандартное вычисление
@@ -31,7 +31,7 @@ value = crc(data, &data[9]);
 #include "crcxx/crc.hpp"
 
 char data[] = "123456789";
-Crc<CRC16_ARC> crc;
+CRC16_ARC crc;
 uint16_t value;
 
 for(int i = 0; i < sizeof(data); i++) {

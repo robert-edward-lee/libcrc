@@ -171,7 +171,7 @@ using CRC82_DARC              = Crc<__uint128_t, 82,
                                    true, true,
                                    (__uint128_t)0x00000 << 64 | 0x0000000000000000,
                                    (__uint128_t)0x09EA8 << 64 | 0x3F625023801FD612>;
-#endif // __SIZEOF_INT128__
+#endif
 } // namespace crc
 // clang-format on
 
