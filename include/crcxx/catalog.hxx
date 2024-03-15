@@ -3,12 +3,12 @@
     \brief <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm">Перечень</a> всех стандартных и общепринятых
     CRC алгоритмов шириной вплоть до 128 бит
 */
-#ifndef HXX_CRC_CATALOG
-#define HXX_CRC_CATALOG
+#ifndef HXX_CRCXX_CATALOG
+#define HXX_CRCXX_CATALOG
 
-#include "crc.hxx"
 // clang-format off
 namespace crc {
+template<typename ValueType, size_t Width, ValueType Poly, ValueType Init, bool RefIn, bool RefOut, ValueType XorOut, ValueType Check> class Crc;
 //                                ValueType  Width              Poly                Init  RefIn RefOut              XorOut               Check
 using CRC3_GSM                = Crc< uint8_t,  3,                0x3,                0x0, false, false,                0x7,                0x4>;
 using CRC3_ROHC               = Crc< uint8_t,  3,                0x3,                0x7,  true,  true,                0x0,                0x6>;
@@ -175,4 +175,4 @@ using CRC82_DARC              = Crc<__uint128_t, 82,
 } // namespace crc
 // clang-format on
 
-#endif // HXX_CRC_CATALOG
+#endif // HXX_CRCXX_CATALOG

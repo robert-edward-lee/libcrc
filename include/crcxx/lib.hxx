@@ -1,5 +1,5 @@
-#ifndef HXX_CRC
-#define HXX_CRC
+#ifndef HXX_CRCXX_LIB
+#define HXX_CRCXX_LIB
 
 #include <memory>
 
@@ -211,4 +211,4 @@ private:
 
 } // namespace crc
 
-#endif // HXX_CRC
+#endif // HXX_CRCXX_LIB

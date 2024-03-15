@@ -1,5 +1,6 @@
 #include "crcxx_test.hxx"
 #include "crcxx/catalog.hxx"
+#include "crcxx/lib.hxx"
 
 using namespace crc;
 
