@@ -1,12 +1,12 @@
 /**
-    \file catalog.hpp
+    \file catalog.hxx
     \brief <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm">Перечень</a> всех стандартных и общепринятых
     CRC алгоритмов шириной вплоть до 128 бит
 */
-#ifndef HPP_CRC_CATALOG
-#define HPP_CRC_CATALOG
+#ifndef HXX_CRC_CATALOG
+#define HXX_CRC_CATALOG
 
-#include "crc.hpp"
+#include "crc.hxx"
 // clang-format off
 namespace crc {
 //                                ValueType  Width              Poly                Init  RefIn RefOut              XorOut               Check
@@ -175,4 +175,4 @@ using CRC82_DARC              = Crc<__uint128_t, 82,
 } // namespace crc
 // clang-format on
 
-#endif // HPP_CRC_CATALOG
+#endif // HXX_CRC_CATALOG

@@ -1,5 +1,5 @@
-#ifndef HPP_CRC
-#define HPP_CRC
+#ifndef HXX_CRC
+#define HXX_CRC
 
 #include <memory>
 
@@ -211,4 +211,4 @@ private:
 
 } // namespace crc
 
-#endif // HPP_CRC
+#endif // HXX_CRC

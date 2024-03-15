@@ -85,4 +85,4 @@ format:
 		-i $(wildcard src/*.c) $(wildcard src/*.h) \
 		$(wildcard test/*.c) $(wildcard test/*.h) \
 		$(wildcard include/crc/*.h) \
-		$(wildcard include/crcxx/*.hpp) $(wildcard test/*.hpp) $(wildcard test/*.cpp)
+		$(wildcard include/crcxx/*.hxx) $(wildcard test/*.hxx) $(wildcard test/*.cxx)

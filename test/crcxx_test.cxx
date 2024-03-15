@@ -1,5 +1,5 @@
-#include "crcxx_test.hpp"
-#include "crcxx/catalog.hpp"
+#include "crcxx_test.hxx"
+#include "crcxx/catalog.hxx"
 
 using namespace crc;
 

@@ -1,5 +1,5 @@
-#ifndef HPP_CRC_TEST
-#define HPP_CRC_TEST
+#ifndef HXX_CRC_TEST
+#define HXX_CRC_TEST
 
 #include <cinttypes>
 #include <iostream>
@@ -31,4 +31,4 @@ template<typename T> constexpr void print_hex(T a) {
         }                                                                                                              \
     }
 
-#endif // HPP_CRC_TEST
+#endif // HXX_CRC_TEST

@@ -302,14 +302,14 @@ with open('CATALOG.md', 'w+', encoding='utf-8', newline='\n') as f:
 # create cxx lib
 
 CXX_BEGIN = rf"""/**
-    \file catalog.hpp
+    \file catalog.hxx
     \brief <a href="{URL}">Перечень</a> всех стандартных и общепринятых
     CRC алгоритмов шириной вплоть до 128 бит
 */
-#ifndef HPP_CRC_CATALOG
-#define HPP_CRC_CATALOG
+#ifndef HXX_CRC_CATALOG
+#define HXX_CRC_CATALOG
 
-#include "crc.hpp"
+#include "crc.hxx"
 // clang-format off
 namespace crc {{
 //                                ValueType  Width              Poly                Init  RefIn RefOut              XorOut               Check
@@ -318,12 +318,12 @@ namespace crc {{
 CXX_END = r"""} // namespace crc
 // clang-format on
 
-#endif // HPP_CRC_CATALOG
+#endif // HXX_CRC_CATALOG
 """
 
 
 flag128 = False
-with open('include/crcxx/catalog.hpp', 'w+', encoding='utf-8', newline='\n') as f:
+with open('include/crcxx/catalog.hxx', 'w+', encoding='utf-8', newline='\n') as f:
     f.write(CXX_BEGIN)
 
     for algo in test_algos:
@@ -338,10 +338,10 @@ with open('include/crcxx/catalog.hpp', 'w+', encoding='utf-8', newline='\n') as 
 
     f.write(CXX_END)
 
-# CREATE crc_test.cpp
+# CREATE crc_test.cxx
 
-CXX_TEST_BEGIN = r"""#include "crcxx_test.hpp"
-#include "crcxx/catalog.hpp"
+CXX_TEST_BEGIN = r"""#include "crcxx_test.hxx"
+#include "crcxx/catalog.hxx"
 
 using namespace crc;
 
@@ -360,7 +360,7 @@ CXX_TEST_END = r"""
 """
 
 flag128 = False
-with open('test/crcxx_test.cpp', 'w+', encoding='utf-8', newline='\n') as f:
+with open('test/crcxx_test.cxx', 'w+', encoding='utf-8', newline='\n') as f:
     f.write(CXX_TEST_BEGIN)
 
     for algo in test_algos:

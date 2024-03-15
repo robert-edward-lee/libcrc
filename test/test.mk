@@ -10,5 +10,5 @@ CXX = g++
 CXXFLAGS = -Wall -Wextra -pedantic -Iinclude -std=c++11
 
 testxx: $(BUILDDIR)
-	@$(CXX) $(CXXFLAGS) $(CURDIR)/test/crcxx_test.cpp -o $(CURDIR)/$(BUILDDIR)/$@
+	@$(CXX) $(CXXFLAGS) $(CURDIR)/test/crcxx_test.cxx -o $(CURDIR)/$(BUILDDIR)/$@
 	@$(CURDIR)/$(BUILDDIR)/$@
