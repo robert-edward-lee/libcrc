@@ -4,7 +4,7 @@
 #include <cinttypes>
 #include <iostream>
 
-const char check[] = "123456789";
+std::string check = "123456789";
 
 template<typename T> constexpr void print_hex(T a) {
     const uint8_t *as_u8 = reinterpret_cast<const uint8_t *>(&a);
@@ -17,7 +17,7 @@ template<typename T> constexpr void print_hex(T a) {
 #define crc_test(__algo, __)                                                                                           \
     {                                                                                                                  \
         __algo crc;                                                                                                    \
-        __algo::value_t value = crc(check, &check[9]);                                                                 \
+        auto value = crc(check.c_str(), check.size());                                                                 \
         if(__algo::check != value) {                                                                                   \
             printf("Invalid CRC check for " #__algo ": ");                                                             \
             print_hex(value);                                                                                          \

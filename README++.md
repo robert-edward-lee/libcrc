@@ -7,12 +7,12 @@
 
 ### Пример использования
 #### Вычисление суммы для блока памяти
-```cpp
+```cxx
 #include "crcxx/catalog.hpp"
 #include "crcxx/crc.hpp"
 
 char data[] = "123456789";
-CRC16_ARC crc;
+crc::CRC16_ARC crc;
 uint16_t value;
 
 // стандартное вычисление
@@ -26,12 +26,12 @@ value = crc(data, &data[9]);
 ```
 
 #### Итеративного вычисления
-```cpp
+```cxx
 #include "crcxx/catalog.hpp"
 #include "crcxx/crc.hpp"
 
 char data[] = "123456789";
-CRC16_ARC crc;
+crc::CRC16_ARC crc;
 uint16_t value;
 
 for(int i = 0; i < sizeof(data); i++) {
@@ -41,10 +41,10 @@ value = crc.finalize();
 ```
 
 #### Использование нестандартного алгоритма
-```c
+```cxx
 #include "crcxx/crc.hpp"
 
 char data[] = "123456789";
-Crc<ValueType, Width, Poly, Init, RefIn, RefOut, XorOut, Check> crc;
+crc::Crc<ValueType, Width, Poly, Init, RefIn, RefOut, XorOut, Check> crc;
 ValueType value = crc.checksum(data, sizeof(data) - 1);
 ```

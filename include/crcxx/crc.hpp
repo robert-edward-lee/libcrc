@@ -66,9 +66,9 @@ static constexpr_14 __uint128_t rev(__uint128_t x) noexcept {
 }
 #endif
 
-template<typename T> struct is_byte {
-    static constexpr bool value = std::is_same<T, int8_t>::value || std::is_same<T, uint8_t>::value;
-};
+template<typename> struct is_byte: std::false_type {};
+template<> struct is_byte<int8_t>: std::true_type {};
+template<> struct is_byte<uint8_t>: std::true_type {};
 
 template<typename ValueType,
          size_t Width,
@@ -91,24 +91,24 @@ class Crc {
     static_assert(Width <= 8 * sizeof(ValueType), "Crc Width can not exceed the bitwidth of ValueType");
 
 public:
-    using value_t = ValueType;
+    using type = ValueType;
 
-    static constexpr size_t real_width = 8 * sizeof(value_t);
+    static constexpr size_t real_width = 8 * sizeof(type);
     static constexpr size_t width = Width;
-    static constexpr value_t poly = Poly;
-    static constexpr value_t init = Init;
+    static constexpr type poly = Poly;
+    static constexpr type init = Init;
     static constexpr bool refin = RefIn;
     static constexpr bool refout = RefOut;
-    static constexpr value_t xorout = XorOut;
-    static constexpr value_t check = Check;
+    static constexpr type xorout = XorOut;
+    static constexpr type check = Check;
 
-    Crc(void) noexcept: m_value(init_value(init)), m_table(new value_t[256]) {
+    Crc(void): value(init_value(init)), table(new type[256]) {
         table_init();
     }
 
-    value_t finalize(void) noexcept {
-        value_t ret = m_value;
-        m_value = init_value(init);
+    type finalize(void) noexcept {
+        type ret = value;
+        value = init_value(init);
 
         if(refin != refout) {
             ret = rev(ret);
@@ -123,18 +123,19 @@ public:
 
     template<typename T> constexpr_14 typename std::enable_if<is_byte<T>::value>::type update(T byte) noexcept {
         if(real_width == 8) {
-            m_value = m_table[m_value ^ byte];
+            value = table[value ^ byte];
         } else if(refin) {
-            m_value = m_table[(m_value & 0xFF) ^ byte] ^ (m_value >> 8);
+            value = table[(value & 0xFF) ^ byte] ^ (value >> 8);
         } else {
-            m_value = m_table[(m_value >> (real_width - 8)) ^ byte] ^ (m_value << 8);
+            value = table[(value >> (real_width - 8)) ^ byte] ^ (value << 8);
         }
     }
-    template<typename T> constexpr_14 typename std::enable_if<is_byte<T>::value>::type checksum(T byte) noexcept {
+    template<typename T> constexpr_14 typename std::enable_if<is_byte<T>::value, type>::type checksum(T byte) noexcept {
         update(byte);
         return finalize();
     }
-    template<typename T> constexpr_14 typename std::enable_if<is_byte<T>::value>::type operator()(T byte) noexcept {
+    template<typename T>
+    constexpr_14 typename std::enable_if<is_byte<T>::value, type>::type operator()(T byte) noexcept {
         return checksum(byte);
     }
 
@@ -147,11 +148,11 @@ public:
             update(reinterpret_cast<const uint8_t *>(data)[i]);
         }
     }
-    constexpr_14 value_t checksum(const void *data, size_t size) noexcept {
+    constexpr_14 type checksum(const void *data, size_t size) noexcept {
         update(data, size);
         return finalize();
     }
-    constexpr_14 value_t operator()(const void *data, size_t size) noexcept {
+    constexpr_14 type operator()(const void *data, size_t size) noexcept {
         return checksum(data, size);
     }
 
@@ -164,11 +165,11 @@ public:
             update(*byte);
         }
     }
-    constexpr_14 value_t checksum(const void *begin, const void *end) noexcept {
+    constexpr_14 type checksum(const void *begin, const void *end) noexcept {
         update(begin, end);
         return finalize();
     }
-    constexpr_14 value_t operator()(const void *begin, const void *end) noexcept {
+    constexpr_14 type operator()(const void *begin, const void *end) noexcept {
         return checksum(begin, end);
     }
 
@@ -176,11 +177,11 @@ public:
     Crc &operator=(const Crc &) = delete;
 
 private:
-    static constexpr value_t init_value(value_t init) noexcept {
+    static constexpr type init_value(type init) noexcept {
         return refin ? rev(init) >> (real_width - width) : init << (real_width - width);
     }
 
-    static constexpr_14 value_t crc(value_t value) noexcept {
+    static constexpr_14 type crc(type value) noexcept {
         int i = 8;
 
         if(refin) {
@@ -200,12 +201,12 @@ private:
     void table_init(void) noexcept {
         int i = 256;
         while(i--) {
-            m_table[i] = crc(i);
+            table[i] = crc(i);
         }
     }
 
-    value_t m_value;
-    std::unique_ptr<value_t[]> m_table;
+    type value;
+    std::unique_ptr<type[]> table;
 };
 
 } // namespace crc
