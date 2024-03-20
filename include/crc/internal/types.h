@@ -1,7 +1,6 @@
 #ifndef H_CRC_INTERNAL_TYPES
 #define H_CRC_INTERNAL_TYPES
 
-#include <stdbool.h>
 #include <stdint.h>
 
 #include "defines.h"

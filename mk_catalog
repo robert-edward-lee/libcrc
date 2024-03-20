@@ -16,7 +16,7 @@ BEGIN = rf"""/**
 #include "crc/internal/defines.h"
 #include "crc/internal/types.h"
 /* clang-format off */
-/*                                               Width              Poly                Init  RefIn  RefOut              XorOut              Check */
+/*                                               Width              Poly              Init RefIn RefOut         XorOut               Check */
 """
 
 END = r"""/* clang-format on */
@@ -104,7 +104,7 @@ class Algo(object):
             ret += f' 0x{self.init & mask:08X},\\\n'
 
             ret += f'{' ':55}'
-            ret += f' {str(self.refin).lower()}, {str(self.refout).lower()},\\\n'
+            ret += f' {int(self.refin)}, {int(self.refout)},\\\n'
 
             ret += f'{' ':55}'
             ret += f' (uint128_t)0x{self.xorout >> 96:08X} << 96 |'
@@ -126,8 +126,8 @@ class Algo(object):
             ret += f' (uint64_t)0x{self.init >> 32:08X} << 32 |'
             ret += f' 0x{self.init & mask:08X},\\\n'
 
-            ret += f'{' ':{39 + self.refin + self.refout}}'
-            ret += f' {str(self.refin).lower()}, {str(self.refout).lower()},'
+            ret += f'{' ':47}'
+            ret += f' {int(self.refin)}, {int(self.refout)},'
 
             ret += f' (uint64_t)0x{self.xorout >> 32:08X} << 32 |'
             ret += f' 0x{self.xorout & mask:08X},'
@@ -144,8 +144,8 @@ class Algo(object):
             ret += f'{' ':>{17 - align}}'
             ret += f'0x{self.init:0{align}X},'
 
-            ret += f'{str(self.refin).lower():>6},'
-            ret += f'{str(self.refout).lower():>6},'
+            ret += f' {int(self.refin)},'
+            ret += f' {int(self.refout)},'
 
             ret += f'{' ':>{17 - align}}'
             ret += f'0x{self.xorout:0{align}X},'
