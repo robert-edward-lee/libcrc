@@ -12,10 +12,11 @@
 
 #define crc_print_table(__algo, __width)                                                                               \
     {                                                                                                                  \
+        int i;                                                                                                         \
         CONCAT(Crc, __width) crc;                                                                                      \
         CONCAT(CONCAT(crc, __width), _init)(&crc, &__algo);                                                            \
         printf("static const uint" STR(__width) "_t CRC_TABLE[256] = {\n");                                            \
-        for(int i = 0; i < 256; i++) {                                                                                 \
+        for(i = 0; i < 256; i++) {                                                                                     \
             printf("%s0x%0*" CONCAT(PRIX, __width) ",%s",                                                              \
                    i % 8 ? "" : "    ",                                                                                \
                    __width / 4,                                                                                        \
