@@ -13,8 +13,8 @@ BEGIN = rf"""/**
 */
 #ifndef H_CRC_CATALOG
 #define H_CRC_CATALOG
-
-#include <stdbool.h>
+#include "crc/internal/defines.h"
+#include "crc/internal/types.h"
 /* clang-format off */
 /*                                               Width              Poly                Init  RefIn  RefOut              XorOut              Check */
 """
@@ -297,7 +297,7 @@ with open('include/crc/catalog.h', 'w+', encoding='utf-8', newline='\n') as f:
     for algo in test_algos:
         if algo.actual_width == 128 and not flag128:
             flag128 = True
-            f.write('\n#ifdef __SIZEOF_INT128__\n')
+            f.write('\n#if CRC_HAS_128BIT_ALGO\n')
 
         f.write(algo.str_c())
 
@@ -333,7 +333,7 @@ with open('test/crc_test.c', 'w+', encoding='utf-8', newline='\n') as f:
     for algo in test_algos:
         if algo.actual_width == 128 and not flag128:
             flag128 = True
-            f.write('\n#ifdef __SIZEOF_INT128__\n')
+            f.write('\n#if CRC_HAS_128BIT_ALGO\n')
 
         f.write(algo.str_test())
 

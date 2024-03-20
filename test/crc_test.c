@@ -117,7 +117,7 @@ int main(void) {
     crc_test(CRC64_WE, 64);
     crc_test(CRC64_XZ, 64);
 
-#ifdef __SIZEOF_INT128__
+#if CRC_HAS_128BIT_ALGO
     crc_test(CRC82_DARC, 128);
 #endif
 

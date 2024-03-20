@@ -8,6 +8,9 @@
 #include <stddef.h>
 #include <stdint.h>
 
+#include "crc/internal/defines.h"
+#include "crc/internal/types.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -262,26 +265,26 @@ uint32_t crc32_checksum(Crc32 *crc, const void *bytes, size_t size);
 */
 uint64_t crc64_checksum(Crc64 *crc, const void *bytes, size_t size);
 
-#ifdef __SIZEOF_INT128__
+#if CRC_HAS_128BIT_ALGO
 /**
     \brief Спецификация алгоритма расчёта циклического избыточного кода ширины не более 128 бит
 */
 typedef struct {
     int width; /**< Степень порождающего многочлена */
-    __uint128_t poly; /**< Порождающий многочлен */
-    __uint128_t init; /**< Стартовые данные */
+    uint128_t poly; /**< Порождающий многочлен */
+    uint128_t init; /**< Стартовые данные */
     int refin; /**< Начало и направление вычислений */
     int refout; /**< Инвертируется ли порядок битов при складывании по модулю 2 полученного результата */
-    __uint128_t xorout; /**< Число, с которым складывается по модулю 2 полученный результат */
-    __uint128_t check; /**< Значение CRC для строки «123456789» */
+    uint128_t xorout; /**< Число, с которым складывается по модулю 2 полученный результат */
+    uint128_t check; /**< Значение CRC для строки «123456789» */
 } Crc128BasedAlgo;
 /**
     \brief "Объект" для расчёта контрольной суммы ширины не более 128 бит
 */
 typedef struct {
     Crc128BasedAlgo algo; /**< Алгоритм вычисления */
-    const __uint128_t *table; /**< Таблица для вычисления */
-    __uint128_t value; /**< Промежуточное значение контрольной суммы */
+    const uint128_t *table; /**< Таблица для вычисления */
+    uint128_t value; /**< Промежуточное значение контрольной суммы */
 } Crc128;
 
 /**
@@ -290,7 +293,7 @@ typedef struct {
     \param[in] table Предварительно выделенная память размером 8x256 байт для хранения таблицы расчёта
     \brief Инициализация "объекта" \ref Crc128
 */
-void crc128_init_static(Crc128 *crc, const Crc128BasedAlgo *algo, __uint128_t *table);
+void crc128_init_static(Crc128 *crc, const Crc128BasedAlgo *algo, uint128_t *table);
 /**
     \param[in,out] crc Предварительно созданный экземпляр \ref Crc128
     \param[in] algo Каталожный алгоритм из файла crc/catalog.h или свой собственный
@@ -317,7 +320,7 @@ void crc128_update(Crc128 *crc, const void *bytes, size_t size);
     помощью \ref crc128_update. Также происходит очистка значения \ref Crc128::value и "объект" crc можно использовать
    для нового вычисления
 */
-__uint128_t crc128_finalize(Crc128 *crc);
+uint128_t crc128_finalize(Crc128 *crc);
 /**
     \param[in,out] crc Экземпляр \ref Crc128
     \param[in] bytes Данные для вычисления
@@ -325,15 +328,15 @@ __uint128_t crc128_finalize(Crc128 *crc);
     \return Контрольная сумма
     \brief Вычисление контрольной суммы "за один присест"
 */
-__uint128_t crc128_checksum(Crc128 *crc, const void *bytes, size_t size);
-#endif /* __SIZEOF_INT128__ */
+uint128_t crc128_checksum(Crc128 *crc, const void *bytes, size_t size);
+#endif /* CRC_HAS_128BIT_ALGO */
 
 #ifdef __cplusplus
 }
 #endif
 /* Generics C11 support */
-#if defined(__STDC_VERSION__) && __STDC_VERSION__ >= 201112L
-#ifdef __SIZEOF_INT128__
+#if CRC_STDC_VERSION_CHECK(201112L)
+#if CRC_HAS_128BIT_ALGO
 /**
     \param[in,out] crc Предварительно созданный экземпляр \ref Crc8, \ref Crc16, \ref Crc32 или \ref Crc64
     \param[in] algo Каталожный алгоритм из файла crc/catalog.h или свой собственный
@@ -421,7 +424,7 @@ __uint128_t crc128_checksum(Crc128 *crc, const void *bytes, size_t size);
         Crc32 *: crc32_checksum,                                                                                       \
         Crc64 *: crc64_checksum,                                                                                       \
         Crc128 *: crc128_checksum)(crc, bytes, size)
-#else /* __SIZEOF_INT128__ */
+#else /* CRC_HAS_128BIT_ALGO */
 /**
     \param[in,out] crc Предварительно созданный экземпляр \ref Crc8, \ref Crc16, \ref Crc32 или \ref Crc64
     \param[in] algo Каталожный алгоритм из файла crc/catalog.h или свой собственный
@@ -489,7 +492,7 @@ __uint128_t crc128_checksum(Crc128 *crc, const void *bytes, size_t size);
         crc,                                                                                                           \
         bytes,                                                                                                         \
         size)
-#endif /* __SIZEOF_INT128__ */
+#endif /* CRC_HAS_128BIT_ALGO */
 #endif /* Generics C11 support */
 
 #endif /* H_CRC_LIB */

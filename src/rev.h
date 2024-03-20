@@ -2,23 +2,18 @@
     \file rev.h
     \brief Утилита для отзеркаливания битов в слове
 */
-#ifndef H_REV
-#define H_REV
+#ifndef H_CRC_REV
+#define H_CRC_REV
 
-#include <stdint.h>
-
-#ifdef __has_builtin
-#if defined(__clang__) && __has_builtin(__builtin_convertvector)
-#define __has_builtin_bitreverse
-#endif
-#endif
+#include "crc/internal/defines.h"
+#include "crc/internal/types.h"
 
 /**
     \param x Слово шириной 8 бит
     \return Отзеркаленное слово
 */
-static uint8_t rev8(uint8_t x) {
-#ifdef __has_builtin_bitreverse
+static CRC_INLINE uint8_t rev8(uint8_t x) {
+#if CRC_HAS_BUILTIN_BITREVERSE
     return __builtin_bitreverse8(x);
 #else
     x = ((x & 0x55) << 1) | ((x & 0xAA) >> 1);
@@ -30,8 +25,8 @@ static uint8_t rev8(uint8_t x) {
     \param x Слово шириной 16 бит
     \return Отзеркаленное слово
 */
-static uint16_t rev16(uint16_t x) {
-#ifdef __has_builtin_bitreverse
+static CRC_INLINE uint16_t rev16(uint16_t x) {
+#if CRC_HAS_BUILTIN_BITREVERSE
     return __builtin_bitreverse16(x);
 #else
     x = ((x & 0x5555) << 1) | ((x & 0xAAAA) >> 1);
@@ -44,8 +39,8 @@ static uint16_t rev16(uint16_t x) {
     \param x Слово шириной 32 бит
     \return Отзеркаленное слово
 */
-static uint32_t rev32(uint32_t x) {
-#ifdef __has_builtin_bitreverse
+static CRC_INLINE uint32_t rev32(uint32_t x) {
+#if CRC_HAS_BUILTIN_BITREVERSE
     return __builtin_bitreverse32(x);
 #else
     x = ((x & 0x55555555) << 1) | ((x & 0xAAAAAAAA) >> 1);
@@ -59,27 +54,28 @@ static uint32_t rev32(uint32_t x) {
     \param x Слово шириной 64 бит
     \return Отзеркаленное слово
 */
-static uint64_t rev64(uint64_t x) {
-#ifdef __has_builtin_bitreverse
+static CRC_INLINE uint64_t rev64(uint64_t x) {
+#if CRC_HAS_BUILTIN_BITREVERSE
     return __builtin_bitreverse64(x);
 #else
-    x = ((x & 0x5555555555555555) << 1) | ((x & 0xAAAAAAAAAAAAAAAA) >> 1);
-    x = ((x & 0x3333333333333333) << 2) | ((x & 0xCCCCCCCCCCCCCCCC) >> 2);
-    x = ((x & 0x0F0F0F0F0F0F0F0F) << 4) | ((x & 0xF0F0F0F0F0F0F0F0) >> 4);
-    x = ((x & 0x00FF00FF00FF00FF) << 8) | ((x & 0xFF00FF00FF00FF00) >> 8);
-    x = ((x & 0x0000FFFF0000FFFF) << 16) | ((x & 0xFFFF0000FFFF0000) >> 16);
+    x = ((x & ((uint64_t)0x55555555 << 32 | 0x55555555)) << 1) | ((x & ((uint64_t)0xAAAAAAAA << 32 | 0xAAAAAAAA)) >> 1);
+    x = ((x & ((uint64_t)0x33333333 << 32 | 0x33333333)) << 2) | ((x & ((uint64_t)0xCCCCCCCC << 32 | 0xCCCCCCCC)) >> 2);
+    x = ((x & ((uint64_t)0x0F0F0F0F << 32 | 0x0F0F0F0F)) << 4) | ((x & ((uint64_t)0xF0F0F0F0 << 32 | 0xF0F0F0F0)) >> 4);
+    x = ((x & ((uint64_t)0x00FF00FF << 32 | 0x00FF00FF)) << 8) | ((x & ((uint64_t)0xFF00FF00 << 32 | 0xFF00FF00)) >> 8);
+    x = ((x & ((uint64_t)0x0000FFFF << 32 | 0x0000FFFF)) << 16)
+      | ((x & ((uint64_t)0xFFFF0000 << 32 | 0xFFFF0000)) >> 16);
     return x << 32 | x >> 32;
 #endif
 }
 
-#ifdef __SIZEOF_INT128__
+#if CRC_HAS_128BIT_ALGO
 /**
     \param x Слово шириной 128 бит
     \return Отзеркаленное слово
 */
-static __uint128_t rev128(__uint128_t x) {
-    return (__uint128_t)rev64(x) << 64 | rev64(x >> 64);
+static CRC_INLINE uint128_t rev128(uint128_t x) {
+    return (uint128_t)rev64(x) << 64 | rev64(x >> 64);
 }
-#endif /* __SIZEOF_INT128__ */
+#endif /* CRC_HAS_128BIT_ALGO */
 
-#endif /* H_REV */
+#endif /* H_CRC_REV */

@@ -25,25 +25,25 @@
         printf("};\n");                                                                                                \
     }
 
-#ifdef __SIZEOF_INT128__
+#if CRC_HAS_128BIT_ALGO
 #define crc128_print_table(__algo)                                                                                     \
     {                                                                                                                  \
         Crc128 crc;                                                                                                    \
         crc128_init(&crc, &__algo);                                                                                    \
-        printf("static const __uint128_t CRC_TABLE[256] = {\n");                                                       \
+        printf("static const uint128_t CRC_TABLE[256] = {\n");                                                         \
         for(int i = 0; i < 256; i++) {                                                                                 \
-            printf("    (__uint128_t)0x%016" PRIX64 " << 64 | 0x%016" PRIX64 ",\n",                                    \
+            printf("    (uint128_t)0x%016" PRIX64 " << 64 | 0x%016" PRIX64 ",\n",                                      \
                    (uint64_t)(crc.table[i] >> 64),                                                                     \
                    (uint64_t)crc.table[i]);                                                                            \
         }                                                                                                              \
         printf("};\n");                                                                                                \
     }
-#endif /* __SIZEOF_INT128__ */
+#endif /* CRC_HAS_128BIT_ALGO */
 
 int main(void) {
 #if CRC_WIDTH < 128
     crc_print_table(CRC_NAME, CRC_WIDTH);
-#elif __SIZEOF_INT128__
+#elif CRC_HAS_128BIT_ALGO
     crc128_print_table(CRC_NAME);
 #else
 #error "The 128-bit wide Crc algorithm is not supported"

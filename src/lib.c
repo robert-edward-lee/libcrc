@@ -6,6 +6,8 @@
 
 #include <stdlib.h>
 
+#include "crc/internal/defines.h"
+#include "crc/internal/types.h"
 #include "rev.h"
 
 /**
@@ -506,7 +508,7 @@ uint64_t crc64_checksum(Crc64 *crc, const void *bytes, size_t size) {
     return crc64_finalize(crc);
 }
 
-#ifdef __SIZEOF_INT128__
+#if CRC_HAS_128BIT_ALGO
 /**
     \param poly Порождающий многочлен
     \param refin Начало и направление вычислений
@@ -514,7 +516,7 @@ uint64_t crc64_checksum(Crc64 *crc, const void *bytes, size_t size) {
     \return Контрольную сумму
     \brief Ручное вычисление контрольной суммы. Необходимо для заполнения таблицы в \ref crc128_init_value
 */
-static __uint128_t crc128(__uint128_t poly, int refin, __uint128_t init) {
+static uint128_t crc128(uint128_t poly, int refin, uint128_t init) {
     int i = 8;
 
     if(refin) {
@@ -537,7 +539,7 @@ static __uint128_t crc128(__uint128_t poly, int refin, __uint128_t init) {
     \param refin Начало и направление вычислений
     \brief Инициализация таблицы
 */
-static void crc128_table_init(__uint128_t *table, int width, __uint128_t poly, int refin) {
+static void crc128_table_init(uint128_t *table, int width, uint128_t poly, int refin) {
     int i = 256;
 
     if(!table) {
@@ -562,11 +564,11 @@ static void crc128_table_init(__uint128_t *table, int width, __uint128_t poly, i
     \return Значение контрольной суммы с которой будет начинаться вычисление \ref Crc128::value
     \brief Инициализация \ref Crc128::value
 */
-static __uint128_t crc128_init_value(__uint128_t init, int width, int refin) {
+static uint128_t crc128_init_value(uint128_t init, int width, int refin) {
     return refin ? rev128(init) >> (8 * sizeof(init) - width) : init << (8 * sizeof(init) - width);
 }
 
-void crc128_init_static(Crc128 *crc, const Crc128BasedAlgo *algo, __uint128_t *table) {
+void crc128_init_static(Crc128 *crc, const Crc128BasedAlgo *algo, uint128_t *table) {
     if(!crc || !algo || !table) {
         return;
     }
@@ -577,7 +579,7 @@ void crc128_init_static(Crc128 *crc, const Crc128BasedAlgo *algo, __uint128_t *t
 }
 
 void crc128_init(Crc128 *crc, const Crc128BasedAlgo *algo) {
-    __uint128_t *table;
+    uint128_t *table;
 
     if(!crc || !algo) {
         return;
@@ -614,8 +616,8 @@ void crc128_update(Crc128 *crc, const void *bytes, size_t size) {
     }
 }
 
-__uint128_t crc128_finalize(Crc128 *crc) {
-    __uint128_t ret;
+uint128_t crc128_finalize(Crc128 *crc) {
+    uint128_t ret;
 
     ret = crc->value; /* сохраняем значение CRC и восстанавливаем начальное */
     crc->value = crc128_init_value(crc->algo.init, crc->algo.width, crc->algo.refin);
@@ -629,8 +631,8 @@ __uint128_t crc128_finalize(Crc128 *crc) {
     return ret ^ crc->algo.xorout;
 }
 
-__uint128_t crc128_checksum(Crc128 *crc, const void *bytes, size_t size) {
+uint128_t crc128_checksum(Crc128 *crc, const void *bytes, size_t size) {
     crc128_update(crc, bytes, size);
     return crc128_finalize(crc);
 }
-#endif /* __SIZEOF_INT128__ */
+#endif /* CRC_HAS_128BIT_ALGO */

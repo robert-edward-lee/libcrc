@@ -5,8 +5,8 @@
 */
 #ifndef H_CRC_CATALOG
 #define H_CRC_CATALOG
-
-#include <stdbool.h>
+#include "crc/internal/defines.h"
+#include "crc/internal/types.h"
 /* clang-format off */
 /*                                               Width              Poly                Init  RefIn  RefOut              XorOut              Check */
 #define CRC3_GSM                (( Crc8BasedAlgo){ 3,                0x3,                0x0, false, false,                0x7,                0x4})
@@ -170,7 +170,7 @@
                                           true, true, (uint64_t)0xFFFFFFFF << 32 | 0xFFFFFFFF, (uint64_t)0x995DC9BB << 32 | 0xDF1939FA})
 #define CRC64_GO_ECMA           CRC64_XZ
 
-#ifdef __SIZEOF_INT128__
+#if CRC_HAS_128BIT_ALGO
 #define CRC82_DARC              ((Crc128BasedAlgo){ 82, (uint128_t)0x00000000 << 96 | (uint128_t)0x0000308C << 64 | (uint128_t)0x01110114 << 32 | 0x01440411,\
                                                         (uint128_t)0x00000000 << 96 | (uint128_t)0x00000000 << 64 | (uint128_t)0x00000000 << 32 | 0x00000000,\
                                                         true, true,\

@@ -9,10 +9,6 @@
 
 const char check[9] = "123456789";
 
-#ifdef __SIZEOF_INT128__
-typedef __uint128_t uint128_t;
-#endif
-
 #define print_hex(a)                                                                                                   \
     {                                                                                                                  \
         int i;                                                                                                         \
