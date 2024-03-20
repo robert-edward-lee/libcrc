@@ -22,7 +22,7 @@ template<> struct is_valid_crc_type_helper<uint8_t>: std::true_type {};
 template<> struct is_valid_crc_type_helper<uint16_t>: std::true_type {};
 template<> struct is_valid_crc_type_helper<uint32_t>: std::true_type {};
 template<> struct is_valid_crc_type_helper<uint64_t>: std::true_type {};
-#ifdef __SIZEOF_INT128__
+#if CRCXX_HAS_128BIT_ALGO
 template<> struct is_valid_crc_type_helper<__uint128_t>: std::true_type {};
 #endif
 template<typename T> struct is_valid_crc_type: is_valid_crc_type_helper<typename std::remove_cv<T>::type> {};
@@ -66,7 +66,7 @@ template<> struct is_valid_crc_type_helper<uint8_t>: true_type {};
 template<> struct is_valid_crc_type_helper<uint16_t>: true_type {};
 template<> struct is_valid_crc_type_helper<uint32_t>: true_type {};
 template<> struct is_valid_crc_type_helper<uint64_t>: true_type {};
-#ifdef __SIZEOF_INT128__
+#if CRCXX_HAS_128BIT_ALGO
 template<> struct is_valid_crc_type_helper<__uint128_t>: true_type {};
 #endif
 template<typename T> struct is_valid_crc_type: is_valid_crc_type_helper<typename remove_cv<T>::type> {};

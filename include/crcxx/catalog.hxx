@@ -6,6 +6,8 @@
 #ifndef HXX_CRCXX_CATALOG
 #define HXX_CRCXX_CATALOG
 #include <stdint.h>
+
+#include "detail/defines.hxx"
 // clang-format off
 namespace crc {
 template<typename ValueType, size_t Width, ValueType Poly, ValueType Init, bool RefIn, bool RefOut, ValueType XorOut, ValueType Check> class Crc;
@@ -164,7 +166,7 @@ typedef Crc<uint64_t, 64, 0x42F0E1EBA9EA3693, 0xFFFFFFFFFFFFFFFF, false, false, 
 typedef Crc<uint64_t, 64, 0x42F0E1EBA9EA3693, 0xFFFFFFFFFFFFFFFF,  true,  true, 0xFFFFFFFFFFFFFFFF, 0x995DC9BBDF1939FA> CRC64_XZ;
 typedef CRC64_XZ                                                                                                        CRC64_GO_ECMA;
 
-#ifdef __SIZEOF_INT128__
+#if CRCXX_HAS_128BIT_ALGO
 typedef Crc<__uint128_t, 82, (__uint128_t)0x0308C << 64 | 0x0111011401440411,
             (__uint128_t)0x00000 << 64 | 0x0000000000000000, true, true,
             (__uint128_t)0x00000 << 64 | 0x0000000000000000,

@@ -11,7 +11,7 @@
 
 namespace crc { namespace detail {
 static CRCXX_CONSTEXPR_14 uint8_t rev(uint8_t x) CRCXX_NOEXCEPT {
-#ifdef CRCXX_HAS_BUILTIN_BITREVERSE
+#if CRCXX_HAS_BUILTIN_BITREVERSE
     return __builtin_bitreverse8(x);
 #else
     x = ((x & 0x55) << 1) | ((x & 0xAA) >> 1);
@@ -20,7 +20,7 @@ static CRCXX_CONSTEXPR_14 uint8_t rev(uint8_t x) CRCXX_NOEXCEPT {
 #endif
 }
 static CRCXX_CONSTEXPR_14 uint16_t rev(uint16_t x) CRCXX_NOEXCEPT {
-#ifdef CRCXX_HAS_BUILTIN_BITREVERSE
+#if CRCXX_HAS_BUILTIN_BITREVERSE
     return __builtin_bitreverse16(x);
 #else
     x = ((x & 0x5555) << 1) | ((x & 0xAAAA) >> 1);
@@ -30,7 +30,7 @@ static CRCXX_CONSTEXPR_14 uint16_t rev(uint16_t x) CRCXX_NOEXCEPT {
 #endif
 }
 static CRCXX_CONSTEXPR_14 uint32_t rev(uint32_t x) CRCXX_NOEXCEPT {
-#ifdef CRCXX_HAS_BUILTIN_BITREVERSE
+#if CRCXX_HAS_BUILTIN_BITREVERSE
     return __builtin_bitreverse32(x);
 #else
     x = ((x & 0x55555555) << 1) | ((x & 0xAAAAAAAA) >> 1);
@@ -41,7 +41,7 @@ static CRCXX_CONSTEXPR_14 uint32_t rev(uint32_t x) CRCXX_NOEXCEPT {
 #endif
 }
 static CRCXX_CONSTEXPR_14 uint64_t rev(uint64_t x) CRCXX_NOEXCEPT {
-#ifdef CRCXX_HAS_BUILTIN_BITREVERSE
+#if CRCXX_HAS_BUILTIN_BITREVERSE
     return __builtin_bitreverse64(x);
 #else
     x = ((x & 0x5555555555555555) << 1) | ((x & 0xAAAAAAAAAAAAAAAA) >> 1);
@@ -53,7 +53,7 @@ static CRCXX_CONSTEXPR_14 uint64_t rev(uint64_t x) CRCXX_NOEXCEPT {
 #endif
 }
 
-#ifdef __SIZEOF_INT128__
+#if CRCXX_HAS_128BIT_ALGO
 static CRCXX_CONSTEXPR_14 __uint128_t rev(__uint128_t x) CRCXX_NOEXCEPT {
     return static_cast<__uint128_t>(rev(static_cast<uint64_t>(x))) << 64 | rev(static_cast<uint64_t>(x >> 64));
 }

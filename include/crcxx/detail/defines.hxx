@@ -11,10 +11,20 @@
 #define CRCXX_STDCXX_VERSION_CHECK(v) 0
 #endif
 
-#ifdef __has_builtin
-#if __has_builtin(__builtin_convertvector) && defined(__clang__)
-#define CRCXX_HAS_BUILTIN_BITREVERSE
+#if !defined(__has_builtin)
+#define __has_builtin(x) 0
 #endif
+
+#if __has_builtin(__builtin_convertvector) && defined(__clang__)
+#define CRCXX_HAS_BUILTIN_BITREVERSE 1
+#else
+#define CRCXX_HAS_BUILTIN_BITREVERSE 0
+#endif
+
+#if defined(__SIZEOF_INT128__)
+#define CRCXX_HAS_128BIT_ALGO 1
+#else
+#define CRCXX_HAS_128BIT_ALGO 0
 #endif
 
 #if CRCXX_STDCXX_VERSION_CHECK(201103)

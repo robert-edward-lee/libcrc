@@ -309,6 +309,8 @@ CXX_BEGIN = rf"""/**
 #ifndef HXX_CRCXX_CATALOG
 #define HXX_CRCXX_CATALOG
 #include <stdint.h>
+
+#include "detail/defines.hxx"
 // clang-format off
 namespace crc {{
 template<typename ValueType, size_t Width, ValueType Poly, ValueType Init, bool RefIn, bool RefOut, ValueType XorOut, ValueType Check> class Crc;
@@ -329,7 +331,7 @@ with open('include/crcxx/catalog.hxx', 'w+', encoding='utf-8', newline='\n') as 
     for algo in test_algos:
         if algo.actual_width == 128 and not flag128:
             flag128 = True
-            f.write('\n#ifdef __SIZEOF_INT128__\n')
+            f.write('\n#if CRCXX_HAS_128BIT_ALGO\n')
 
         f.write(algo.str_cxx())
 
@@ -367,7 +369,7 @@ with open('test/crcxx_test.cxx', 'w+', encoding='utf-8', newline='\n') as f:
     for algo in test_algos:
         if algo.actual_width == 128 and not flag128:
             flag128 = True
-            f.write('\n#ifdef __SIZEOF_INT128__\n')
+            f.write('\n#if CRCXX_HAS_128BIT_ALGO\n')
 
         f.write(algo.str_test())
 
