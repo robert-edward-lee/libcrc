@@ -29,4 +29,6 @@ SpaceBeforeInheritanceColon: false
 SpaceBeforeParens: Never
 SpaceBeforeRangeBasedForLoopColon: false
 SpaceInEmptyBlock: false
+# sort
+SortUsingDeclarations: Never
 ...
