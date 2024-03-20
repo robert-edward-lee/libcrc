@@ -38,7 +38,7 @@
         }                                                                                                              \
         printf("};\n");                                                                                                \
     }
-#endif // __SIZEOF_INT128__
+#endif /* __SIZEOF_INT128__ */
 
 int main(void) {
 #if CRC_WIDTH < 128

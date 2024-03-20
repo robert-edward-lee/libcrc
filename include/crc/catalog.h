@@ -7,8 +7,8 @@
 #define H_CRC_CATALOG
 
 #include <stdbool.h>
-// clang-format off
-//                                               Width              Poly                Init  RefIn  RefOut              XorOut              Check
+/* clang-format off */
+/*                                               Width              Poly                Init  RefIn  RefOut              XorOut              Check */
 #define CRC3_GSM                (( Crc8BasedAlgo){ 3,                0x3,                0x0, false, false,                0x7,                0x4})
 #define CRC3_ROHC               (( Crc8BasedAlgo){ 3,                0x3,                0x7,  true,  true,                0x0,                0x6})
 #define CRC4_G_704              (( Crc8BasedAlgo){ 4,                0x3,                0x0,  true,  true,                0x0,                0x7})
@@ -170,5 +170,5 @@
                                                         (__uint128_t)0x00000 << 64 | 0x0000000000000000, \
                                                         (__uint128_t)0x09EA8 << 64 | 0x3F625023801FD612})
 #endif
-// clang-format on
-#endif // H_CRC_CATALOG
+/* clang-format on */
+#endif /* H_CRC_CATALOG */

@@ -17,7 +17,7 @@
     \param x Слово шириной 8 бит
     \return Отзеркаленное слово
 */
-static inline uint8_t rev8(uint8_t x) {
+static uint8_t rev8(uint8_t x) {
 #ifdef __has_builtin_bitreverse
     return __builtin_bitreverse8(x);
 #else
@@ -30,7 +30,7 @@ static inline uint8_t rev8(uint8_t x) {
     \param x Слово шириной 16 бит
     \return Отзеркаленное слово
 */
-static inline uint16_t rev16(uint16_t x) {
+static uint16_t rev16(uint16_t x) {
 #ifdef __has_builtin_bitreverse
     return __builtin_bitreverse16(x);
 #else
@@ -44,7 +44,7 @@ static inline uint16_t rev16(uint16_t x) {
     \param x Слово шириной 32 бит
     \return Отзеркаленное слово
 */
-static inline uint32_t rev32(uint32_t x) {
+static uint32_t rev32(uint32_t x) {
 #ifdef __has_builtin_bitreverse
     return __builtin_bitreverse32(x);
 #else
@@ -59,7 +59,7 @@ static inline uint32_t rev32(uint32_t x) {
     \param x Слово шириной 64 бит
     \return Отзеркаленное слово
 */
-static inline uint64_t rev64(uint64_t x) {
+static uint64_t rev64(uint64_t x) {
 #ifdef __has_builtin_bitreverse
     return __builtin_bitreverse64(x);
 #else
@@ -77,9 +77,9 @@ static inline uint64_t rev64(uint64_t x) {
     \param x Слово шириной 128 бит
     \return Отзеркаленное слово
 */
-static inline __uint128_t rev128(__uint128_t x) {
+static __uint128_t rev128(__uint128_t x) {
     return (__uint128_t)rev64(x) << 64 | rev64(x >> 64);
 }
-#endif // __SIZEOF_INT128__
+#endif /* __SIZEOF_INT128__ */
 
-#endif // H_REV
+#endif /* H_REV */

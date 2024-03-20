@@ -326,12 +326,12 @@ __uint128_t crc128_finalize(Crc128 *crc);
     \brief Вычисление контрольной суммы "за один присест"
 */
 __uint128_t crc128_checksum(Crc128 *crc, const void *bytes, size_t size);
-#endif // __SIZEOF_INT128__
+#endif /* __SIZEOF_INT128__ */
 
 #ifdef __cplusplus
 }
 #endif
-// Generics C11 support
+/* Generics C11 support */
 #if defined(__STDC_VERSION__) && __STDC_VERSION__ >= 201112L
 #ifdef __SIZEOF_INT128__
 /**
@@ -421,7 +421,7 @@ __uint128_t crc128_checksum(Crc128 *crc, const void *bytes, size_t size);
         Crc32 *: crc32_checksum,                                                                                       \
         Crc64 *: crc64_checksum,                                                                                       \
         Crc128 *: crc128_checksum)(crc, bytes, size)
-#else // __SIZEOF_INT128__
+#else /* __SIZEOF_INT128__ */
 /**
     \param[in,out] crc Предварительно созданный экземпляр \ref Crc8, \ref Crc16, \ref Crc32 или \ref Crc64
     \param[in] algo Каталожный алгоритм из файла crc/catalog.h или свой собственный
@@ -489,7 +489,7 @@ __uint128_t crc128_checksum(Crc128 *crc, const void *bytes, size_t size);
         crc,                                                                                                           \
         bytes,                                                                                                         \
         size)
-#endif // __SIZEOF_INT128__
-#endif // Generics C11 support
+#endif /* __SIZEOF_INT128__ */
+#endif /* Generics C11 support */
 
-#endif // H_CRC_LIB
+#endif /* H_CRC_LIB */

@@ -15,7 +15,7 @@
     \return Контрольную сумму
     \brief Ручное вычисление контрольной суммы. Необходимо для заполнения таблицы в \ref crc8_init_value
 */
-static inline uint8_t crc8(uint8_t poly, int refin, uint8_t init) {
+static uint8_t crc8(uint8_t poly, int refin, uint8_t init) {
     int i = 8;
 
     if(refin) {
@@ -37,7 +37,7 @@ static inline uint8_t crc8(uint8_t poly, int refin, uint8_t init) {
     \return Контрольную сумму
     \brief Ручное вычисление контрольной суммы. Необходимо для заполнения таблицы в \ref crc16_init_value
 */
-static inline uint16_t crc16(uint16_t poly, int refin, uint16_t init) {
+static uint16_t crc16(uint16_t poly, int refin, uint16_t init) {
     int i = 8;
 
     if(refin) {
@@ -60,7 +60,7 @@ static inline uint16_t crc16(uint16_t poly, int refin, uint16_t init) {
     \return Контрольную сумму
     \brief Ручное вычисление контрольной суммы. Необходимо для заполнения таблицы в \ref crc32_init_value
 */
-static inline uint32_t crc32(uint32_t poly, int refin, uint32_t init) {
+static uint32_t crc32(uint32_t poly, int refin, uint32_t init) {
     int i = 8;
 
     if(refin) {
@@ -83,7 +83,7 @@ static inline uint32_t crc32(uint32_t poly, int refin, uint32_t init) {
     \return Контрольную сумму
     \brief Ручное вычисление контрольной суммы. Необходимо для заполнения таблицы в \ref crc64_init_value
 */
-static inline uint64_t crc64(uint64_t poly, int refin, uint64_t init) {
+static uint64_t crc64(uint64_t poly, int refin, uint64_t init) {
     int i = 8;
 
     if(refin) {
@@ -206,7 +206,7 @@ static void crc64_table_init(uint64_t *table, int width, uint64_t poly, int refi
     \return Значение контрольной суммы с которой будет начинаться вычисление \ref Crc8::value
     \brief Инициализация \ref Crc8::value
 */
-static inline uint8_t crc8_init_value(uint8_t init, int width, int refin) {
+static uint8_t crc8_init_value(uint8_t init, int width, int refin) {
     return refin ? rev8(init) >> (8 * sizeof(init) - width) : init << (8 * sizeof(init) - width);
 }
 /**
@@ -216,7 +216,7 @@ static inline uint8_t crc8_init_value(uint8_t init, int width, int refin) {
     \return Значение контрольной суммы с которой будет начинаться вычисление \ref Crc16::value
     \brief Инициализация \ref Crc16::value
 */
-static inline uint16_t crc16_init_value(uint16_t init, int width, int refin) {
+static uint16_t crc16_init_value(uint16_t init, int width, int refin) {
     return refin ? rev16(init) >> (8 * sizeof(init) - width) : init << (8 * sizeof(init) - width);
 }
 /**
@@ -226,7 +226,7 @@ static inline uint16_t crc16_init_value(uint16_t init, int width, int refin) {
     \return Значение контрольной суммы с которой будет начинаться вычисление \ref Crc32::value
     \brief Инициализация \ref Crc32::value
 */
-static inline uint32_t crc32_init_value(uint32_t init, int width, int refin) {
+static uint32_t crc32_init_value(uint32_t init, int width, int refin) {
     return refin ? rev32(init) >> (8 * sizeof(init) - width) : init << (8 * sizeof(init) - width);
 }
 /**
@@ -236,7 +236,7 @@ static inline uint32_t crc32_init_value(uint32_t init, int width, int refin) {
     \return Значение контрольной суммы с которой будет начинаться вычисление \ref Crc64::value
     \brief Инициализация \ref Crc64::value
 */
-static inline uint64_t crc64_init_value(uint64_t init, int width, int refin) {
+static uint64_t crc64_init_value(uint64_t init, int width, int refin) {
     return refin ? rev64(init) >> (8 * sizeof(init) - width) : init << (8 * sizeof(init) - width);
 }
 
@@ -429,7 +429,7 @@ void crc64_update(Crc64 *crc, const void *bytes, size_t size) {
 uint8_t crc8_finalize(Crc8 *crc) {
     uint8_t ret;
 
-    ret = crc->value; // сохраняем значение CRC и восстанавливаем начальное
+    ret = crc->value; /* сохраняем значение CRC и восстанавливаем начальное */
     crc->value = crc8_init_value(crc->algo.init, crc->algo.width, crc->algo.refin);
 
     if(crc->algo.refin ^ crc->algo.refout) {
@@ -444,7 +444,7 @@ uint8_t crc8_finalize(Crc8 *crc) {
 uint16_t crc16_finalize(Crc16 *crc) {
     uint16_t ret;
 
-    ret = crc->value; // сохраняем значение CRC и восстанавливаем начальное
+    ret = crc->value; /* сохраняем значение CRC и восстанавливаем начальное */
     crc->value = crc16_init_value(crc->algo.init, crc->algo.width, crc->algo.refin);
 
     if(crc->algo.refin ^ crc->algo.refout) {
@@ -459,7 +459,7 @@ uint16_t crc16_finalize(Crc16 *crc) {
 uint32_t crc32_finalize(Crc32 *crc) {
     uint32_t ret;
 
-    ret = crc->value; // сохраняем значение CRC и восстанавливаем начальное
+    ret = crc->value; /* сохраняем значение CRC и восстанавливаем начальное */
     crc->value = crc32_init_value(crc->algo.init, crc->algo.width, crc->algo.refin);
 
     if(crc->algo.refin ^ crc->algo.refout) {
@@ -474,7 +474,7 @@ uint32_t crc32_finalize(Crc32 *crc) {
 uint64_t crc64_finalize(Crc64 *crc) {
     uint64_t ret;
 
-    ret = crc->value; // сохраняем значение CRC и восстанавливаем начальное
+    ret = crc->value; /* сохраняем значение CRC и восстанавливаем начальное */
     crc->value = crc64_init_value(crc->algo.init, crc->algo.width, crc->algo.refin);
 
     if(crc->algo.refin ^ crc->algo.refout) {
@@ -514,7 +514,7 @@ uint64_t crc64_checksum(Crc64 *crc, const void *bytes, size_t size) {
     \return Контрольную сумму
     \brief Ручное вычисление контрольной суммы. Необходимо для заполнения таблицы в \ref crc128_init_value
 */
-static inline __uint128_t crc128(__uint128_t poly, int refin, __uint128_t init) {
+static __uint128_t crc128(__uint128_t poly, int refin, __uint128_t init) {
     int i = 8;
 
     if(refin) {
@@ -562,7 +562,7 @@ static void crc128_table_init(__uint128_t *table, int width, __uint128_t poly, i
     \return Значение контрольной суммы с которой будет начинаться вычисление \ref Crc128::value
     \brief Инициализация \ref Crc128::value
 */
-static inline __uint128_t crc128_init_value(__uint128_t init, int width, int refin) {
+static __uint128_t crc128_init_value(__uint128_t init, int width, int refin) {
     return refin ? rev128(init) >> (8 * sizeof(init) - width) : init << (8 * sizeof(init) - width);
 }
 
@@ -617,7 +617,7 @@ void crc128_update(Crc128 *crc, const void *bytes, size_t size) {
 __uint128_t crc128_finalize(Crc128 *crc) {
     __uint128_t ret;
 
-    ret = crc->value; // сохраняем значение CRC и восстанавливаем начальное
+    ret = crc->value; /* сохраняем значение CRC и восстанавливаем начальное */
     crc->value = crc128_init_value(crc->algo.init, crc->algo.width, crc->algo.refin);
 
     if(crc->algo.refin ^ crc->algo.refout) {
@@ -633,4 +633,4 @@ __uint128_t crc128_checksum(Crc128 *crc, const void *bytes, size_t size) {
     crc128_update(crc, bytes, size);
     return crc128_finalize(crc);
 }
-#endif // __SIZEOF_INT128__
+#endif /* __SIZEOF_INT128__ */
