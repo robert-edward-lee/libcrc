@@ -154,21 +154,28 @@
 #define CRC32_MEF               ((Crc32BasedAlgo){32,         0x741B8CD7,         0xFFFFFFFF,  true,  true,         0x00000000,         0xD2C22F51})
 #define CRC32_MPEG_2            ((Crc32BasedAlgo){32,         0x04C11DB7,         0xFFFFFFFF, false, false,         0x00000000,         0x0376E6E7})
 #define CRC32_XFER              ((Crc32BasedAlgo){32,         0x000000AF,         0x00000000, false, false,         0x00000000,         0xBD0BE338})
-#define CRC40_GSM               ((Crc64BasedAlgo){40,       0x0004820009,       0x0000000000, false, false,       0xFFFFFFFFFF,       0xD4164FC646})
-#define CRC64_ECMA_182          ((Crc64BasedAlgo){64, 0x42F0E1EBA9EA3693, 0x0000000000000000, false, false, 0x0000000000000000, 0x6C40DF5F0B497347})
-#define CRC64_GO_ISO            ((Crc64BasedAlgo){64, 0x000000000000001B, 0xFFFFFFFFFFFFFFFF,  true,  true, 0xFFFFFFFFFFFFFFFF, 0xB90956C775A41001})
-#define CRC64_MS                ((Crc64BasedAlgo){64, 0x259C84CBA6426349, 0xFFFFFFFFFFFFFFFF,  true,  true, 0x0000000000000000, 0x75D4B74F024ECEEA})
-#define CRC64_REDIS             ((Crc64BasedAlgo){64, 0xAD93D23594C935A9, 0x0000000000000000,  true,  true, 0x0000000000000000, 0xE9C6D914C4B8D9CA})
-#define CRC64_WE                ((Crc64BasedAlgo){64, 0x42F0E1EBA9EA3693, 0xFFFFFFFFFFFFFFFF, false, false, 0xFFFFFFFFFFFFFFFF, 0x62EC59E3F1A4F00A})
-#define CRC64_XZ                ((Crc64BasedAlgo){64, 0x42F0E1EBA9EA3693, 0xFFFFFFFFFFFFFFFF,  true,  true, 0xFFFFFFFFFFFFFFFF, 0x995DC9BBDF1939FA})
+#define CRC40_GSM               ((Crc64BasedAlgo){40, (uint64_t)0x00000000 << 32 | 0x04820009, (uint64_t)0x00000000 << 32 | 0x00000000,\
+                                        false, false, (uint64_t)0x000000FF << 32 | 0xFFFFFFFF, (uint64_t)0x000000D4 << 32 | 0x164FC646})
+#define CRC64_ECMA_182          ((Crc64BasedAlgo){64, (uint64_t)0x42F0E1EB << 32 | 0xA9EA3693, (uint64_t)0x00000000 << 32 | 0x00000000,\
+                                        false, false, (uint64_t)0x00000000 << 32 | 0x00000000, (uint64_t)0x6C40DF5F << 32 | 0x0B497347})
+#define CRC64_GO_ISO            ((Crc64BasedAlgo){64, (uint64_t)0x00000000 << 32 | 0x0000001B, (uint64_t)0xFFFFFFFF << 32 | 0xFFFFFFFF,\
+                                          true, true, (uint64_t)0xFFFFFFFF << 32 | 0xFFFFFFFF, (uint64_t)0xB90956C7 << 32 | 0x75A41001})
+#define CRC64_MS                ((Crc64BasedAlgo){64, (uint64_t)0x259C84CB << 32 | 0xA6426349, (uint64_t)0xFFFFFFFF << 32 | 0xFFFFFFFF,\
+                                          true, true, (uint64_t)0x00000000 << 32 | 0x00000000, (uint64_t)0x75D4B74F << 32 | 0x024ECEEA})
+#define CRC64_REDIS             ((Crc64BasedAlgo){64, (uint64_t)0xAD93D235 << 32 | 0x94C935A9, (uint64_t)0x00000000 << 32 | 0x00000000,\
+                                          true, true, (uint64_t)0x00000000 << 32 | 0x00000000, (uint64_t)0xE9C6D914 << 32 | 0xC4B8D9CA})
+#define CRC64_WE                ((Crc64BasedAlgo){64, (uint64_t)0x42F0E1EB << 32 | 0xA9EA3693, (uint64_t)0xFFFFFFFF << 32 | 0xFFFFFFFF,\
+                                        false, false, (uint64_t)0xFFFFFFFF << 32 | 0xFFFFFFFF, (uint64_t)0x62EC59E3 << 32 | 0xF1A4F00A})
+#define CRC64_XZ                ((Crc64BasedAlgo){64, (uint64_t)0x42F0E1EB << 32 | 0xA9EA3693, (uint64_t)0xFFFFFFFF << 32 | 0xFFFFFFFF,\
+                                          true, true, (uint64_t)0xFFFFFFFF << 32 | 0xFFFFFFFF, (uint64_t)0x995DC9BB << 32 | 0xDF1939FA})
 #define CRC64_GO_ECMA           CRC64_XZ
 
 #ifdef __SIZEOF_INT128__
-#define CRC82_DARC              ((Crc128BasedAlgo){82,  (__uint128_t)0x0308C << 64 | 0x0111011401440411, \
-                                                        (__uint128_t)0x00000 << 64 | 0x0000000000000000, \
-                                                        true, true, \
-                                                        (__uint128_t)0x00000 << 64 | 0x0000000000000000, \
-                                                        (__uint128_t)0x09EA8 << 64 | 0x3F625023801FD612})
+#define CRC82_DARC              ((Crc128BasedAlgo){ 82, (uint128_t)0x00000000 << 96 | (uint128_t)0x0000308C << 64 | (uint128_t)0x01110114 << 32 | 0x01440411,\
+                                                        (uint128_t)0x00000000 << 96 | (uint128_t)0x00000000 << 64 | (uint128_t)0x00000000 << 32 | 0x00000000,\
+                                                        true, true,\
+                                                        (uint128_t)0x00000000 << 96 | (uint128_t)0x00000000 << 64 | (uint128_t)0x00000000 << 32 | 0x00000000,\
+                                                        (uint128_t)0x00000000 << 96 | (uint128_t)0x00009EA8 << 64 | (uint128_t)0x3F625023 << 32 | 0x801FD612})
 #endif
 /* clang-format on */
 #endif /* H_CRC_CATALOG */

@@ -68,7 +68,10 @@ class Algo(object):
                         alias = alias.replace('CRC-', 'CRC').replace('-', '_').replace('/', '_')
                         self.aliases.append(alias)
 
-    def __str__(self) -> str:
+    def is_valid(self) -> bool:
+        return self.actual_width != -1
+
+    def str_c(self) -> str:
         ret = f'#define {self.name:23} ('
 
         if self.actual_width == 8:
@@ -84,30 +87,57 @@ class Algo(object):
         else:
             return None
 
-        ret += f'{{{self.width:>2},'
 
+        mask = (1 << 32) - 1
         if self.actual_width == 128:
-            align = (self.width - 64) // 4 + bool((self.width - 64) % 4)
-            mask = (1 << 65) - 1
-            ret += f'  (__uint128_t)0x{self.poly >> 64:0{align}X} << 64 |'
-            ret += f' 0x{self.poly & mask:016X}, \\\n'
+            ret += f'{{{self.width:>3},'
 
-            ret += f'{' ':56}'
-            ret += f'(__uint128_t)0x{self.init >> 64:0{align}X} << 64 |'
-            ret += f' 0x{self.init & mask:016X}, \\\n'
+            ret += f' (uint128_t)0x{self.poly >> 96:08X} << 96 |'
+            ret += f' (uint128_t)0x{(self.poly >> 64) & mask:08X} << 64 |'
+            ret += f' (uint128_t)0x{(self.poly >> 32) & mask:08X} << 32 |'
+            ret += f' 0x{self.poly & mask:08X},\\\n'
 
-            ret += f'{' ':56}'
-            ret += f'{str(self.refin).lower()}, {str(self.refout).lower()}, \\\n'
+            ret += f'{' ':55}'
+            ret += f' (uint128_t)0x{self.init >> 96:08X} << 96 |'
+            ret += f' (uint128_t)0x{(self.init >> 64) & mask:08X} << 64 |'
+            ret += f' (uint128_t)0x{(self.init >> 32) & mask:08X} << 32 |'
+            ret += f' 0x{self.init & mask:08X},\\\n'
 
-            ret += f'{' ':56}'
-            ret += f'(__uint128_t)0x{self.xorout >> 64:0{align}X} << 64 |'
-            ret += f' 0x{self.xorout & mask:016X}, \\\n'
+            ret += f'{' ':55}'
+            ret += f' {str(self.refin).lower()}, {str(self.refout).lower()},\\\n'
 
-            ret += f'{' ':56}'
-            ret += f'(__uint128_t)0x{self.check >> 64:0{align}X} << 64 |'
-            ret += f' 0x{self.check & mask:016X}}})\n'
+            ret += f'{' ':55}'
+            ret += f' (uint128_t)0x{self.xorout >> 96:08X} << 96 |'
+            ret += f' (uint128_t)0x{(self.xorout >> 64) & mask:08X} << 64 |'
+            ret += f' (uint128_t)0x{(self.xorout >> 32) & mask:08X} << 32 |'
+            ret += f' 0x{self.xorout & mask:08X},\\\n'
+
+            ret += f'{' ':55}'
+            ret += f' (uint128_t)0x{self.check >> 96:08X} << 96 |'
+            ret += f' (uint128_t)0x{(self.check >> 64) & mask:08X} << 64 |'
+            ret += f' (uint128_t)0x{(self.check >> 32) & mask:08X} << 32 |'
+            ret += f' 0x{self.check & mask:08X}}})\n'
+        elif self.actual_width == 64:
+            ret += f'{{{self.width:>2},'
+
+            ret += f' (uint64_t)0x{self.poly >> 32:08X} << 32 |'
+            ret += f' 0x{self.poly & mask:08X},'
+
+            ret += f' (uint64_t)0x{self.init >> 32:08X} << 32 |'
+            ret += f' 0x{self.init & mask:08X},\\\n'
+
+            ret += f'{' ':{39 + self.refin + self.refout}}'
+            ret += f' {str(self.refin).lower()}, {str(self.refout).lower()},'
+
+            ret += f' (uint64_t)0x{self.xorout >> 32:08X} << 32 |'
+            ret += f' 0x{self.xorout & mask:08X},'
+
+            ret += f' (uint64_t)0x{self.check >> 32:08X} << 32 |'
+            ret += f' 0x{self.check & mask:08X}}})\n'
         else:
             align = self.width // 4 + bool(self.width % 4)
+            ret += f'{{{self.width:>2},'
+
             ret += f'{' ':>{17 - align}}'
             ret += f'0x{self.poly:0{align}X},'
 
@@ -127,9 +157,6 @@ class Algo(object):
             ret += f'#define {alias:23} {self.name}\n'
 
         return ret
-
-    def is_valid(self) -> bool:
-        return self.actual_width != -1
 
     def str_test(self) -> str:
         return f'    crc_test({self.name}, {self.actual_width});\n'
@@ -272,7 +299,7 @@ with open('include/crc/catalog.h', 'w+', encoding='utf-8', newline='\n') as f:
             flag128 = True
             f.write('\n#ifdef __SIZEOF_INT128__\n')
 
-        f.write(str(algo))
+        f.write(algo.str_c())
 
     if flag128:
         f.write('#endif\n')
