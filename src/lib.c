@@ -17,7 +17,7 @@
     \return Контрольную сумму
     \brief Ручное вычисление контрольной суммы. Необходимо для заполнения таблицы в \ref crc8_init_value
 */
-static uint8_t crc8(uint8_t poly, int refin, uint8_t init) {
+static CRC_INLINE uint8_t crc8(uint8_t poly, int refin, uint8_t init) {
     int i = 8;
 
     if(refin) {
@@ -39,7 +39,7 @@ static uint8_t crc8(uint8_t poly, int refin, uint8_t init) {
     \return Контрольную сумму
     \brief Ручное вычисление контрольной суммы. Необходимо для заполнения таблицы в \ref crc16_init_value
 */
-static uint16_t crc16(uint16_t poly, int refin, uint16_t init) {
+static CRC_INLINE uint16_t crc16(uint16_t poly, int refin, uint16_t init) {
     int i = 8;
 
     if(refin) {
@@ -62,7 +62,7 @@ static uint16_t crc16(uint16_t poly, int refin, uint16_t init) {
     \return Контрольную сумму
     \brief Ручное вычисление контрольной суммы. Необходимо для заполнения таблицы в \ref crc32_init_value
 */
-static uint32_t crc32(uint32_t poly, int refin, uint32_t init) {
+static CRC_INLINE uint32_t crc32(uint32_t poly, int refin, uint32_t init) {
     int i = 8;
 
     if(refin) {
@@ -85,7 +85,7 @@ static uint32_t crc32(uint32_t poly, int refin, uint32_t init) {
     \return Контрольную сумму
     \brief Ручное вычисление контрольной суммы. Необходимо для заполнения таблицы в \ref crc64_init_value
 */
-static uint64_t crc64(uint64_t poly, int refin, uint64_t init) {
+static CRC_INLINE uint64_t crc64(uint64_t poly, int refin, uint64_t init) {
     int i = 8;
 
     if(refin) {
@@ -208,7 +208,7 @@ static void crc64_table_init(uint64_t *table, int width, uint64_t poly, int refi
     \return Значение контрольной суммы с которой будет начинаться вычисление \ref Crc8::value
     \brief Инициализация \ref Crc8::value
 */
-static uint8_t crc8_init_value(uint8_t init, int width, int refin) {
+static CRC_INLINE uint8_t crc8_init_value(uint8_t init, int width, int refin) {
     return refin ? rev8(init) >> (8 * sizeof(init) - width) : init << (8 * sizeof(init) - width);
 }
 /**
@@ -218,7 +218,7 @@ static uint8_t crc8_init_value(uint8_t init, int width, int refin) {
     \return Значение контрольной суммы с которой будет начинаться вычисление \ref Crc16::value
     \brief Инициализация \ref Crc16::value
 */
-static uint16_t crc16_init_value(uint16_t init, int width, int refin) {
+static CRC_INLINE uint16_t crc16_init_value(uint16_t init, int width, int refin) {
     return refin ? rev16(init) >> (8 * sizeof(init) - width) : init << (8 * sizeof(init) - width);
 }
 /**
@@ -228,7 +228,7 @@ static uint16_t crc16_init_value(uint16_t init, int width, int refin) {
     \return Значение контрольной суммы с которой будет начинаться вычисление \ref Crc32::value
     \brief Инициализация \ref Crc32::value
 */
-static uint32_t crc32_init_value(uint32_t init, int width, int refin) {
+static CRC_INLINE uint32_t crc32_init_value(uint32_t init, int width, int refin) {
     return refin ? rev32(init) >> (8 * sizeof(init) - width) : init << (8 * sizeof(init) - width);
 }
 /**
@@ -238,7 +238,7 @@ static uint32_t crc32_init_value(uint32_t init, int width, int refin) {
     \return Значение контрольной суммы с которой будет начинаться вычисление \ref Crc64::value
     \brief Инициализация \ref Crc64::value
 */
-static uint64_t crc64_init_value(uint64_t init, int width, int refin) {
+static CRC_INLINE uint64_t crc64_init_value(uint64_t init, int width, int refin) {
     return refin ? rev64(init) >> (8 * sizeof(init) - width) : init << (8 * sizeof(init) - width);
 }
 
@@ -516,7 +516,7 @@ uint64_t crc64_checksum(Crc64 *crc, const void *bytes, size_t size) {
     \return Контрольную сумму
     \brief Ручное вычисление контрольной суммы. Необходимо для заполнения таблицы в \ref crc128_init_value
 */
-static uint128_t crc128(uint128_t poly, int refin, uint128_t init) {
+static CRC_INLINE uint128_t crc128(uint128_t poly, int refin, uint128_t init) {
     int i = 8;
 
     if(refin) {
@@ -564,7 +564,7 @@ static void crc128_table_init(uint128_t *table, int width, uint128_t poly, int r
     \return Значение контрольной суммы с которой будет начинаться вычисление \ref Crc128::value
     \brief Инициализация \ref Crc128::value
 */
-static uint128_t crc128_init_value(uint128_t init, int width, int refin) {
+static CRC_INLINE uint128_t crc128_init_value(uint128_t init, int width, int refin) {
     return refin ? rev128(init) >> (8 * sizeof(init) - width) : init << (8 * sizeof(init) - width);
 }
 
