@@ -152,7 +152,7 @@ class Algo(object):
         return ret
 
     def str_cxx(self) -> str:
-        ret = f'using {self.name:23} = Crc<'
+        ret = f'typedef Crc<'
 
         if self.actual_width == 8:
             ret += ' uint8_t, '
@@ -172,24 +172,22 @@ class Algo(object):
         if self.actual_width == 128:
             align = (self.width - 64) // 4 + bool((self.width - 64) % 4)
             mask = (1 << 65) - 1
-            ret += f'\n{' ':35}'
-            ret += f'(__uint128_t)0x{self.poly >> 64:0{align}X} << 64 |'
+            ret += f' (__uint128_t)0x{self.poly >> 64:0{align}X} << 64 |'
             ret += f' 0x{self.poly & mask:016X},\n'
 
-            ret += f'{' ':35}'
+            ret += f'{' ':12}'
             ret += f'(__uint128_t)0x{self.init >> 64:0{align}X} << 64 |'
-            ret += f' 0x{self.init & mask:016X},\n'
+            ret += f' 0x{self.init & mask:016X},'
 
-            ret += f'{' ':35}'
-            ret += f'{str(self.refin).lower()}, {str(self.refout).lower()},\n'
+            ret += f' {str(self.refin).lower()}, {str(self.refout).lower()},\n'
 
-            ret += f'{' ':35}'
+            ret += f'{' ':12}'
             ret += f'(__uint128_t)0x{self.xorout >> 64:0{align}X} << 64 |'
             ret += f' 0x{self.xorout & mask:016X},\n'
 
-            ret += f'{' ':35}'
+            ret += f'{' ':12}'
             ret += f'(__uint128_t)0x{self.check >> 64:0{align}X} << 64 |'
-            ret += f' 0x{self.check & mask:016X}>;\n'
+            ret += f' 0x{self.check & mask:016X}>'
         else:
             align = self.width // 4 + bool(self.width % 4)
             ret += f'{' ':>{17 - align}}'
@@ -205,10 +203,12 @@ class Algo(object):
             ret += f'0x{self.xorout:0{align}X},'
 
             ret += f'{' ':>{17 - align}}'
-            ret += f'0x{self.check:0{align}X}>;\n'
+            ret += f'0x{self.check:0{align}X}>'
+
+        ret += f' {self.name};\n'
 
         for alias in self.aliases:
-            ret += f'using {alias:23} = {self.name};\n'
+            ret += f'typedef {self.name} {alias:>{111 - len(self.name) + len(alias)}};\n'
 
         return ret
 
@@ -308,11 +308,11 @@ CXX_BEGIN = rf"""/**
 */
 #ifndef HXX_CRCXX_CATALOG
 #define HXX_CRCXX_CATALOG
-
+#include <stdint.h>
 // clang-format off
 namespace crc {{
 template<typename ValueType, size_t Width, ValueType Poly, ValueType Init, bool RefIn, bool RefOut, ValueType XorOut, ValueType Check> class Crc;
-//                                ValueType  Width              Poly                Init  RefIn RefOut              XorOut               Check
+//        ValueType  Width              Poly                Init  RefIn RefOut              XorOut               Check
 """
 
 CXX_END = r"""} // namespace crc
