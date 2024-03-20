@@ -17,13 +17,13 @@ template<typename T> inline void print_hex(T a) {
 
 #define crc_test(__algo, __)                                                                                           \
     {                                                                                                                  \
-        __algo crc;                                                                                                    \
-        __algo::type value = crc(check.c_str(), check.size());                                                         \
-        if(__algo::check != value) {                                                                                   \
+        crc::__algo crc;                                                                                               \
+        crc::__algo::type value = crc(check.c_str(), check.size());                                                    \
+        if(crc::__algo::check != value) {                                                                              \
             printf("Invalid CRC check for " #__algo ": ");                                                             \
             print_hex(value);                                                                                          \
             printf(", expected = ");                                                                                   \
-            print_hex(__algo::check);                                                                                  \
+            print_hex(crc::__algo::check);                                                                             \
             printf("\n");                                                                                              \
             errors++;                                                                                                  \
         } else {                                                                                                       \

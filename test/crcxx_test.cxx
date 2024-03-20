@@ -2,8 +2,6 @@
 #include "crcxx/catalog.hxx"
 #include "crcxx/lib.hxx"
 
-using namespace crc;
-
 int errors = 0;
 int passed = 0;
 
