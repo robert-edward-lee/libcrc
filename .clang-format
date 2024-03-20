@@ -20,6 +20,7 @@ AllowShortFunctionsOnASingleLine: Empty
 BreakBeforeBinaryOperators: NonAssignment
 BreakBeforeBraces: Attach
 InsertBraces: true
+CompactNamespaces: true
 # insert/remove spaces settings
 BitFieldColonSpacing: After
 SpaceAfterTemplateKeyword: false
