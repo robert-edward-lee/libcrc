@@ -102,70 +102,110 @@ typedef struct {
     \param[in] table Предварительно выделенная память размером 256 байт для хранения таблицы расчёта
     \brief Инициализация "объекта" \ref Crc8
 */
-void crc8_init_static(Crc8 *crc, const Crc8BasedAlgo *algo, uint8_t *table);
+void crc8_init_static_(Crc8 *crc, const Crc8BasedAlgo *algo, uint8_t *table);
+#define crc8_init_static(crc, algo, table)                                                                             \
+    {                                                                                                                  \
+        Crc8BasedAlgo algo_ = algo;                                                                                    \
+        crc8_init_static_(crc, &algo_, table);                                                                         \
+    }
 /**
     \param[in,out] crc Предварительно созданный экземпляр \ref Crc16
     \param[in] algo Каталожный алгоритм из файла crc/catalog.h или свой собственный
     \param[in] table Предварительно выделенная память размером 2x256 байт для хранения таблицы расчёта
     \brief Инициализация "объекта" \ref Crc16
 */
-void crc16_init_static(Crc16 *crc, const Crc16BasedAlgo *algo, uint16_t *table);
+void crc16_init_static_(Crc16 *crc, const Crc16BasedAlgo *algo, uint16_t *table);
+#define crc16_init_static(crc, algo, table)                                                                            \
+    {                                                                                                                  \
+        Crc16BasedAlgo algo_ = algo;                                                                                   \
+        crc16_init_static_(crc, &algo_, table);                                                                        \
+    }
 /**
     \param[in,out] crc Предварительно созданный экземпляр \ref Crc32
     \param[in] algo Каталожный алгоритм из файла crc/catalog.h или свой собственный
     \param[in] table Предварительно выделенная память размером 4x256 байт для хранения таблицы расчёта
     \brief Инициализация "объекта" \ref Crc32
 */
-void crc32_init_static(Crc32 *crc, const Crc32BasedAlgo *algo, uint32_t *table);
+void crc32_init_static_(Crc32 *crc, const Crc32BasedAlgo *algo, uint32_t *table);
+#define crc32_init_static(crc, algo, table)                                                                            \
+    {                                                                                                                  \
+        Crc32BasedAlgo algo_ = algo;                                                                                   \
+        crc32_init_static_(crc, &algo_, table);                                                                        \
+    }
 /**
     \param[in,out] crc Предварительно созданный экземпляр \ref Crc64
     \param[in] algo Каталожный алгоритм из файла crc/catalog.h или свой собственный
     \param[in] table Предварительно выделенная память размером 8x256 байт для хранения таблицы расчёта
     \brief Инициализация "объекта" \ref Crc64
 */
-void crc64_init_static(Crc64 *crc, const Crc64BasedAlgo *algo, uint64_t *table);
+void crc64_init_static_(Crc64 *crc, const Crc64BasedAlgo *algo, uint64_t *table);
+#define crc64_init_static(crc, algo, table)                                                                            \
+    {                                                                                                                  \
+        Crc64BasedAlgo algo_ = algo;                                                                                   \
+        crc64_init_static_(crc, &algo_, table);                                                                        \
+    }
 /**
     \param[in,out] crc Предварительно созданный экземпляр \ref Crc8
     \param[in] algo Каталожный алгоритм из файла crc/catalog.h или свой собственный
     \brief Инициализация "объекта" \ref Crc8, таблица при этом будет создана динамически
 */
-void crc8_init(Crc8 *crc, const Crc8BasedAlgo *algo);
+void crc8_init_(Crc8 *crc, const Crc8BasedAlgo *algo);
+#define crc8_init(crc, algo)                                                                                           \
+    {                                                                                                                  \
+        Crc8BasedAlgo algo_ = algo;                                                                                    \
+        crc8_init_(crc, &algo_);                                                                                       \
+    }
 /**
     \param[in,out] crc Предварительно созданный экземпляр \ref Crc16
     \param[in] algo Каталожный алгоритм из файла crc/catalog.h или свой собственный
     \brief Инициализация "объекта" \ref Crc16, таблица при этом будет создана динамически
 */
-void crc16_init(Crc16 *crc, const Crc16BasedAlgo *algo);
+void crc16_init_(Crc16 *crc, const Crc16BasedAlgo *algo);
+#define crc16_init(crc, algo)                                                                                          \
+    {                                                                                                                  \
+        Crc16BasedAlgo algo_ = algo;                                                                                   \
+        crc16_init_(crc, &algo_);                                                                                      \
+    }
 /**
     \param[in,out] crc Предварительно созданный экземпляр \ref Crc32
     \param[in] algo Каталожный алгоритм из файла crc/catalog.h или свой собственный
     \brief Инициализация "объекта" \ref Crc32, таблица при этом будет создана динамически
 */
-void crc32_init(Crc32 *crc, const Crc32BasedAlgo *algo);
+void crc32_init_(Crc32 *crc, const Crc32BasedAlgo *algo);
+#define crc32_init(crc, algo)                                                                                          \
+    {                                                                                                                  \
+        Crc32BasedAlgo algo_ = algo;                                                                                   \
+        crc32_init_(crc, &algo_);                                                                                      \
+    }
 /**
     \param[in,out] crc Предварительно созданный экземпляр \ref Crc64
     \param[in] algo Каталожный алгоритм из файла crc/catalog.h или свой собственный
     \brief Инициализация "объекта" \ref Crc64, таблица при этом будет создана динамически
 */
-void crc64_init(Crc64 *crc, const Crc64BasedAlgo *algo);
+void crc64_init_(Crc64 *crc, const Crc64BasedAlgo *algo);
+#define crc64_init(crc, algo)                                                                                          \
+    {                                                                                                                  \
+        Crc64BasedAlgo algo_ = algo;                                                                                   \
+        crc64_init_(crc, &algo_);                                                                                      \
+    }
 /**
     \param[in,out] crc Экземпляр \ref Crc8
-    \brief Очистка памяти если crc инициализирован при помощи \ref crc8_init
+    \brief Очистка памяти если crc инициализирован при помощи \ref crc8_init_
 */
 void crc8_destroy(Crc8 *crc);
 /**
     \param[in,out] crc Экземпляр \ref Crc16
-    \brief Очистка памяти если crc инициализирован при помощи \ref crc16_init
+    \brief Очистка памяти если crc инициализирован при помощи \ref crc16_init_
 */
 void crc16_destroy(Crc16 *crc);
 /**
     \param[in,out] crc Экземпляр \ref Crc32
-    \brief Очистка памяти если crc инициализирован при помощи \ref crc32_init
+    \brief Очистка памяти если crc инициализирован при помощи \ref crc32_init_
 */
 void crc32_destroy(Crc32 *crc);
 /**
     \param[in,out] crc Экземпляр \ref Crc64
-    \brief Очистка памяти если crc инициализирован при помощи \ref crc64_init
+    \brief Очистка памяти если crc инициализирован при помощи \ref crc64_init_
 */
 void crc64_destroy(Crc64 *crc);
 /**
@@ -293,16 +333,26 @@ typedef struct {
     \param[in] table Предварительно выделенная память размером 8x256 байт для хранения таблицы расчёта
     \brief Инициализация "объекта" \ref Crc128
 */
-void crc128_init_static(Crc128 *crc, const Crc128BasedAlgo *algo, uint128_t *table);
+void crc128_init_static_(Crc128 *crc, const Crc128BasedAlgo *algo, uint128_t *table);
+#define crc128_init_static(crc, algo, table)                                                                           \
+    {                                                                                                                  \
+        Crc128BasedAlgo algo_ = algo;                                                                                  \
+        crc128_init_static_(crc, &algo_, table);                                                                       \
+    }
 /**
     \param[in,out] crc Предварительно созданный экземпляр \ref Crc128
     \param[in] algo Каталожный алгоритм из файла crc/catalog.h или свой собственный
     \brief Инициализация "объекта" \ref Crc128, таблица при этом будет создана динамически
 */
-void crc128_init(Crc128 *crc, const Crc128BasedAlgo *algo);
+void crc128_init_(Crc128 *crc, const Crc128BasedAlgo *algo);
+#define crc128_init(crc, algo)                                                                                         \
+    {                                                                                                                  \
+        Crc128BasedAlgo algo_ = algo;                                                                                  \
+        crc128_init_(crc, &algo_);                                                                                     \
+    }
 /**
     \param[in,out] crc Экземпляр \ref Crc128
-    \brief Очистка памяти если crc инициализирован при помощи \ref crc128_init
+    \brief Очистка памяти если crc инициализирован при помощи \ref crc128_init_
 */
 void crc128_destroy(Crc128 *crc);
 /**
@@ -342,29 +392,29 @@ uint128_t crc128_checksum(Crc128 *crc, const void *bytes, size_t size);
     \param[in] algo Каталожный алгоритм из файла crc/catalog.h или свой собственный
     \param[in] table Предварительно выделенная память нужного размера для хранения таблицы расчёта. Для \ref Crc8 256,
     для \ref Crc16 512, для \ref Crc32 1024 и для \ref Crc64 2048 байт соответственно
-    \brief Инициализация "объекта" crc. Обёртка над функциями \ref crc8_init_static, \ref crc16_init_static, \ref
-    crc32_init_static и \ref crc64_init_static. В зависимости от типа crc будет вызвана соответствующая функция
+    \brief Инициализация "объекта" crc. Обёртка над функциями \ref crc8_init_static_, \ref crc16_init_static_, \ref
+    crc32_init_static_ и \ref crc64_init_static_. В зависимости от типа crc будет вызвана соответствующая функция
 */
 #define crc_init_static(crc, algo, table)                                                                              \
     _Generic((crc),                                                                                                    \
-        Crc8 *: crc8_init_static,                                                                                      \
-        Crc16 *: crc16_init_static,                                                                                    \
-        Crc32 *: crc32_init_static,                                                                                    \
-        Crc64 *: crc64_init_static,                                                                                    \
-        Crc128 *: crc128_init_static)(crc, algo, table)
+        Crc8 *: crc8_init_static_,                                                                                     \
+        Crc16 *: crc16_init_static_,                                                                                   \
+        Crc32 *: crc32_init_static_,                                                                                   \
+        Crc64 *: crc64_init_static_,                                                                                   \
+        Crc128 *: crc128_init_static_)(crc, algo, table)
 /**
     \param[in,out] crc Предварительно созданный экземпляр \ref Crc8, \ref Crc16, \ref Crc32 или \ref Crc64
     \param[in] algo Каталожный алгоритм из файла crc/catalog.h или свой собственный
-    \brief Инициализация crc, таблица при этом будет создана динамически. Обёртка над функциями \ref crc8_init, \ref
-    crc16_init, \ref crc32_init и \ref crc64_init. В зависимости от  типа crc будет вызвана соответствующая функция
+    \brief Инициализация crc, таблица при этом будет создана динамически. Обёртка над функциями \ref crc8_init_, \ref
+    crc16_init_, \ref crc32_init_ и \ref crc64_init_. В зависимости от  типа crc будет вызвана соответствующая функция
 */
 #define crc_init(crc, algo)                                                                                            \
     _Generic((crc),                                                                                                    \
-        Crc8 *: crc8_init,                                                                                             \
-        Crc16 *: crc16_init,                                                                                           \
-        Crc32 *: crc32_init,                                                                                           \
-        Crc64 *: crc64_init,                                                                                           \
-        Crc128 *: crc128_init)(crc, algo)
+        Crc8 *: crc8_init_,                                                                                            \
+        Crc16 *: crc16_init_,                                                                                          \
+        Crc32 *: crc32_init_,                                                                                          \
+        Crc64 *: crc64_init_,                                                                                          \
+        Crc128 *: crc128_init_)(crc, algo)
 /**
     \param[in,out] crc Экземпляр \ref Crc8, \ref Crc16, \ref Crc32 или \ref Crc64
     \brief Очистка памяти если crc инициализирован при помощи \ref crc_init. Обёртка над функциями \ref crc8_destroy,
@@ -430,23 +480,23 @@ uint128_t crc128_checksum(Crc128 *crc, const void *bytes, size_t size);
     \param[in] algo Каталожный алгоритм из файла crc/catalog.h или свой собственный
     \param[in] table Предварительно выделенная память нужного размера для хранения таблицы расчёта. Для \ref Crc8 256,
     для \ref Crc16 512, для \ref Crc32 1024 и для \ref Crc64 2048 байт соответственно
-    \brief Инициализация "объекта" crc. Обёртка над функциями \ref crc8_init_static, \ref crc16_init_static, \ref
-    crc32_init_static и \ref crc64_init_static. В зависимости от типа crc будет вызвана соответствующая функция
+    \brief Инициализация "объекта" crc. Обёртка над функциями \ref crc8_init_static_, \ref crc16_init_static_, \ref
+    crc32_init_static_ и \ref crc64_init_static_. В зависимости от типа crc будет вызвана соответствующая функция
 */
 #define crc_init_static(crc, algo, table)                                                                              \
     _Generic((crc),                                                                                                    \
-        Crc8 *: crc8_init_static,                                                                                      \
-        Crc16 *: crc16_init_static,                                                                                    \
-        Crc32 *: crc32_init_static,                                                                                    \
-        Crc64 *: crc64_init_static)(crc, algo, table)
+        Crc8 *: crc8_init_static_,                                                                                     \
+        Crc16 *: crc16_init_static_,                                                                                   \
+        Crc32 *: crc32_init_static_,                                                                                   \
+        Crc64 *: crc64_init_static_)(crc, algo, table)
 /**
     \param[in,out] crc Предварительно созданный экземпляр \ref Crc8, \ref Crc16, \ref Crc32 или \ref Crc64
     \param[in] algo Каталожный алгоритм из файла crc/catalog.h или свой собственный
-    \brief Инициализация crc, таблица при этом будет создана динамически. Обёртка над функциями \ref crc8_init, \ref
-    crc16_init, \ref crc32_init и \ref crc64_init. В зависимости от  типа crc будет вызвана соответствующая функция
+    \brief Инициализация crc, таблица при этом будет создана динамически. Обёртка над функциями \ref crc8_init_, \ref
+    crc16_init_, \ref crc32_init_ и \ref crc64_init_. В зависимости от  типа crc будет вызвана соответствующая функция
 */
 #define crc_init(crc, algo)                                                                                            \
-    _Generic((crc), Crc8 *: crc8_init, Crc16 *: crc16_init, Crc32 *: crc32_init, Crc64 *: crc64_init)(crc, algo)
+    _Generic((crc), Crc8 *: crc8_init_, Crc16 *: crc16_init_, Crc32 *: crc32_init_, Crc64 *: crc64_init_)(crc, algo)
 /**
     \param[in,out] crc Экземпляр \ref Crc8, \ref Crc16, \ref Crc32 или \ref Crc64
     \brief Очистка памяти если crc инициализирован при помощи \ref crc_init. Обёртка над функциями \ref crc8_destroy,

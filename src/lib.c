@@ -242,7 +242,7 @@ static CRC_INLINE uint64_t crc64_init_value(uint64_t init, int width, int refin)
     return refin ? rev64(init) >> (8 * sizeof(init) - width) : init << (8 * sizeof(init) - width);
 }
 
-void crc8_init_static(Crc8 *crc, const Crc8BasedAlgo *algo, uint8_t *table) {
+void crc8_init_static_(Crc8 *crc, const Crc8BasedAlgo *algo, uint8_t *table) {
     if(!crc || !algo || !table) {
         return;
     }
@@ -252,7 +252,7 @@ void crc8_init_static(Crc8 *crc, const Crc8BasedAlgo *algo, uint8_t *table) {
     crc->value = crc8_init_value(algo->init, algo->width, algo->refin);
 }
 
-void crc16_init_static(Crc16 *crc, const Crc16BasedAlgo *algo, uint16_t *table) {
+void crc16_init_static_(Crc16 *crc, const Crc16BasedAlgo *algo, uint16_t *table) {
     if(!crc || !algo || !table) {
         return;
     }
@@ -262,7 +262,7 @@ void crc16_init_static(Crc16 *crc, const Crc16BasedAlgo *algo, uint16_t *table) 
     crc->value = crc16_init_value(algo->init, algo->width, algo->refin);
 }
 
-void crc32_init_static(Crc32 *crc, const Crc32BasedAlgo *algo, uint32_t *table) {
+void crc32_init_static_(Crc32 *crc, const Crc32BasedAlgo *algo, uint32_t *table) {
     if(!crc || !algo || !table) {
         return;
     }
@@ -272,7 +272,7 @@ void crc32_init_static(Crc32 *crc, const Crc32BasedAlgo *algo, uint32_t *table) 
     crc->value = crc32_init_value(algo->init, algo->width, algo->refin);
 }
 
-void crc64_init_static(Crc64 *crc, const Crc64BasedAlgo *algo, uint64_t *table) {
+void crc64_init_static_(Crc64 *crc, const Crc64BasedAlgo *algo, uint64_t *table) {
     if(!crc || !algo || !table) {
         return;
     }
@@ -282,7 +282,7 @@ void crc64_init_static(Crc64 *crc, const Crc64BasedAlgo *algo, uint64_t *table) 
     crc->value = crc64_init_value(algo->init, algo->width, algo->refin);
 }
 
-void crc8_init(Crc8 *crc, const Crc8BasedAlgo *algo) {
+void crc8_init_(Crc8 *crc, const Crc8BasedAlgo *algo) {
     uint8_t *table;
 
     if(!crc || !algo) {
@@ -292,10 +292,10 @@ void crc8_init(Crc8 *crc, const Crc8BasedAlgo *algo) {
     if(!table) {
         return;
     }
-    crc8_init_static(crc, algo, table);
+    crc8_init_static_(crc, algo, table);
 }
 
-void crc16_init(Crc16 *crc, const Crc16BasedAlgo *algo) {
+void crc16_init_(Crc16 *crc, const Crc16BasedAlgo *algo) {
     uint16_t *table;
 
     if(!crc || !algo) {
@@ -305,10 +305,10 @@ void crc16_init(Crc16 *crc, const Crc16BasedAlgo *algo) {
     if(!table) {
         return;
     }
-    crc16_init_static(crc, algo, table);
+    crc16_init_static_(crc, algo, table);
 }
 
-void crc32_init(Crc32 *crc, const Crc32BasedAlgo *algo) {
+void crc32_init_(Crc32 *crc, const Crc32BasedAlgo *algo) {
     uint32_t *table;
 
     if(!crc || !algo) {
@@ -318,10 +318,10 @@ void crc32_init(Crc32 *crc, const Crc32BasedAlgo *algo) {
     if(!table) {
         return;
     }
-    crc32_init_static(crc, algo, table);
+    crc32_init_static_(crc, algo, table);
 }
 
-void crc64_init(Crc64 *crc, const Crc64BasedAlgo *algo) {
+void crc64_init_(Crc64 *crc, const Crc64BasedAlgo *algo) {
     uint64_t *table;
 
     if(!crc || !algo) {
@@ -331,7 +331,7 @@ void crc64_init(Crc64 *crc, const Crc64BasedAlgo *algo) {
     if(!table) {
         return;
     }
-    crc64_init_static(crc, algo, table);
+    crc64_init_static_(crc, algo, table);
 }
 
 void crc8_destroy(Crc8 *crc) {
@@ -568,7 +568,7 @@ static CRC_INLINE uint128_t crc128_init_value(uint128_t init, int width, int ref
     return refin ? rev128(init) >> (8 * sizeof(init) - width) : init << (8 * sizeof(init) - width);
 }
 
-void crc128_init_static(Crc128 *crc, const Crc128BasedAlgo *algo, uint128_t *table) {
+void crc128_init_static_(Crc128 *crc, const Crc128BasedAlgo *algo, uint128_t *table) {
     if(!crc || !algo || !table) {
         return;
     }
@@ -578,7 +578,7 @@ void crc128_init_static(Crc128 *crc, const Crc128BasedAlgo *algo, uint128_t *tab
     crc->value = crc128_init_value(crc->algo.init, crc->algo.width, crc->algo.refin);
 }
 
-void crc128_init(Crc128 *crc, const Crc128BasedAlgo *algo) {
+void crc128_init_(Crc128 *crc, const Crc128BasedAlgo *algo) {
     uint128_t *table;
 
     if(!crc || !algo) {
@@ -588,7 +588,7 @@ void crc128_init(Crc128 *crc, const Crc128BasedAlgo *algo) {
     if(!table) {
         return;
     }
-    crc128_init_static(crc, algo, table);
+    crc128_init_static_(crc, algo, table);
 }
 
 void crc128_destroy(Crc128 *crc) {
