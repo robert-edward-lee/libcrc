@@ -7,7 +7,7 @@ print: $(BUILDDIR) $(STATICLIB)
 	@$(CURDIR)/$(BUILDDIR)/$@
 
 CXX = g++
-CXXFLAGS = -Wall -Wextra -pedantic -Iinclude -std=c++11
+CXXFLAGS = -Wall -Wextra -pedantic -Iinclude -std=c++98
 
 testxx: $(BUILDDIR)
 	@$(CXX) $(CXXFLAGS) $(CURDIR)/test/crcxx_test.cxx -o $(CURDIR)/$(BUILDDIR)/$@

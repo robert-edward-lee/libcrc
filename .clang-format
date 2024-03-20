@@ -20,6 +20,7 @@ AllowShortFunctionsOnASingleLine: Empty
 BreakBeforeBinaryOperators: NonAssignment
 BreakBeforeBraces: Attach
 InsertBraces: true
+CompactNamespaces: true
 # insert/remove spaces settings
 BitFieldColonSpacing: After
 SpaceAfterTemplateKeyword: false
@@ -28,4 +29,6 @@ SpaceBeforeInheritanceColon: false
 SpaceBeforeParens: Never
 SpaceBeforeRangeBasedForLoopColon: false
 SpaceInEmptyBlock: false
+# sort
+SortUsingDeclarations: Never
 ...
