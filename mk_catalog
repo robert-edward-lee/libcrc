@@ -14,9 +14,8 @@ BEGIN = rf"""/**
 #ifndef H_CRC_CATALOG
 #define H_CRC_CATALOG
 #include "crc/internal/defines.h"
-#include "crc/internal/types.h"
 /* clang-format off */
-/*                                               Width              Poly              Init RefIn RefOut         XorOut               Check */
+/*                              Width              Poly              Init RefIn RefOut         XorOut               Check */
 """
 
 END = r"""/* clang-format on */
@@ -72,21 +71,7 @@ class Algo(object):
         return self.actual_width != -1
 
     def str_c(self) -> str:
-        ret = f'#define {self.name:23} ('
-
-        if self.actual_width == 8:
-            ret += '( Crc8BasedAlgo)'
-        elif self.actual_width == 16:
-            ret += '(Crc16BasedAlgo)'
-        elif self.actual_width == 32:
-            ret += '(Crc32BasedAlgo)'
-        elif self.actual_width == 64:
-            ret += '(Crc64BasedAlgo)'
-        elif self.actual_width == 128:
-            ret += '(Crc128BasedAlgo)'
-        else:
-            return None
-
+        ret = f'#define {self.name:23} '
 
         mask = (1 << 32) - 1
         if self.actual_width == 128:
@@ -97,26 +82,26 @@ class Algo(object):
             ret += f' (uint128_t)0x{(self.poly >> 32) & mask:08X} << 32 |'
             ret += f' 0x{self.poly & mask:08X},\\\n'
 
-            ret += f'{' ':55}'
+            ret += f'{' ':37}'
             ret += f' (uint128_t)0x{self.init >> 96:08X} << 96 |'
             ret += f' (uint128_t)0x{(self.init >> 64) & mask:08X} << 64 |'
             ret += f' (uint128_t)0x{(self.init >> 32) & mask:08X} << 32 |'
             ret += f' 0x{self.init & mask:08X},\\\n'
 
-            ret += f'{' ':55}'
+            ret += f'{' ':37}'
             ret += f' {int(self.refin)}, {int(self.refout)},\\\n'
 
-            ret += f'{' ':55}'
+            ret += f'{' ':37}'
             ret += f' (uint128_t)0x{self.xorout >> 96:08X} << 96 |'
             ret += f' (uint128_t)0x{(self.xorout >> 64) & mask:08X} << 64 |'
             ret += f' (uint128_t)0x{(self.xorout >> 32) & mask:08X} << 32 |'
             ret += f' 0x{self.xorout & mask:08X},\\\n'
 
-            ret += f'{' ':55}'
+            ret += f'{' ':37}'
             ret += f' (uint128_t)0x{self.check >> 96:08X} << 96 |'
             ret += f' (uint128_t)0x{(self.check >> 64) & mask:08X} << 64 |'
             ret += f' (uint128_t)0x{(self.check >> 32) & mask:08X} << 32 |'
-            ret += f' 0x{self.check & mask:08X}}})\n'
+            ret += f' 0x{self.check & mask:08X}}}\n'
         elif self.actual_width == 64:
             ret += f'{{{self.width:>2},'
 
@@ -126,14 +111,14 @@ class Algo(object):
             ret += f' (uint64_t)0x{self.init >> 32:08X} << 32 |'
             ret += f' 0x{self.init & mask:08X},\\\n'
 
-            ret += f'{' ':47}'
+            ret += f'{' ':30}'
             ret += f' {int(self.refin)}, {int(self.refout)},'
 
             ret += f' (uint64_t)0x{self.xorout >> 32:08X} << 32 |'
             ret += f' 0x{self.xorout & mask:08X},'
 
             ret += f' (uint64_t)0x{self.check >> 32:08X} << 32 |'
-            ret += f' 0x{self.check & mask:08X}}})\n'
+            ret += f' 0x{self.check & mask:08X}}}\n'
         else:
             align = self.width // 4 + bool(self.width % 4)
             ret += f'{{{self.width:>2},'
@@ -151,7 +136,7 @@ class Algo(object):
             ret += f'0x{self.xorout:0{align}X},'
 
             ret += f'{' ':>{17 - align}}'
-            ret += f'0x{self.check:0{align}X}}})\n'
+            ret += f'0x{self.check:0{align}X}}}\n'
 
         for alias in self.aliases:
             ret += f'#define {alias:23} {self.name}\n'

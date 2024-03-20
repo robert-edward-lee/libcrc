@@ -22,8 +22,9 @@ const char check[9] = "123456789";
 #define crc_test(__algo, __width)                                                                                      \
     {                                                                                                                  \
         uint##__width##_t value;                                                                                       \
+        Crc##__width##BasedAlgo algo = __algo;                                                                         \
         Crc##__width crc;                                                                                              \
-        crc##__width##_init(&crc, &__algo);                                                                            \
+        crc##__width##_init(&crc, &algo);                                                                              \
         value = crc##__width##_checksum(&crc, check, sizeof(check));                                                   \
         if(crc.algo.check != value) {                                                                                  \
             printf("Invalid CRC check for " #__algo ": ");                                                             \
