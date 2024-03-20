@@ -39,11 +39,12 @@ static CRCXX_CONSTEXPR_14 uint64_t rev(uint64_t x) CRCXX_NOEXCEPT {
 #if CRCXX_HAS_BUILTIN_BITREVERSE
     return __builtin_bitreverse64(x);
 #else
-    x = ((x & 0x5555555555555555) << 1) | ((x & 0xAAAAAAAAAAAAAAAA) >> 1);
-    x = ((x & 0x3333333333333333) << 2) | ((x & 0xCCCCCCCCCCCCCCCC) >> 2);
-    x = ((x & 0x0F0F0F0F0F0F0F0F) << 4) | ((x & 0xF0F0F0F0F0F0F0F0) >> 4);
-    x = ((x & 0x00FF00FF00FF00FF) << 8) | ((x & 0xFF00FF00FF00FF00) >> 8);
-    x = ((x & 0x0000FFFF0000FFFF) << 16) | ((x & 0xFFFF0000FFFF0000) >> 16);
+    x = ((x & ((uint64_t)0x55555555 << 32 | 0x55555555)) << 1) | ((x & ((uint64_t)0xAAAAAAAA << 32 | 0xAAAAAAAA)) >> 1);
+    x = ((x & ((uint64_t)0x33333333 << 32 | 0x33333333)) << 2) | ((x & ((uint64_t)0xCCCCCCCC << 32 | 0xCCCCCCCC)) >> 2);
+    x = ((x & ((uint64_t)0x0F0F0F0F << 32 | 0x0F0F0F0F)) << 4) | ((x & ((uint64_t)0xF0F0F0F0 << 32 | 0xF0F0F0F0)) >> 4);
+    x = ((x & ((uint64_t)0x00FF00FF << 32 | 0x00FF00FF)) << 8) | ((x & ((uint64_t)0xFF00FF00 << 32 | 0xFF00FF00)) >> 8);
+    x = ((x & ((uint64_t)0x0000FFFF << 32 | 0x0000FFFF)) << 16)
+      | ((x & ((uint64_t)0xFFFF0000 << 32 | 0xFFFF0000)) >> 16);
     return x << 32 | x >> 32;
 #endif
 }

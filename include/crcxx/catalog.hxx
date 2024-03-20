@@ -155,18 +155,28 @@ typedef Crc<uint32_t, 32,         0x04C11DB7,         0xFFFFFFFF,  true,  true, 
 typedef Crc<uint32_t, 32,         0x741B8CD7,         0xFFFFFFFF,  true,  true,         0x00000000,         0xD2C22F51> CRC32_MEF;
 typedef Crc<uint32_t, 32,         0x04C11DB7,         0xFFFFFFFF, false, false,         0x00000000,         0x0376E6E7> CRC32_MPEG_2;
 typedef Crc<uint32_t, 32,         0x000000AF,         0x00000000, false, false,         0x00000000,         0xBD0BE338> CRC32_XFER;
-typedef Crc<uint64_t, 40,       0x0004820009,       0x0000000000, false, false,       0xFFFFFFFFFF,       0xD4164FC646> CRC40_GSM;
-typedef Crc<uint64_t, 64, 0x42F0E1EBA9EA3693, 0x0000000000000000, false, false, 0x0000000000000000, 0x6C40DF5F0B497347> CRC64_ECMA_182;
-typedef Crc<uint64_t, 64, 0x000000000000001B, 0xFFFFFFFFFFFFFFFF,  true,  true, 0xFFFFFFFFFFFFFFFF, 0xB90956C775A41001> CRC64_GO_ISO;
-typedef Crc<uint64_t, 64, 0x259C84CBA6426349, 0xFFFFFFFFFFFFFFFF,  true,  true, 0x0000000000000000, 0x75D4B74F024ECEEA> CRC64_MS;
-typedef Crc<uint64_t, 64, 0xAD93D23594C935A9, 0x0000000000000000,  true,  true, 0x0000000000000000, 0xE9C6D914C4B8D9CA> CRC64_REDIS;
-typedef Crc<uint64_t, 64, 0x42F0E1EBA9EA3693, 0xFFFFFFFFFFFFFFFF, false, false, 0xFFFFFFFFFFFFFFFF, 0x62EC59E3F1A4F00A> CRC64_WE;
-typedef Crc<uint64_t, 64, 0x42F0E1EBA9EA3693, 0xFFFFFFFFFFFFFFFF,  true,  true, 0xFFFFFFFFFFFFFFFF, 0x995DC9BBDF1939FA> CRC64_XZ;
+typedef Crc<uint64_t, 40, (uint64_t)0x00000000 << 32 | 0x04820009, (uint64_t)0x00000000 << 32 | 0x00000000,
+            false, false, (uint64_t)0x000000FF << 32 | 0xFFFFFFFF, (uint64_t)0x000000D4 << 32 | 0x164FC646>             CRC40_GSM;
+typedef Crc<uint64_t, 64, (uint64_t)0x42F0E1EB << 32 | 0xA9EA3693, (uint64_t)0x00000000 << 32 | 0x00000000,
+            false, false, (uint64_t)0x00000000 << 32 | 0x00000000, (uint64_t)0x6C40DF5F << 32 | 0x0B497347>             CRC64_ECMA_182;
+typedef Crc<uint64_t, 64, (uint64_t)0x00000000 << 32 | 0x0000001B, (uint64_t)0xFFFFFFFF << 32 | 0xFFFFFFFF,
+              true, true, (uint64_t)0xFFFFFFFF << 32 | 0xFFFFFFFF, (uint64_t)0xB90956C7 << 32 | 0x75A41001>             CRC64_GO_ISO;
+typedef Crc<uint64_t, 64, (uint64_t)0x259C84CB << 32 | 0xA6426349, (uint64_t)0xFFFFFFFF << 32 | 0xFFFFFFFF,
+              true, true, (uint64_t)0x00000000 << 32 | 0x00000000, (uint64_t)0x75D4B74F << 32 | 0x024ECEEA>             CRC64_MS;
+typedef Crc<uint64_t, 64, (uint64_t)0xAD93D235 << 32 | 0x94C935A9, (uint64_t)0x00000000 << 32 | 0x00000000,
+              true, true, (uint64_t)0x00000000 << 32 | 0x00000000, (uint64_t)0xE9C6D914 << 32 | 0xC4B8D9CA>             CRC64_REDIS;
+typedef Crc<uint64_t, 64, (uint64_t)0x42F0E1EB << 32 | 0xA9EA3693, (uint64_t)0xFFFFFFFF << 32 | 0xFFFFFFFF,
+            false, false, (uint64_t)0xFFFFFFFF << 32 | 0xFFFFFFFF, (uint64_t)0x62EC59E3 << 32 | 0xF1A4F00A>             CRC64_WE;
+typedef Crc<uint64_t, 64, (uint64_t)0x42F0E1EB << 32 | 0xA9EA3693, (uint64_t)0xFFFFFFFF << 32 | 0xFFFFFFFF,
+              true, true, (uint64_t)0xFFFFFFFF << 32 | 0xFFFFFFFF, (uint64_t)0x995DC9BB << 32 | 0xDF1939FA>             CRC64_XZ;
 typedef CRC64_XZ                                                                                                        CRC64_GO_ECMA;
 
 #if CRCXX_HAS_128BIT_ALGO
-typedef Crc<uint128_t, 82, (uint128_t)0x0308C << 64 | 0x0111011401440411, (uint128_t)0x00000 << 64 | 0x0000000000000000,
-            true, true, (uint128_t)0x00000 << 64 | 0x0000000000000000, (uint128_t)0x09EA8 << 64 | 0x3F625023801FD612> CRC82_DARC;
+typedef Crc<uint128_t,  82, (uint128_t)0x00000000 << 96 | (uint128_t)0x0000308C << 64 | (uint128_t)0x01110114 << 32 | 0x01440411,
+                            (uint128_t)0x00000000 << 96 | (uint128_t)0x00000000 << 64 | (uint128_t)0x00000000 << 32 | 0x00000000,
+                            true, true,
+                            (uint128_t)0x00000000 << 96 | (uint128_t)0x00000000 << 64 | (uint128_t)0x00000000 << 32 | 0x00000000,
+                            (uint128_t)0x00000000 << 96 | (uint128_t)0x00009EA8 << 64 | (uint128_t)0x3F625023 << 32 | 0x801FD612> CRC82_DARC;
 #endif
 } // namespace crc
 // clang-format on
