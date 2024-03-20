@@ -2,12 +2,7 @@
 #define HXX_CXX_INTERNAL_TRAITS
 
 #include "defines.hxx"
-
-#if CRCXX_STDCXX_VERSION_CHECK(201103)
-#include <cstdint>
-#else
-#include <stdint.h>
-#endif
+#include "types.hxx"
 
 namespace crc { namespace detail {
 #if CRCXX_STDCXX_VERSION_CHECK(201103)

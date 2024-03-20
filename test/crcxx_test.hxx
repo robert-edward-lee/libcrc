@@ -2,12 +2,13 @@
 #define HXX_CRC_TEST
 
 #include <iostream>
-#include <stdint.h>
+
+#include "crcxx/detail/types.hxx"
 
 std::string check = "123456789";
 
 template<typename T> inline void print_hex(T a) {
-    const uint8_t *as_u8 = reinterpret_cast<const uint8_t *>(&a);
+    const crc::uint8_t *as_u8 = reinterpret_cast<const crc::uint8_t *>(&a);
     printf("0x");
     for(int i = sizeof(a) - 1; i >= 0; i--) {
         printf("%02X", as_u8[i]);

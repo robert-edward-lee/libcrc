@@ -1,13 +1,8 @@
-#ifndef HXX_INTERNAL_UTILS
-#define HXX_INTERNAL_UTILS
+#ifndef HXX_CRCXX_INTERNAL_REV
+#define HXX_CRCXX_INTERNAL_REV
 
 #include "defines.hxx"
-
-#if CRCXX_STDCXX_VERSION_CHECK(201103)
-#include <cstdint>
-#else
-#include <stdint.h>
-#endif
+#include "types.hxx"
 
 namespace crc { namespace detail {
 static CRCXX_CONSTEXPR_14 uint8_t rev(uint8_t x) CRCXX_NOEXCEPT {
@@ -61,4 +56,4 @@ static CRCXX_CONSTEXPR_14 __uint128_t rev(__uint128_t x) CRCXX_NOEXCEPT {
 
 }} // namespace crc::detail
 
-#endif // HXX_INTERNAL_UTILS
+#endif // HXX_CRCXX_INTERNAL_REV
