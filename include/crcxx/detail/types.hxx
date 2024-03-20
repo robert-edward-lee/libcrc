@@ -9,6 +9,11 @@ namespace crc {
 #else
 #include <stdint.h>
 #endif
+
+#if CRCXX_HAS_128BIT_ALGO
+typedef __uint128_t uint128_t;
+#endif
+
 } // namespace crc
 
 #endif // HXX_CRCXX_INTERNAL_TYPES

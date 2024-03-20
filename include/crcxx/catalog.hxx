@@ -165,10 +165,8 @@ typedef Crc<uint64_t, 64, 0x42F0E1EBA9EA3693, 0xFFFFFFFFFFFFFFFF,  true,  true, 
 typedef CRC64_XZ                                                                                                        CRC64_GO_ECMA;
 
 #if CRCXX_HAS_128BIT_ALGO
-typedef Crc<__uint128_t, 82, (__uint128_t)0x0308C << 64 | 0x0111011401440411,
-            (__uint128_t)0x00000 << 64 | 0x0000000000000000, true, true,
-            (__uint128_t)0x00000 << 64 | 0x0000000000000000,
-            (__uint128_t)0x09EA8 << 64 | 0x3F625023801FD612> CRC82_DARC;
+typedef Crc<uint128_t, 82, (uint128_t)0x0308C << 64 | 0x0111011401440411, (uint128_t)0x00000 << 64 | 0x0000000000000000,
+            true, true, (uint128_t)0x00000 << 64 | 0x0000000000000000, (uint128_t)0x09EA8 << 64 | 0x3F625023801FD612> CRC82_DARC;
 #endif
 } // namespace crc
 // clang-format on

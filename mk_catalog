@@ -163,7 +163,7 @@ class Algo(object):
         elif self.actual_width == 64:
             ret += 'uint64_t, '
         elif self.actual_width == 128:
-            ret += '__uint128_t, '
+            ret += 'uint128_t, '
         else:
             return None
 
@@ -172,21 +172,19 @@ class Algo(object):
         if self.actual_width == 128:
             align = (self.width - 64) // 4 + bool((self.width - 64) % 4)
             mask = (1 << 65) - 1
-            ret += f' (__uint128_t)0x{self.poly >> 64:0{align}X} << 64 |'
-            ret += f' 0x{self.poly & mask:016X},\n'
+            ret += f' (uint128_t)0x{self.poly >> 64:0{align}X} << 64 |'
+            ret += f' 0x{self.poly & mask:016X},'
 
-            ret += f'{' ':12}'
-            ret += f'(__uint128_t)0x{self.init >> 64:0{align}X} << 64 |'
-            ret += f' 0x{self.init & mask:016X},'
+            ret += f' (uint128_t)0x{self.init >> 64:0{align}X} << 64 |'
+            ret += f' 0x{self.init & mask:016X},\n'
 
-            ret += f' {str(self.refin).lower()}, {str(self.refout).lower()},\n'
+            ret += f'{' ':11}'
+            ret += f' {str(self.refin).lower()}, {str(self.refout).lower()},'
 
-            ret += f'{' ':12}'
-            ret += f'(__uint128_t)0x{self.xorout >> 64:0{align}X} << 64 |'
-            ret += f' 0x{self.xorout & mask:016X},\n'
+            ret += f' (uint128_t)0x{self.xorout >> 64:0{align}X} << 64 |'
+            ret += f' 0x{self.xorout & mask:016X},'
 
-            ret += f'{' ':12}'
-            ret += f'(__uint128_t)0x{self.check >> 64:0{align}X} << 64 |'
+            ret += f' (uint128_t)0x{self.check >> 64:0{align}X} << 64 |'
             ret += f' 0x{self.check & mask:016X}>'
         else:
             align = self.width // 4 + bool(self.width % 4)

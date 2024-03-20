@@ -49,8 +49,8 @@ static CRCXX_CONSTEXPR_14 uint64_t rev(uint64_t x) CRCXX_NOEXCEPT {
 }
 
 #if CRCXX_HAS_128BIT_ALGO
-static CRCXX_CONSTEXPR_14 __uint128_t rev(__uint128_t x) CRCXX_NOEXCEPT {
-    return static_cast<__uint128_t>(rev(static_cast<uint64_t>(x))) << 64 | rev(static_cast<uint64_t>(x >> 64));
+static CRCXX_CONSTEXPR_14 uint128_t rev(uint128_t x) CRCXX_NOEXCEPT {
+    return static_cast<uint128_t>(rev(static_cast<uint64_t>(x))) << 64 | rev(static_cast<uint64_t>(x >> 64));
 }
 #endif
 
