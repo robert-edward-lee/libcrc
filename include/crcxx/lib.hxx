@@ -36,7 +36,7 @@ public:
         table_init();
     }
 
-    ~Crc(void) {
+    ~Crc(void) CRCXX_NOEXCEPT {
         delete[] table;
     }
 

@@ -50,10 +50,10 @@
 #if CRCXX_STDCXX_VERSION_CHECK(200410)
 #define CRCXX_STATIC_ASSERT static_assert
 #else
-#define CONCAT_(a, b) a##b
-#define CONCAT(a, b) CONCAT_(a, b)
-#define make_assert_name(a) CONCAT(a, __COUNTER__)
-#define CRCXX_STATIC_ASSERT(expr, msg) typedef char make_assert_name(static_assertion_)[(expr) ? 1 : -1]
+#define CRCXX_CONCAT_(a, b) a##b
+#define CRCXX_CONCAT(a, b) CRCXX_CONCAT_(a, b)
+#define CRCXX_MAKE_ASSERT_NAME(a) CRCXX_CONCAT(a, __COUNTER__)
+#define CRCXX_STATIC_ASSERT(expr, msg) typedef char CRCXX_MAKE_ASSERT_NAME(CRCXX_STATIC_ASSERTION_)[(expr) ? 1 : -1]
 #endif
 
 #endif // HXX_CXX_INTERNAL_DEFINES
