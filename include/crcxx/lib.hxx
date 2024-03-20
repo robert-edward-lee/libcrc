@@ -40,7 +40,7 @@ public:
         delete[] table;
     }
 
-    type finalize(void) CRCXX_NOEXCEPT {
+    CRCXX_CONSTEXPR_14 type finalize(void) CRCXX_NOEXCEPT {
         type ret = value;
         value = init_value(init);
 
@@ -66,14 +66,12 @@ public:
         }
     }
     template<typename T>
-    CRCXX_CONSTEXPR_14 typename detail::enable_if<detail::is_byte<T>::value, type>::type
-    checksum(T byte) CRCXX_NOEXCEPT {
+    typename detail::enable_if<detail::is_byte<T>::value, type>::type checksum(T byte) CRCXX_NOEXCEPT {
         update(byte);
         return finalize();
     }
     template<typename T>
-    CRCXX_CONSTEXPR_14 typename detail::enable_if<detail::is_byte<T>::value, type>::type
-    operator()(T byte) CRCXX_NOEXCEPT {
+    typename detail::enable_if<detail::is_byte<T>::value, type>::type operator()(T byte) CRCXX_NOEXCEPT {
         return checksum(byte);
     }
 
@@ -86,11 +84,11 @@ public:
             update(reinterpret_cast<const uint8_t *>(data)[i]);
         }
     }
-    CRCXX_CONSTEXPR_14 type checksum(const void *data, size_t size) CRCXX_NOEXCEPT {
+    type checksum(const void *data, size_t size) CRCXX_NOEXCEPT {
         update(data, size);
         return finalize();
     }
-    CRCXX_CONSTEXPR_14 type operator()(const void *data, size_t size) CRCXX_NOEXCEPT {
+    type operator()(const void *data, size_t size) CRCXX_NOEXCEPT {
         return checksum(data, size);
     }
 
@@ -103,11 +101,11 @@ public:
             update(*byte);
         }
     }
-    CRCXX_CONSTEXPR_14 type checksum(const void *begin, const void *end) CRCXX_NOEXCEPT {
+    type checksum(const void *begin, const void *end) CRCXX_NOEXCEPT {
         update(begin, end);
         return finalize();
     }
-    CRCXX_CONSTEXPR_14 type operator()(const void *begin, const void *end) CRCXX_NOEXCEPT {
+    type operator()(const void *begin, const void *end) CRCXX_NOEXCEPT {
         return checksum(begin, end);
     }
 
