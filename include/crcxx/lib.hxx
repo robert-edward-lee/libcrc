@@ -4,6 +4,7 @@
 #include "detail/defines.hxx"
 #include "detail/rev.hxx"
 #include "detail/traits.hxx"
+#include "detail/types.hxx"
 
 namespace crc {
 template<typename ValueType,
@@ -75,29 +76,12 @@ public:
         return checksum(byte);
     }
 
-    void update(const void *data, size_t size) CRCXX_NOEXCEPT {
-        if(!data) {
-            return;
-        }
-
-        for(size_t i = 0; i < size; i++) {
-            update(reinterpret_cast<const uint8_t *>(data)[i]);
-        }
-    }
-    type checksum(const void *data, size_t size) CRCXX_NOEXCEPT {
-        update(data, size);
-        return finalize();
-    }
-    type operator()(const void *data, size_t size) CRCXX_NOEXCEPT {
-        return checksum(data, size);
-    }
-
     void update(const void *begin, const void *end) CRCXX_NOEXCEPT {
         if(!begin) {
             return;
         }
 
-        for(const uint8_t *byte = reinterpret_cast<const uint8_t *>(begin); byte < end; byte++) {
+        for(const uint8_t *byte = reinterpret_cast<const uint8_t *>(begin); byte != end; ++byte) {
             update(*byte);
         }
     }
@@ -107,6 +91,17 @@ public:
     }
     type operator()(const void *begin, const void *end) CRCXX_NOEXCEPT {
         return checksum(begin, end);
+    }
+
+    void update(const void *data, size_t size) CRCXX_NOEXCEPT {
+        update(data, reinterpret_cast<const uint8_t *>(data) + size);
+    }
+    type checksum(const void *data, size_t size) CRCXX_NOEXCEPT {
+        update(data, size);
+        return finalize();
+    }
+    type operator()(const void *data, size_t size) CRCXX_NOEXCEPT {
+        return checksum(data, size);
     }
 
 private:

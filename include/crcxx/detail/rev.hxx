@@ -1,5 +1,5 @@
-#ifndef HXX_CRCXX_INTERNAL_REV
-#define HXX_CRCXX_INTERNAL_REV
+#ifndef HXX_CRCXX_DETAIL_REV
+#define HXX_CRCXX_DETAIL_REV
 
 #include "defines.hxx"
 #include "types.hxx"
@@ -57,4 +57,4 @@ static CRCXX_CONSTEXPR_14 uint128_t rev(uint128_t x) CRCXX_NOEXCEPT {
 
 }} // namespace crc::detail
 
-#endif // HXX_CRCXX_INTERNAL_REV
+#endif // HXX_CRCXX_DETAIL_REV

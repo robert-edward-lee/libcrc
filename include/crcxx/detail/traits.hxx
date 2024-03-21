@@ -1,5 +1,5 @@
-#ifndef HXX_CXX_INTERNAL_TRAITS
-#define HXX_CXX_INTERNAL_TRAITS
+#ifndef HXX_CXX_DETAIL_TRAITS
+#define HXX_CXX_DETAIL_TRAITS
 
 #include "defines.hxx"
 #include "types.hxx"
@@ -57,4 +57,4 @@ template<> struct is_valid_crc_type_helper<uint128_t>: true_type {};
 template<typename T> struct is_valid_crc_type: is_valid_crc_type_helper<typename remove_cv<T>::type> {};
 }} // namespace crc::detail
 
-#endif // HXX_CXX_INTERNAL_TRAITS
+#endif // HXX_CXX_DETAIL_TRAITS

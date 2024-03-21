@@ -1,5 +1,5 @@
-#ifndef HXX_CXX_INTERNAL_DEFINES
-#define HXX_CXX_INTERNAL_DEFINES
+#ifndef HXX_CXX_DETAIL_DEFINES
+#define HXX_CXX_DETAIL_DEFINES
 
 #if defined(__cplusplus)
 #if defined(_MSC_VER)
@@ -62,4 +62,4 @@
 #define CRCXX_STATIC_ASSERT(expr, msg) typedef char CRCXX_MAKE_ASSERT_NAME(CRCXX_STATIC_ASSERTION_)[(expr) ? 1 : -1]
 #endif
 
-#endif // HXX_CXX_INTERNAL_DEFINES
+#endif // HXX_CXX_DETAIL_DEFINES
