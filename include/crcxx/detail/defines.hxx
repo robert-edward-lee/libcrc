@@ -47,6 +47,12 @@
 #define CRCXX_CONST_OR_CONSTEXPR const
 #endif
 
+#if CRCXX_STDCXX_VERSION_CHECK(201703)
+#define CRCXX_IF_CONSTEXPR if constexpr
+#else
+#define CRCXX_IF_CONSTEXPR if
+#endif
+
 #if CRCXX_STDCXX_VERSION_CHECK(200410)
 #define CRCXX_STATIC_ASSERT static_assert
 #else

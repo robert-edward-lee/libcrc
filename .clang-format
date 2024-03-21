@@ -31,4 +31,6 @@ SpaceBeforeRangeBasedForLoopColon: false
 SpaceInEmptyBlock: false
 # sort
 SortUsingDeclarations: Never
+# macro aliases
+IfMacros: ['CRCXX_IF_CONSTEXPR']
 ...

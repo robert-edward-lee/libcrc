@@ -44,11 +44,11 @@ public:
         type ret = value;
         value = init_value(init);
 
-        if(refin != refout) {
+        CRCXX_IF_CONSTEXPR(refin != refout) {
             ret = detail::rev(ret);
         }
 
-        if(!refout) {
+        CRCXX_IF_CONSTEXPR(!refout) {
             ret >>= real_width - width;
         }
 
@@ -57,9 +57,9 @@ public:
 
     template<typename T>
     CRCXX_CONSTEXPR_14 typename detail::enable_if<detail::is_byte<T>::value>::type update(T byte) CRCXX_NOEXCEPT {
-        if(real_width == 8) {
+        CRCXX_IF_CONSTEXPR(real_width == 8) {
             value = table[value ^ byte];
-        } else if(refin) {
+        } else CRCXX_IF_CONSTEXPR(refin) {
             value = table[(value & 0xFF) ^ byte] ^ (value >> 8);
         } else {
             value = table[(value >> (real_width - 8)) ^ byte] ^ (value << 8);
@@ -120,7 +120,7 @@ private:
     static CRCXX_CONSTEXPR_14 type crc(type value) CRCXX_NOEXCEPT {
         int i = 8;
 
-        if(refin) {
+        CRCXX_IF_CONSTEXPR(refin) {
             while(i--) {
                 value = (value >> 1) ^ (init_value(poly) & -(value & 1));
             }
