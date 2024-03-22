@@ -44,6 +44,6 @@
 #define CRC_STATIC_ASSERT(expr, msg) typedef char CRC_MAKE_ASSERT_NAME(CRC_STATIC_ASSERTION_)[(expr) ? 1 : -1]
 #endif
 
-#define CRC_EXPAND_INITIALIZER_LIST(...) __VA_ARGS__
+#define CRC_EXPAND_INITIALIZER_LIST(w, p, i, ri, ro, x, ch) w, p, i, ri, ro, x, ch
 
 #endif /* H_CRC_INTERNAL_DEFINES */

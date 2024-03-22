@@ -30,7 +30,7 @@ OPTFLAGS += -O2
 DEFINES += NDEBUG
 endif
 
-CFLAGS += $(addprefix -D,$(DEFINES)) -std=c90
+CFLAGS += $(addprefix -D,$(DEFINES))
 CFLAGS += $(addprefix -I,$(INCDIRS))
 CFLAGS += $(WARNFLAGS)
 CFLAGS += $(OPTFLAGS)
