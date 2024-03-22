@@ -22,11 +22,11 @@ static CRC_INLINE uint8_t crc8(uint8_t poly, int refin, uint8_t init) {
 
     if(refin) {
         while(i--) {
-            init = (init >> 1) ^ (poly & -(init & 1));
+            init = (init >> 1) ^ (poly * (init & 1));
         }
     } else {
         while(i--) {
-            init = (init << 1) ^ (poly & -((init >> (8 * sizeof(init) - 1)) & 1));
+            init = (init << 1) ^ (poly * ((init >> (8 * sizeof(init) - 1)) & 1));
         }
     }
 
@@ -44,12 +44,12 @@ static CRC_INLINE uint16_t crc16(uint16_t poly, int refin, uint16_t init) {
 
     if(refin) {
         while(i--) {
-            init = (init >> 1) ^ (poly & -(init & 1));
+            init = (init >> 1) ^ (poly * (init & 1));
         }
     } else {
         init <<= 8 * (sizeof(init) - 1);
         while(i--) {
-            init = (init << 1) ^ (poly & -((init >> (8 * sizeof(init) - 1)) & 1));
+            init = (init << 1) ^ (poly * ((init >> (8 * sizeof(init) - 1)) & 1));
         }
     }
 
@@ -67,12 +67,12 @@ static CRC_INLINE uint32_t crc32(uint32_t poly, int refin, uint32_t init) {
 
     if(refin) {
         while(i--) {
-            init = (init >> 1) ^ (poly & -(init & 1));
+            init = (init >> 1) ^ (poly * (init & 1));
         }
     } else {
         init <<= 8 * (sizeof(init) - 1);
         while(i--) {
-            init = (init << 1) ^ (poly & -((init >> (8 * sizeof(init) - 1)) & 1));
+            init = (init << 1) ^ (poly * ((init >> (8 * sizeof(init) - 1)) & 1));
         }
     }
 
@@ -90,12 +90,12 @@ static CRC_INLINE uint64_t crc64(uint64_t poly, int refin, uint64_t init) {
 
     if(refin) {
         while(i--) {
-            init = (init >> 1) ^ (poly & -(init & 1));
+            init = (init >> 1) ^ (poly * (init & 1));
         }
     } else {
         init <<= 8 * (sizeof(init) - 1);
         while(i--) {
-            init = (init << 1) ^ (poly & -((init >> (8 * sizeof(init) - 1)) & 1));
+            init = (init << 1) ^ (poly * ((init >> (8 * sizeof(init) - 1)) & 1));
         }
     }
 
@@ -521,12 +521,12 @@ static CRC_INLINE uint128_t crc128(uint128_t poly, int refin, uint128_t init) {
 
     if(refin) {
         while(i--) {
-            init = (init >> 1) ^ (poly & -(init & 1));
+            init = (init >> 1) ^ (poly * (init & 1));
         }
     } else {
         init <<= 8 * (sizeof(init) - 1);
         while(i--) {
-            init = (init << 1) ^ (poly & -((init >> (8 * sizeof(init) - 1)) & 1));
+            init = (init << 1) ^ (poly * ((init >> (8 * sizeof(init) - 1)) & 1));
         }
     }
 
