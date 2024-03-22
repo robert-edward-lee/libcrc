@@ -12,7 +12,7 @@
     \param x Слово шириной 8 бит
     \return Отзеркаленное слово
 */
-static CRC_INLINE uint8_t rev8(uint8_t x) {
+static CRC_ALWAYS_INLINE uint8_t rev8(uint8_t x) {
 #if CRC_HAS_BUILTIN_BITREVERSE
     return __builtin_bitreverse8(x);
 #else
@@ -25,7 +25,7 @@ static CRC_INLINE uint8_t rev8(uint8_t x) {
     \param x Слово шириной 16 бит
     \return Отзеркаленное слово
 */
-static CRC_INLINE uint16_t rev16(uint16_t x) {
+static CRC_ALWAYS_INLINE uint16_t rev16(uint16_t x) {
 #if CRC_HAS_BUILTIN_BITREVERSE
     return __builtin_bitreverse16(x);
 #else
@@ -39,7 +39,7 @@ static CRC_INLINE uint16_t rev16(uint16_t x) {
     \param x Слово шириной 32 бит
     \return Отзеркаленное слово
 */
-static CRC_INLINE uint32_t rev32(uint32_t x) {
+static CRC_ALWAYS_INLINE uint32_t rev32(uint32_t x) {
 #if CRC_HAS_BUILTIN_BITREVERSE
     return __builtin_bitreverse32(x);
 #else
@@ -54,7 +54,7 @@ static CRC_INLINE uint32_t rev32(uint32_t x) {
     \param x Слово шириной 64 бит
     \return Отзеркаленное слово
 */
-static CRC_INLINE uint64_t rev64(uint64_t x) {
+static CRC_ALWAYS_INLINE uint64_t rev64(uint64_t x) {
 #if CRC_HAS_BUILTIN_BITREVERSE
     return __builtin_bitreverse64(x);
 #else
@@ -73,7 +73,7 @@ static CRC_INLINE uint64_t rev64(uint64_t x) {
     \param x Слово шириной 128 бит
     \return Отзеркаленное слово
 */
-static CRC_INLINE uint128_t rev128(uint128_t x) {
+static CRC_ALWAYS_INLINE uint128_t rev128(uint128_t x) {
     return (uint128_t)rev64(x) << 64 | rev64(x >> 64);
 }
 #endif /* CRC_HAS_128BIT_ALGO */

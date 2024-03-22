@@ -25,12 +25,18 @@
 
 #if CRC_STDC_VERSION_CHECK(199901)
 #define CRC_INLINE inline
-#elif defined(__GNUC__)
+#elif defined(__GNUC__) || defined(__clang__)
 #define CRC_INLINE __inline__
-#elif defined(_MSC_VER)
-#define CRC_INLINE __forceinline
 #else
 #define CRC_INLINE
+#endif
+
+#if defined(__GNUC__) || defined(__clang__)
+#define CRC_ALWAYS_INLINE CRC_INLINE __attribute__((__always_inline__))
+#elif defined(_MSC_VER)
+#define CRC_ALWAYS_INLINE CRC_INLINE __forceinline
+#else
+#define CRC_ALWAYS_INLINE CRC_INLINE
 #endif
 
 #if CRC_STDC_VERSION_CHECK(202003)
