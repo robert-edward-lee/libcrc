@@ -13,14 +13,13 @@ BEGIN = rf"""/**
 */
 #ifndef H_CRC_CATALOG
 #define H_CRC_CATALOG
-
-#include <stdbool.h>
-// clang-format off
-//                                               Width              Poly                Init  RefIn  RefOut              XorOut              Check
+#include "crc/internal/defines.h"
+/* clang-format off */
+/*                              Width              Poly              Init RefIn RefOut         XorOut               Check */
 """
 
-END = r"""// clang-format on
-#endif // H_CRC_CATALOG
+END = r"""/* clang-format on */
+#endif /* H_CRC_CATALOG */
 """
 
 def str2bool(s: str) -> bool:
@@ -68,68 +67,81 @@ class Algo(object):
                         alias = alias.replace('CRC-', 'CRC').replace('-', '_').replace('/', '_')
                         self.aliases.append(alias)
 
-    def __str__(self) -> str:
-        ret = f'#define {self.name:23} ('
+    def is_valid(self) -> bool:
+        return self.actual_width != -1
 
-        if self.actual_width == 8:
-            ret += '( Crc8BasedAlgo)'
-        elif self.actual_width == 16:
-            ret += '(Crc16BasedAlgo)'
-        elif self.actual_width == 32:
-            ret += '(Crc32BasedAlgo)'
-        elif self.actual_width == 64:
-            ret += '(Crc64BasedAlgo)'
-        elif self.actual_width == 128:
-            ret += '(Crc128BasedAlgo)'
-        else:
-            return None
+    def str_c(self) -> str:
+        ret = f'#define {self.name:23} '
 
-        ret += f'{{{self.width:>2},'
-
+        mask = (1 << 32) - 1
         if self.actual_width == 128:
-            align = (self.width - 64) // 4 + bool((self.width - 64) % 4)
-            mask = (1 << 65) - 1
-            ret += f'  (__uint128_t)0x{self.poly >> 64:0{align}X} << 64 |'
-            ret += f' 0x{self.poly & mask:016X}, \\\n'
+            ret += f'{{{self.width:>3},'
 
-            ret += f'{' ':56}'
-            ret += f'(__uint128_t)0x{self.init >> 64:0{align}X} << 64 |'
-            ret += f' 0x{self.init & mask:016X}, \\\n'
+            ret += f' (uint128_t)0x{self.poly >> 96:08X} << 96 |'
+            ret += f' (uint128_t)0x{(self.poly >> 64) & mask:08X} << 64 |'
+            ret += f' (uint128_t)0x{(self.poly >> 32) & mask:08X} << 32 |'
+            ret += f' 0x{self.poly & mask:08X},\\\n'
 
-            ret += f'{' ':56}'
-            ret += f'{str(self.refin).lower()}, {str(self.refout).lower()}, \\\n'
+            ret += f'{' ':37}'
+            ret += f' (uint128_t)0x{self.init >> 96:08X} << 96 |'
+            ret += f' (uint128_t)0x{(self.init >> 64) & mask:08X} << 64 |'
+            ret += f' (uint128_t)0x{(self.init >> 32) & mask:08X} << 32 |'
+            ret += f' 0x{self.init & mask:08X},\\\n'
 
-            ret += f'{' ':56}'
-            ret += f'(__uint128_t)0x{self.xorout >> 64:0{align}X} << 64 |'
-            ret += f' 0x{self.xorout & mask:016X}, \\\n'
+            ret += f'{' ':37}'
+            ret += f' {int(self.refin)}, {int(self.refout)},\\\n'
 
-            ret += f'{' ':56}'
-            ret += f'(__uint128_t)0x{self.check >> 64:0{align}X} << 64 |'
-            ret += f' 0x{self.check & mask:016X}}})\n'
+            ret += f'{' ':37}'
+            ret += f' (uint128_t)0x{self.xorout >> 96:08X} << 96 |'
+            ret += f' (uint128_t)0x{(self.xorout >> 64) & mask:08X} << 64 |'
+            ret += f' (uint128_t)0x{(self.xorout >> 32) & mask:08X} << 32 |'
+            ret += f' 0x{self.xorout & mask:08X},\\\n'
+
+            ret += f'{' ':37}'
+            ret += f' (uint128_t)0x{self.check >> 96:08X} << 96 |'
+            ret += f' (uint128_t)0x{(self.check >> 64) & mask:08X} << 64 |'
+            ret += f' (uint128_t)0x{(self.check >> 32) & mask:08X} << 32 |'
+            ret += f' 0x{self.check & mask:08X}}}\n'
+        elif self.actual_width == 64:
+            ret += f'{{{self.width:>2},'
+
+            ret += f' (uint64_t)0x{self.poly >> 32:08X} << 32 |'
+            ret += f' 0x{self.poly & mask:08X},'
+
+            ret += f' (uint64_t)0x{self.init >> 32:08X} << 32 |'
+            ret += f' 0x{self.init & mask:08X},\\\n'
+
+            ret += f'{' ':30}'
+            ret += f' {int(self.refin)}, {int(self.refout)},'
+
+            ret += f' (uint64_t)0x{self.xorout >> 32:08X} << 32 |'
+            ret += f' 0x{self.xorout & mask:08X},'
+
+            ret += f' (uint64_t)0x{self.check >> 32:08X} << 32 |'
+            ret += f' 0x{self.check & mask:08X}}}\n'
         else:
             align = self.width // 4 + bool(self.width % 4)
+            ret += f'{{{self.width:>2},'
+
             ret += f'{' ':>{17 - align}}'
             ret += f'0x{self.poly:0{align}X},'
 
             ret += f'{' ':>{17 - align}}'
             ret += f'0x{self.init:0{align}X},'
 
-            ret += f'{str(self.refin).lower():>6},'
-            ret += f'{str(self.refout).lower():>6},'
+            ret += f' {int(self.refin)},'
+            ret += f' {int(self.refout)},'
 
             ret += f'{' ':>{17 - align}}'
             ret += f'0x{self.xorout:0{align}X},'
 
             ret += f'{' ':>{17 - align}}'
-            ret += f'0x{self.check:0{align}X}}})\n'
+            ret += f'0x{self.check:0{align}X}}}\n'
 
         for alias in self.aliases:
             ret += f'#define {alias:23} {self.name}\n'
 
         return ret
-
-    def is_valid(self) -> bool:
-        return self.actual_width != -1
 
     def str_test(self) -> str:
         return f'    crc_test({self.name}, {self.actual_width});\n'
@@ -270,9 +282,9 @@ with open('include/crc/catalog.h', 'w+', encoding='utf-8', newline='\n') as f:
     for algo in test_algos:
         if algo.actual_width == 128 and not flag128:
             flag128 = True
-            f.write('\n#ifdef __SIZEOF_INT128__\n')
+            f.write('\n#if CRC_HAS_128BIT_ALGO\n')
 
-        f.write(str(algo))
+        f.write(algo.str_c())
 
     if flag128:
         f.write('#endif\n')
@@ -286,12 +298,13 @@ TEST_BEGIN = r"""#include "crc_test.h"
 
 int errors = 0;
 int passed = 0;
+int percents;
 
 int main(void) {
 """
 
 TEST_END = r"""
-    int percents = 100 * passed / (passed + errors);
+    percents = 100 * passed / (passed + errors);
     printf("[%d%%] tests passed, %d errors\n", percents, errors);
 
     return 0;
@@ -305,7 +318,7 @@ with open('test/crc_test.c', 'w+', encoding='utf-8', newline='\n') as f:
     for algo in test_algos:
         if algo.actual_width == 128 and not flag128:
             flag128 = True
-            f.write('\n#ifdef __SIZEOF_INT128__\n')
+            f.write('\n#if CRC_HAS_128BIT_ALGO\n')
 
         f.write(algo.str_test())
 

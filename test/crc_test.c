@@ -2,6 +2,7 @@
 
 int errors = 0;
 int passed = 0;
+int percents;
 
 int main(void) {
     crc_test(CRC3_GSM, 8);
@@ -116,11 +117,11 @@ int main(void) {
     crc_test(CRC64_WE, 64);
     crc_test(CRC64_XZ, 64);
 
-#ifdef __SIZEOF_INT128__
+#if CRC_HAS_128BIT_ALGO
     crc_test(CRC82_DARC, 128);
 #endif
 
-    int percents = 100 * passed / (passed + errors);
+    percents = 100 * passed / (passed + errors);
     printf("[%d%%] tests passed, %d errors\n", percents, errors);
 
     return 0;

@@ -1,5 +1,5 @@
 test: $(BUILDDIR) $(STATICLIB)
-	@$(CC) $(CFLAGS) $(CURDIR)/test/crc_test.c $(STATICLIB) -o $(CURDIR)/$(BUILDDIR)/$@
+	@$(CC) $(CFLAGS) -std=c90 $(CURDIR)/test/crc_test.c $(STATICLIB) -o $(CURDIR)/$(BUILDDIR)/$@
 	@$(CURDIR)/$(BUILDDIR)/$@
 
 print: $(BUILDDIR) $(STATICLIB)

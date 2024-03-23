@@ -3,7 +3,7 @@
 ### [Версия для C++](./README++.md)
 
 ### Требования
-Компилятор **gcc** или **clang** с поддержкой стандарта **c99**
+Компилятор **gcc** или **clang** с поддержкой стандарта **c90**
 
 ### [Спецификации алгоритмов](./CATALOG.md)
 
@@ -17,14 +17,9 @@ char data[] = "123456789";
 uint16_t value;
 Crc16 crc;
 
-// если компилятор не поддерживает C11
-crc16_init(&crc, &CRC16_ARC);
+crc16_init(&crc, CRC16_ARC);
 value = crc16_checksum(&crc, data, sizeof(data) - 1);
 crc16_destroy(&crc);
-// если компилятор поддерживает C11
-crc_init(&crc, &CRC16_ARC);
-value = crc_checksum(&crc, data, sizeof(data) - 1);
-crc_destroy(&crc);
 ```
 
 #### Со статическим выделением памяти
@@ -37,12 +32,8 @@ uint16_t table[256];
 uint16_t value;
 Crc16 crc;
 
-// если компилятор не поддерживает C11
-crc16_init_static(&crc, &CRC16_ARC, table);
+crc16_init_static(&crc, CRC16_ARC, table);
 value = crc16_checksum(&crc, data, sizeof(data) - 1);
-// если компилятор поддерживает C11
-crc_init_static(&crc, &CRC16_ARC, table);
-value = crc_checksum(&crc, data, sizeof(data) - 1);
 ```
 
 #### Итеративного вычисления
@@ -78,23 +69,11 @@ char data[] = "123456789";
 uint16_t value;
 Crc16 crc;
 
-Crc16BasedAlgo algo = {
-    .width = <castom_width>,
-    .poly = <castom_poly>,
-    .init = <castom_init>,
-    .refin = <castom_refin>,
-    .refout = <castom_refout>,
-    .xorout = <castom_xorout>,
-};
+#define CRC16_CASTOM {<castom_width>, <castom_poly>, <castom_init>, <castom_refin>, <castom_refout>, <castom_xorout>}
 
-// если компилятор не поддерживает C11
-crc16_init(&crc, &algo);
+crc16_init(&crc, CRC_CASTOM);
 value = crc16_checksum(&crc, data, sizeof(data) - 1);
 crc16_destroy(&crc);
-// если компилятор поддерживает C11
-crc_init(&crc, &algo);
-value = crc_checksum(&crc, data, sizeof(data) - 1);
-crc_destroy(&crc);
 ```
 
 ### Сборка и использование в проекте
