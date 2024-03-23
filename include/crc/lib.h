@@ -6,7 +6,6 @@
 #define H_CRC_LIB
 
 #include <stddef.h>
-#include <stdint.h>
 
 #include "crc/internal/defines.h"
 #include "crc/internal/types.h"

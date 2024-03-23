@@ -1,7 +1,6 @@
 #ifndef H_CRC_TEST
 #define H_CRC_TEST
 
-#include <inttypes.h>
 #include <stdio.h>
 
 #include "crc/catalog.h"

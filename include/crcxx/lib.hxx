@@ -33,17 +33,17 @@ public:
     static CRCXX_CONST_OR_CONSTEXPR type xorout = XorOut;
     static CRCXX_CONST_OR_CONSTEXPR type check = Check;
 
-    Crc(void): value(init_value(init)), table(new type[256]) {
+    Crc(void): m_value(fit_value(init)), m_table(new type[256]) {
         table_init();
     }
 
     ~Crc(void) CRCXX_NOEXCEPT {
-        delete[] table;
+        delete[] m_table;
     }
 
     CRCXX_CONSTEXPR_14 type finalize(void) CRCXX_NOEXCEPT {
-        type ret = value;
-        value = init_value(init);
+        type ret = m_value;
+        m_value = fit_value(init);
 
         CRCXX_IF_CONSTEXPR(refin != refout) {
             ret = detail::rev(ret);
@@ -59,11 +59,11 @@ public:
     template<typename T>
     CRCXX_CONSTEXPR_14 typename detail::enable_if<detail::is_byte<T>::value>::type update(T byte) CRCXX_NOEXCEPT {
         CRCXX_IF_CONSTEXPR(real_width == 8) {
-            value = table[value ^ byte];
+            m_value = m_table[m_value ^ byte];
         } else CRCXX_IF_CONSTEXPR(refin) {
-            value = table[(value & 0xFF) ^ byte] ^ (value >> 8);
+            m_value = m_table[(m_value & 0xFF) ^ byte] ^ (m_value >> 8);
         } else {
-            value = table[(value >> (real_width - 8)) ^ byte] ^ (value << 8);
+            m_value = m_table[(m_value >> (real_width - 8)) ^ byte] ^ (m_value << 8);
         }
     }
     template<typename T>
@@ -108,8 +108,8 @@ private:
     Crc(const Crc &);
     Crc &operator=(const Crc &);
 
-    static CRCXX_CONSTEXPR type init_value(type init) CRCXX_NOEXCEPT {
-        return refin ? detail::rev(init) >> (real_width - width) : init << (real_width - width);
+    static CRCXX_CONSTEXPR type fit_value(type value) CRCXX_NOEXCEPT {
+        return refin ? detail::rev(value) >> (real_width - width) : value << (real_width - width);
     }
 
     static CRCXX_CONSTEXPR_14 type crc(type value) CRCXX_NOEXCEPT {
@@ -117,12 +117,12 @@ private:
 
         CRCXX_IF_CONSTEXPR(refin) {
             while(i--) {
-                value = (value >> 1) ^ (init_value(poly) & -(value & 1));
+                value = (value >> 1) ^ (fit_value(poly) * (value & 1));
             }
         } else {
             value <<= real_width - 8;
             while(i--) {
-                value = (value << 1) ^ (init_value(poly) & -((value >> (real_width - 1)) & 1));
+                value = (value << 1) ^ (fit_value(poly) * ((value >> (real_width - 1)) & 1));
             }
         }
 
@@ -130,14 +130,16 @@ private:
     }
 
     void table_init(void) CRCXX_NOEXCEPT {
-        int i = 256;
-        while(i--) {
-            table[i] = crc(i);
+        type i = 255;
+        while(i) {
+            m_table[i] = crc(i);
+            --i;
         }
+        m_table[i] = crc(i);
     }
 
-    type value;
-    type *table;
+    type m_value;
+    type *m_table;
 };
 
 } // namespace crc
