@@ -1,5 +1,5 @@
 test: $(BUILDDIR) $(STATICLIB)
-	@$(CC) $(CFLAGS) -std=c90 $(CURDIR)/test/crc_test.c $(STATICLIB) -o $(CURDIR)/$(BUILDDIR)/$@
+	@$(CC) $(CFLAGS) -ansi $(CURDIR)/test/crc_test.c $(STATICLIB) -o $(CURDIR)/$(BUILDDIR)/$@
 	@$(CURDIR)/$(BUILDDIR)/$@
 
 print: $(BUILDDIR) $(STATICLIB)
@@ -7,7 +7,7 @@ print: $(BUILDDIR) $(STATICLIB)
 	@$(CURDIR)/$(BUILDDIR)/$@
 
 CXX = g++
-CXXFLAGS = -Wall -Wextra -pedantic -Iinclude -std=c++98
+CXXFLAGS = -Wall -Wextra -pedantic -Iinclude -ansi -U__STRICT_ANSI__
 
 testxx: $(BUILDDIR)
 	@$(CXX) $(CXXFLAGS) $(CURDIR)/test/crcxx_test.cxx -o $(CURDIR)/$(BUILDDIR)/$@
