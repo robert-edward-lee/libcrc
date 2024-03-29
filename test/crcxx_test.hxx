@@ -1,7 +1,8 @@
 #ifndef HXX_CRC_TEST
 #define HXX_CRC_TEST
 
-#include <iostream>
+#include <stdio.h>
+#include <string>
 
 #include "crcxx/detail/types.hxx"
 

@@ -6,6 +6,7 @@
 #if CRCXX_STDCXX_VERSION_CHECK(201103)
 #include <cstdint>
 #else
+#include <stddef.h>
 #include <stdint.h>
 #endif
 
