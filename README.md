@@ -1,17 +1,18 @@
 ## Библиотека расчёта циклического избыточного кода
 
-### [Версия для C++](./README++.md)
-
 ### Требования
-Компилятор **gcc** или **clang** с поддержкой стандарта **c90**
+Компилятор с поддержкой стандарта **c89**
+
+Тестируемые компиляторы:
+> - **gcc >= 3.2.3**
 
 ### [Спецификации алгоритмов](./CATALOG.md)
 
 ### Пример использования
 #### С динамическим выделением памяти
 ```c
-#include "crc/catalog.h"
-#include "crc/lib.h"
+#include <crc/catalog.h>
+#include <crc/lib.h>
 
 char data[] = "123456789";
 uint16_t value;
@@ -24,8 +25,8 @@ crc16_destroy(&crc);
 
 #### Со статическим выделением памяти
 ```c
-#include "crc/catalog.h"
-#include "crc/lib.h"
+#include <crc/catalog.h>
+#include <crc/lib.h>
 
 char data[] = "123456789";
 uint16_t table[256];
@@ -38,8 +39,8 @@ value = crc16_checksum(&crc, data, sizeof(data) - 1);
 
 #### Итеративного вычисления
 ```c
-#include "crc/catalog.h"
-#include "crc/lib.h"
+#include <crc/catalog.h>
+#include <crc/lib.h>
 
 char data[] = "123456789";
 uint16_t value;
@@ -63,7 +64,7 @@ crc_destroy(&crc);
 
 #### Использование нестандартного алгоритма
 ```c
-#include "crc/lib.h"
+#include <crc/lib.h>
 
 char data[] = "123456789";
 uint16_t value;

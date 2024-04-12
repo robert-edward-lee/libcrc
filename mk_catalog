@@ -6,30 +6,17 @@ from bs4 import BeautifulSoup as bSoup
 
 URL = 'https://reveng.sourceforge.io/crc-catalogue/all.htm'
 
-BEGIN = rf"""/**
-    \file catalog.h
-    \brief <a href="{URL}">Перечень</a> всех стандартных и общепринятых
-    CRC алгоритмов шириной вплоть до 128 бит
-*/
-#ifndef H_CRC_CATALOG
-#define H_CRC_CATALOG
-#include "crc/internal/defines.h"
-/* clang-format off */
-/*                              Width              Poly              Init RefIn RefOut         XorOut               Check */
-"""
-
-END = r"""/* clang-format on */
-#endif /* H_CRC_CATALOG */
-"""
 
 def str2bool(s: str) -> bool:
     if s.lower() == 'true':
         return True
     return False
 
+
 class Algo(object):
     def __init__(self, header: str, params: str, desc: str) -> None:
-        self.name = header.replace('CRC-', 'CRC').replace('-', '_').replace('/', '_')
+        self.name = header.replace(
+            'CRC-', 'CRC').replace('-', '_').replace('/', '_')
 
         params = params[0:params.find('residue')]
         params = params.split()
@@ -64,7 +51,8 @@ class Algo(object):
 
                 for alias in aliases:
                     if '/' in alias:
-                        alias = alias.replace('CRC-', 'CRC').replace('-', '_').replace('/', '_')
+                        alias = alias.replace(
+                            'CRC-', 'CRC').replace('-', '_').replace('/', '_')
                         self.aliases.append(alias)
 
     def is_valid(self) -> bool:
@@ -163,99 +151,10 @@ class Algo(object):
         ret += '|\n'
         return ret
 
-    def str_cxx(self) -> str:
-        ret = f'typedef Crc<'
 
-        if self.actual_width == 8:
-            ret += ' uint8_t, '
-        elif self.actual_width == 16:
-            ret += 'uint16_t, '
-        elif self.actual_width == 32:
-            ret += 'uint32_t, '
-        elif self.actual_width == 64:
-            ret += 'uint64_t, '
-        elif self.actual_width == 128:
-            ret += 'uint128_t, '
-        else:
-            return None
-
-        align = self.width // 4 + bool(self.width % 4)
-        mask = (1 << 32) - 1
-        if self.actual_width == 128:
-            ret += f'{self.width:>3},'
-
-            ret += f' (uint128_t)0x{self.poly >> 96:08X} << 96 |'
-            ret += f' (uint128_t)0x{(self.poly >> 64) & mask:08X} << 64 |'
-            ret += f' (uint128_t)0x{(self.poly >> 32) & mask:08X} << 32 |'
-            ret += f' 0x{self.poly & mask:08X},\n'
-
-            ret += f'{' ':27}'
-            ret += f' (uint128_t)0x{self.init >> 96:08X} << 96 |'
-            ret += f' (uint128_t)0x{(self.init >> 64) & mask:08X} << 64 |'
-            ret += f' (uint128_t)0x{(self.init >> 32) & mask:08X} << 32 |'
-            ret += f' 0x{self.init & mask:08X},\n'
-
-            ret += f'{' ':27}'
-            ret += f' {str(self.refin).lower()}, {str(self.refout).lower()},\n'
-
-            ret += f'{' ':27}'
-            ret += f' (uint128_t)0x{self.xorout >> 96:08X} << 96 |'
-            ret += f' (uint128_t)0x{(self.xorout >> 64) & mask:08X} << 64 |'
-            ret += f' (uint128_t)0x{(self.xorout >> 32) & mask:08X} << 32 |'
-            ret += f' 0x{self.xorout & mask:08X},\n'
-
-            ret += f'{' ':27}'
-            ret += f' (uint128_t)0x{self.check >> 96:08X} << 96 |'
-            ret += f' (uint128_t)0x{(self.check >> 64) & mask:08X} << 64 |'
-            ret += f' (uint128_t)0x{(self.check >> 32) & mask:08X} << 32 |'
-            ret += f' 0x{self.check & mask:08X}>'
-
-            ret += f' {self.name};\n'
-        elif self.actual_width == 64:
-            ret += f'{self.width:>2},'
-
-            ret += f' (uint64_t)0x{self.poly >> 32:08X} << 32 |'
-            ret += f' 0x{self.poly & mask:08X},'
-
-            ret += f' (uint64_t)0x{self.init >> 32:08X} << 32 |'
-            ret += f' 0x{self.init & mask:08X},\n'
-
-            ret += f'{' ':{11 + self.refin + self.refout}}'
-            ret += f' {str(self.refin).lower()}, {str(self.refout).lower()},'
-
-            ret += f' (uint64_t)0x{self.xorout >> 32:08X} << 32 |'
-            ret += f' 0x{self.xorout & mask:08X},'
-
-            ret += f' (uint64_t)0x{self.check >> 32:08X} << 32 |'
-            ret += f' 0x{self.check & mask:08X}>'
-
-            ret += f'{' ':12}'
-            ret += f' {self.name};\n'
-        else:
-            ret += f'{self.width:>2},'
-
-            ret += f'{' ':>{17 - align}}'
-            ret += f'0x{self.poly:0{align}X},'
-
-            ret += f'{' ':>{17 - align}}'
-            ret += f'0x{self.init:0{align}X},'
-
-            ret += f'{str(self.refin).lower():>6},'
-            ret += f'{str(self.refout).lower():>6},'
-
-            ret += f'{' ':>{17 - align}}'
-            ret += f'0x{self.xorout:0{align}X},'
-
-            ret += f'{' ':>{17 - align}}'
-            ret += f'0x{self.check:0{align}X}>'
-
-            ret += f' {self.name};\n'
-
-        for alias in self.aliases:
-            ret += f'typedef {self.name} {alias:>{111 - len(self.name) + len(alias)}};\n'
-
-        return ret
-
+################################################################################
+#                              Create object list                              #
+################################################################################
 test_algos: List[Algo] = []
 
 resp = requests.get(URL, verify=False)
@@ -274,6 +173,40 @@ for link in links:
         if algo.is_valid():
             test_algos.append(algo)
 
+################################################################################
+#                              Create CATALOG.md                               #
+################################################################################
+MD_BEGIN = rf"""### Спецификации алгоритмов
+Каталог алгоритмов взят отсюда: {URL}
+
+| Name | Width | Poly | Init | RefIn | RefOut | XorOut | Check | Aliases |
+| ---- | ----: | ---: | ---: | ----: | -----: | -----: | ----: | ------- |
+"""
+
+with open('CATALOG.md', 'w+', encoding='utf-8', newline='\n') as f:
+    f.write(MD_BEGIN)
+
+    for algo in test_algos:
+        f.write(algo.str_md())
+
+################################################################################
+#                               Create catalog.h                               #
+################################################################################
+BEGIN = rf"""/**
+    \file catalog.h
+    \brief <a href="{URL}">Перечень</a> всех стандартных и общепринятых
+    CRC алгоритмов шириной вплоть до 128 бит
+*/
+#ifndef H_CRC_CATALOG
+#define H_CRC_CATALOG
+#include "crc/internal/defines.h"
+/* clang-format off */
+/*                              Width              Poly              Init RefIn RefOut         XorOut               Check */
+"""
+
+END = r"""/* clang-format on */
+#endif /* H_CRC_CATALOG */
+"""
 
 flag128 = False
 with open('include/crc/catalog.h', 'w+', encoding='utf-8', newline='\n') as f:
@@ -291,9 +224,9 @@ with open('include/crc/catalog.h', 'w+', encoding='utf-8', newline='\n') as f:
 
     f.write(END)
 
-
-# CREATE crc_test.c
-
+################################################################################
+#                              Create crc_test.c                              #
+################################################################################
 TEST_BEGIN = r"""#include "crc_test.h"
 
 int errors = 0;
@@ -326,95 +259,3 @@ with open('test/crc_test.c', 'w+', encoding='utf-8', newline='\n') as f:
         f.write('#endif\n')
 
     f.write(TEST_END)
-
-
-# CREATE CATALOG.md
-
-MD_BEGIN = rf"""### Спецификации алгоритмов
-Каталог алгоритмов взят отсюда: {URL}
-
-| Name | Width | Poly | Init | RefIn | RefOut | XorOut | Check | Aliases |
-| ---- | ----: | ---: | ---: | ----: | -----: | -----: | ----: | ------- |
-"""
-
-with open('CATALOG.md', 'w+', encoding='utf-8', newline='\n') as f:
-    f.write(MD_BEGIN)
-
-    for algo in test_algos:
-        f.write(algo.str_md())
-
-
-# create cxx lib
-
-CXX_BEGIN = rf"""/**
-    \file catalog.hxx
-    \brief <a href="{URL}">Перечень</a> всех стандартных и общепринятых
-    CRC алгоритмов шириной вплоть до 128 бит
-*/
-#ifndef HXX_CRCXX_CATALOG
-#define HXX_CRCXX_CATALOG
-#include "detail/types.hxx"
-// clang-format off
-namespace crc {{
-template<typename ValueType, size_t Width, ValueType Poly, ValueType Init, bool RefIn, bool RefOut, ValueType XorOut, ValueType Check> class Crc;
-//        ValueType  Width              Poly                Init  RefIn RefOut              XorOut               Check
-"""
-
-CXX_END = r"""} // namespace crc
-// clang-format on
-
-#endif // HXX_CRCXX_CATALOG
-"""
-
-
-flag128 = False
-with open('include/crcxx/catalog.hxx', 'w+', encoding='utf-8', newline='\n') as f:
-    f.write(CXX_BEGIN)
-
-    for algo in test_algos:
-        if algo.actual_width == 128 and not flag128:
-            flag128 = True
-            f.write('\n#if CRCXX_HAS_128BIT_ALGO\n')
-
-        f.write(algo.str_cxx())
-
-    if flag128:
-        f.write('#endif\n')
-
-    f.write(CXX_END)
-
-# CREATE crc_test.cxx
-
-CXX_TEST_BEGIN = r"""#include "crcxx_test.hxx"
-#include "crcxx/catalog.hxx"
-#include "crcxx/lib.hxx"
-
-int errors = 0;
-int passed = 0;
-
-int main(void) {
-"""
-
-CXX_TEST_END = r"""
-    int percents = 100 * passed / (passed + errors);
-    printf("[%d%%] tests passed, %d errors\n", percents, errors);
-
-    return 0;
-}
-"""
-
-flag128 = False
-with open('test/crcxx_test.cxx', 'w+', encoding='utf-8', newline='\n') as f:
-    f.write(CXX_TEST_BEGIN)
-
-    for algo in test_algos:
-        if algo.actual_width == 128 and not flag128:
-            flag128 = True
-            f.write('\n#if CRCXX_HAS_128BIT_ALGO\n')
-
-        f.write(algo.str_test())
-
-    if flag128:
-        f.write('#endif\n')
-
-    f.write(CXX_TEST_END)

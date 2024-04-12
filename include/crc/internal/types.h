@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-#include "defines.h"
+#include "crc/internal/defines.h"
 
 #if CRC_HAS_128BIT_ALGO
 typedef __uint128_t uint128_t;

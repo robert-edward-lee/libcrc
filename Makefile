@@ -20,7 +20,7 @@ DEFINES =
 OPTFLAGS =
 # OPTFLAGS += -ffunction-sections
 # OPTFLAGS += -fdata-sections
-WARNFLAGS = -Wall -Wextra -pedantic
+WARNFLAGS = -Wall -pedantic
 DEPENDFLAGS = -MMD -MP
 
 ifeq ($(DEBUG),1)

@@ -2,12 +2,12 @@
     \file lib.c
     \brief Реализация библиотеки расчёта циклического избыточного кода
 */
-#include "crc/lib.h"
 
 #include <stdlib.h>
 
 #include "crc/internal/defines.h"
 #include "crc/internal/types.h"
+#include "crc/lib.h"
 #include "rev.h"
 
 /**
