@@ -1,8 +1,14 @@
 #ifndef H_CRC_INTERNAL_DEFINES
 #define H_CRC_INTERNAL_DEFINES
 
+#define CRC_DO_CONCAT(a, b) a##b
+#define CRC_CONCAT(a, b) CRC_DO_CONCAT(a, b)
+
+#define CRC_DO_STR(s) #s
+#define CRC_STR(s) CRC_DO_STR(s)
+
 /******************************************************************************/
-/*                          Language Standard Detect                           */
+/*                          Language Standard Detect                          */
 /******************************************************************************/
 #if defined(__STDC_VERSION__)
 #define CRC_STDC_VERSION_CHECK(v) (__STDC_VERSION__ >= (v))

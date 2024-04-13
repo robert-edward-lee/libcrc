@@ -5,7 +5,7 @@
 */
 #ifndef H_CRC_CATALOG
 #define H_CRC_CATALOG
-#include "crc/internal/defines.h"
+#include "crc/internal/types.h"
 /* clang-format off */
 /*                              Width              Poly              Init RefIn RefOut         XorOut               Check */
 #define CRC3_GSM                { 3,                0x3,                0x0, 0, 0,                0x7,                0x4}
@@ -153,28 +153,28 @@
 #define CRC32_MEF               {32,         0x741B8CD7,         0xFFFFFFFF, 1, 1,         0x00000000,         0xD2C22F51}
 #define CRC32_MPEG_2            {32,         0x04C11DB7,         0xFFFFFFFF, 0, 0,         0x00000000,         0x0376E6E7}
 #define CRC32_XFER              {32,         0x000000AF,         0x00000000, 0, 0,         0x00000000,         0xBD0BE338}
-#define CRC40_GSM               {40, (uint64_t)0x00000000 << 32 | 0x04820009, (uint64_t)0x00000000 << 32 | 0x00000000,\
-                               0, 0, (uint64_t)0x000000FF << 32 | 0xFFFFFFFF, (uint64_t)0x000000D4 << 32 | 0x164FC646}
-#define CRC64_ECMA_182          {64, (uint64_t)0x42F0E1EB << 32 | 0xA9EA3693, (uint64_t)0x00000000 << 32 | 0x00000000,\
-                               0, 0, (uint64_t)0x00000000 << 32 | 0x00000000, (uint64_t)0x6C40DF5F << 32 | 0x0B497347}
-#define CRC64_GO_ISO            {64, (uint64_t)0x00000000 << 32 | 0x0000001B, (uint64_t)0xFFFFFFFF << 32 | 0xFFFFFFFF,\
-                               1, 1, (uint64_t)0xFFFFFFFF << 32 | 0xFFFFFFFF, (uint64_t)0xB90956C7 << 32 | 0x75A41001}
-#define CRC64_MS                {64, (uint64_t)0x259C84CB << 32 | 0xA6426349, (uint64_t)0xFFFFFFFF << 32 | 0xFFFFFFFF,\
-                               1, 1, (uint64_t)0x00000000 << 32 | 0x00000000, (uint64_t)0x75D4B74F << 32 | 0x024ECEEA}
-#define CRC64_REDIS             {64, (uint64_t)0xAD93D235 << 32 | 0x94C935A9, (uint64_t)0x00000000 << 32 | 0x00000000,\
-                               1, 1, (uint64_t)0x00000000 << 32 | 0x00000000, (uint64_t)0xE9C6D914 << 32 | 0xC4B8D9CA}
-#define CRC64_WE                {64, (uint64_t)0x42F0E1EB << 32 | 0xA9EA3693, (uint64_t)0xFFFFFFFF << 32 | 0xFFFFFFFF,\
-                               0, 0, (uint64_t)0xFFFFFFFF << 32 | 0xFFFFFFFF, (uint64_t)0x62EC59E3 << 32 | 0xF1A4F00A}
-#define CRC64_XZ                {64, (uint64_t)0x42F0E1EB << 32 | 0xA9EA3693, (uint64_t)0xFFFFFFFF << 32 | 0xFFFFFFFF,\
-                               1, 1, (uint64_t)0xFFFFFFFF << 32 | 0xFFFFFFFF, (uint64_t)0x995DC9BB << 32 | 0xDF1939FA}
+#define CRC40_GSM               {40, CRC_UINT64_C(0x00000000, 0x04820009), CRC_UINT64_C(0x00000000, 0x00000000),\
+                               0, 0, CRC_UINT64_C(0x000000FF, 0xFFFFFFFF), CRC_UINT64_C(0x000000D4, 0x164FC646)}
+#define CRC64_ECMA_182          {64, CRC_UINT64_C(0x42F0E1EB, 0xA9EA3693), CRC_UINT64_C(0x00000000, 0x00000000),\
+                               0, 0, CRC_UINT64_C(0x00000000, 0x00000000), CRC_UINT64_C(0x6C40DF5F, 0x0B497347)}
+#define CRC64_GO_ISO            {64, CRC_UINT64_C(0x00000000, 0x0000001B), CRC_UINT64_C(0xFFFFFFFF, 0xFFFFFFFF),\
+                               1, 1, CRC_UINT64_C(0xFFFFFFFF, 0xFFFFFFFF), CRC_UINT64_C(0xB90956C7, 0x75A41001)}
+#define CRC64_MS                {64, CRC_UINT64_C(0x259C84CB, 0xA6426349), CRC_UINT64_C(0xFFFFFFFF, 0xFFFFFFFF),\
+                               1, 1, CRC_UINT64_C(0x00000000, 0x00000000), CRC_UINT64_C(0x75D4B74F, 0x024ECEEA)}
+#define CRC64_REDIS             {64, CRC_UINT64_C(0xAD93D235, 0x94C935A9), CRC_UINT64_C(0x00000000, 0x00000000),\
+                               1, 1, CRC_UINT64_C(0x00000000, 0x00000000), CRC_UINT64_C(0xE9C6D914, 0xC4B8D9CA)}
+#define CRC64_WE                {64, CRC_UINT64_C(0x42F0E1EB, 0xA9EA3693), CRC_UINT64_C(0xFFFFFFFF, 0xFFFFFFFF),\
+                               0, 0, CRC_UINT64_C(0xFFFFFFFF, 0xFFFFFFFF), CRC_UINT64_C(0x62EC59E3, 0xF1A4F00A)}
+#define CRC64_XZ                {64, CRC_UINT64_C(0x42F0E1EB, 0xA9EA3693), CRC_UINT64_C(0xFFFFFFFF, 0xFFFFFFFF),\
+                               1, 1, CRC_UINT64_C(0xFFFFFFFF, 0xFFFFFFFF), CRC_UINT64_C(0x995DC9BB, 0xDF1939FA)}
 #define CRC64_GO_ECMA           CRC64_XZ
 
 #if CRC_HAS_128BIT_ALGO
-#define CRC82_DARC              { 82, (uint128_t)0x00000000 << 96 | (uint128_t)0x0000308C << 64 | (uint128_t)0x01110114 << 32 | 0x01440411,\
-                                      (uint128_t)0x00000000 << 96 | (uint128_t)0x00000000 << 64 | (uint128_t)0x00000000 << 32 | 0x00000000,\
+#define CRC82_DARC              { 82, CRC_UINT128_C(0x00000000, 0x0000308C, 0x01110114, 0x01440411),\
+                                      CRC_UINT128_C(0x00000000, 0x00000000, 0x00000000, 0x00000000),\
                                       1, 1,\
-                                      (uint128_t)0x00000000 << 96 | (uint128_t)0x00000000 << 64 | (uint128_t)0x00000000 << 32 | 0x00000000,\
-                                      (uint128_t)0x00000000 << 96 | (uint128_t)0x00009EA8 << 64 | (uint128_t)0x3F625023 << 32 | 0x801FD612}
+                                      CRC_UINT128_C(0x00000000, 0x00000000, 0x00000000, 0x00000000),\
+                                      CRC_UINT128_C(0x00000000, 0x00009EA8, 0x3F625023, 0x801FD612)}
 #endif
 /* clang-format on */
 #endif /* H_CRC_CATALOG */
