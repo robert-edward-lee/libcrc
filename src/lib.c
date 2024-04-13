@@ -243,7 +243,7 @@ static CRC_INLINE crc_u64 crc64_init_value(crc_u64 init, int width, int refin) {
 }
 
 static CRC_INLINE void crc8_update_impl(Crc8 *crc, const void *bytes, size_t size) {
-    unsigned i;
+    size_t i;
 
     for(i = 0; i < size; i++) {
         crc->value = crc->table[crc->value ^ ((crc_u8 *)bytes)[i]];
@@ -251,7 +251,7 @@ static CRC_INLINE void crc8_update_impl(Crc8 *crc, const void *bytes, size_t siz
 }
 
 static CRC_INLINE void crc16_update_impl(Crc16 *crc, const void *bytes, size_t size) {
-    unsigned i;
+    size_t i;
 
     if(crc->algo.refin) {
         for(i = 0; i < size; i++) {
@@ -265,7 +265,7 @@ static CRC_INLINE void crc16_update_impl(Crc16 *crc, const void *bytes, size_t s
 }
 
 static CRC_INLINE void crc32_update_impl(Crc32 *crc, const void *bytes, size_t size) {
-    unsigned i;
+    size_t i;
 
     if(crc->algo.refin) {
         for(i = 0; i < size; i++) {
@@ -279,7 +279,7 @@ static CRC_INLINE void crc32_update_impl(Crc32 *crc, const void *bytes, size_t s
 }
 
 static CRC_INLINE void crc64_update_impl(Crc64 *crc, const void *bytes, size_t size) {
-    unsigned i;
+    size_t i;
 
     if(crc->algo.refin) {
         for(i = 0; i < size; i++) {
@@ -637,7 +637,7 @@ static CRC_INLINE crc_u128 crc128_init_value(crc_u128 init, int width, int refin
 }
 
 static CRC_INLINE void crc128_update_impl(Crc128 *crc, const void *bytes, size_t size) {
-    unsigned i;
+    size_t i;
 
     if(crc->algo.refin) {
         for(i = 0; i < size; i++) {

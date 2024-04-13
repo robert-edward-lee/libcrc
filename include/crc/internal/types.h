@@ -1,18 +1,27 @@
 #ifndef H_CRC_INTERNAL_TYPES
 #define H_CRC_INTERNAL_TYPES
 
-#include <stdint.h>
-
 #include "crc/internal/defines.h"
 
+#if defined(__GNUC__)
+typedef unsigned int crc_u8 __attribute__((mode(QI)));
+typedef unsigned int crc_u16 __attribute__((mode(HI)));
+typedef unsigned int crc_u32 __attribute__((mode(SI)));
+typedef unsigned int crc_u64 __attribute__((mode(DI)));
+#elif defined(_MSC_VER)
+typedef unsigned __int8 crc_u8;
+typedef unsigned __int16 crc_u16;
+typedef unsigned __int32 crc_u32;
+typedef unsigned __int64 crc_u64;
+#else
 typedef unsigned char crc_u8;
 typedef unsigned short crc_u16;
 typedef unsigned int crc_u32;
-
 #if defined(_WIN32) || defined(_WIN64)
 typedef unsigned __int64 crc_u64;
 #else
 typedef unsigned long long crc_u64;
+#endif
 #endif
 
 #define CRC_UINT64_C(w1, w2) ((crc_u64)CRC_CONCAT(w1, UL) << 32 | CRC_CONCAT(w2, UL))
