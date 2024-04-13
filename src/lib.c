@@ -111,10 +111,6 @@ static CRC_INLINE crc_u64 crc64(crc_u64 poly, int refin, crc_u64 init) {
 static void crc8_table_init(crc_u8 *table, int width, crc_u8 poly, int refin) {
     int i = 256;
 
-    if(!table) {
-        return;
-    }
-
     if(refin) {
         poly = rev8(poly);
         poly >>= 8 * sizeof(poly) - width;
@@ -135,10 +131,6 @@ static void crc8_table_init(crc_u8 *table, int width, crc_u8 poly, int refin) {
 */
 static void crc16_table_init(crc_u16 *table, int width, crc_u16 poly, int refin) {
     int i = 256;
-
-    if(!table) {
-        return;
-    }
 
     if(refin) {
         poly = rev16(poly);
@@ -161,10 +153,6 @@ static void crc16_table_init(crc_u16 *table, int width, crc_u16 poly, int refin)
 static void crc32_table_init(crc_u32 *table, int width, crc_u32 poly, int refin) {
     int i = 256;
 
-    if(!table) {
-        return;
-    }
-
     if(refin) {
         poly = rev32(poly);
         poly >>= 8 * sizeof(poly) - width;
@@ -185,10 +173,6 @@ static void crc32_table_init(crc_u32 *table, int width, crc_u32 poly, int refin)
 */
 static void crc64_table_init(crc_u64 *table, int width, crc_u64 poly, int refin) {
     int i = 256;
-
-    if(!table) {
-        return;
-    }
 
     if(refin) {
         poly = rev64(poly);
@@ -240,6 +224,34 @@ static CRC_INLINE crc_u32 crc32_init_value(crc_u32 init, int width, int refin) {
 */
 static CRC_INLINE crc_u64 crc64_init_value(crc_u64 init, int width, int refin) {
     return refin ? rev64(init) >> (8 * sizeof(init) - width) : init << (8 * sizeof(init) - width);
+}
+
+static CRC_INLINE void crc8_init_impl(Crc8 *crc, const Crc8BasedAlgo *algo, crc_u8 *table) {
+    crc->algo = *algo;
+    crc8_table_init(table, algo->width, algo->poly, algo->refin);
+    crc->table = table;
+    crc->value = crc8_init_value(algo->init, algo->width, algo->refin);
+}
+
+static CRC_INLINE void crc16_init_impl(Crc16 *crc, const Crc16BasedAlgo *algo, crc_u16 *table) {
+    crc->algo = *algo;
+    crc16_table_init(table, algo->width, algo->poly, algo->refin);
+    crc->table = table;
+    crc->value = crc16_init_value(algo->init, algo->width, algo->refin);
+}
+
+static CRC_INLINE void crc32_init_impl(Crc32 *crc, const Crc32BasedAlgo *algo, crc_u32 *table) {
+    crc->algo = *algo;
+    crc32_table_init(table, algo->width, algo->poly, algo->refin);
+    crc->table = table;
+    crc->value = crc32_init_value(algo->init, algo->width, algo->refin);
+}
+
+static CRC_INLINE void crc64_init_impl(Crc64 *crc, const Crc64BasedAlgo *algo, crc_u64 *table) {
+    crc->algo = *algo;
+    crc64_table_init(table, algo->width, algo->poly, algo->refin);
+    crc->table = table;
+    crc->value = crc64_init_value(algo->init, algo->width, algo->refin);
 }
 
 static CRC_INLINE void crc8_update_impl(Crc8 *crc, const void *bytes, size_t size) {
@@ -352,60 +364,54 @@ static CRC_INLINE crc_u64 crc64_finalize_impl(Crc64 *crc) {
     return ret ^ crc->algo.xorout;
 }
 
-void crc8_init_static_impl(Crc8 *crc, const Crc8BasedAlgo *algo, crc_u8 *table) {
+void crc8_init_static_(Crc8 *crc, const Crc8BasedAlgo *algo, crc_u8 *table) {
     if(!crc || !algo || !table) {
         return;
     }
-    crc->algo = *algo;
-    crc8_table_init(table, algo->width, algo->poly, algo->refin);
-    crc->table = table;
-    crc->value = crc8_init_value(algo->init, algo->width, algo->refin);
+
+    crc8_init_impl(crc, algo, table);
 }
 
-void crc16_init_static_impl(Crc16 *crc, const Crc16BasedAlgo *algo, crc_u16 *table) {
+void crc16_init_static_(Crc16 *crc, const Crc16BasedAlgo *algo, crc_u16 *table) {
     if(!crc || !algo || !table) {
         return;
     }
-    crc->algo = *algo;
-    crc16_table_init(table, algo->width, algo->poly, algo->refin);
-    crc->table = table;
-    crc->value = crc16_init_value(algo->init, algo->width, algo->refin);
+
+    crc16_init_impl(crc, algo, table);
 }
 
-void crc32_init_static_impl(Crc32 *crc, const Crc32BasedAlgo *algo, crc_u32 *table) {
+void crc32_init_static_(Crc32 *crc, const Crc32BasedAlgo *algo, crc_u32 *table) {
     if(!crc || !algo || !table) {
         return;
     }
-    crc->algo = *algo;
-    crc32_table_init(table, algo->width, algo->poly, algo->refin);
-    crc->table = table;
-    crc->value = crc32_init_value(algo->init, algo->width, algo->refin);
+
+    crc32_init_impl(crc, algo, table);
 }
 
-void crc64_init_static_impl(Crc64 *crc, const Crc64BasedAlgo *algo, crc_u64 *table) {
+void crc64_init_static_(Crc64 *crc, const Crc64BasedAlgo *algo, crc_u64 *table) {
     if(!crc || !algo || !table) {
         return;
     }
-    crc->algo = *algo;
-    crc64_table_init(table, algo->width, algo->poly, algo->refin);
-    crc->table = table;
-    crc->value = crc64_init_value(algo->init, algo->width, algo->refin);
+
+    crc64_init_impl(crc, algo, table);
 }
 
-void crc8_init_impl(Crc8 *crc, const Crc8BasedAlgo *algo) {
+void crc8_init_(Crc8 *crc, const Crc8BasedAlgo *algo) {
     crc_u8 *table;
 
     if(!crc || !algo) {
         return;
     }
+
     table = malloc(256 * sizeof(*table));
     if(!table) {
         return;
     }
-    crc8_init_static_impl(crc, algo, table);
+
+    crc8_init_impl(crc, algo, table);
 }
 
-void crc16_init_impl(Crc16 *crc, const Crc16BasedAlgo *algo) {
+void crc16_init_(Crc16 *crc, const Crc16BasedAlgo *algo) {
     crc_u16 *table;
 
     if(!crc || !algo) {
@@ -415,33 +421,38 @@ void crc16_init_impl(Crc16 *crc, const Crc16BasedAlgo *algo) {
     if(!table) {
         return;
     }
-    crc16_init_static_impl(crc, algo, table);
+
+    crc16_init_impl(crc, algo, table);
 }
 
-void crc32_init_impl(Crc32 *crc, const Crc32BasedAlgo *algo) {
+void crc32_init_(Crc32 *crc, const Crc32BasedAlgo *algo) {
     crc_u32 *table;
 
     if(!crc || !algo) {
         return;
     }
+
     table = malloc(256 * sizeof(*table));
     if(!table) {
         return;
     }
-    crc32_init_static_impl(crc, algo, table);
+
+    crc32_init_impl(crc, algo, table);
 }
 
-void crc64_init_impl(Crc64 *crc, const Crc64BasedAlgo *algo) {
+void crc64_init_(Crc64 *crc, const Crc64BasedAlgo *algo) {
     crc_u64 *table;
 
     if(!crc || !algo) {
         return;
     }
+
     table = malloc(256 * sizeof(*table));
     if(!table) {
         return;
     }
-    crc64_init_static_impl(crc, algo, table);
+
+    crc64_init_impl(crc, algo, table);
 }
 
 void crc8_destroy(Crc8 *crc) {
@@ -636,6 +647,13 @@ static CRC_INLINE crc_u128 crc128_init_value(crc_u128 init, int width, int refin
     return refin ? rev128(init) >> (8 * sizeof(init) - width) : init << (8 * sizeof(init) - width);
 }
 
+static CRC_INLINE void crc128_init_impl(Crc128 *crc, const Crc128BasedAlgo *algo, crc_u128 *table) {
+    crc->algo = *algo;
+    crc128_table_init(table, crc->algo.width, crc->algo.poly, crc->algo.refin);
+    crc->table = table;
+    crc->value = crc128_init_value(crc->algo.init, crc->algo.width, crc->algo.refin);
+}
+
 static CRC_INLINE void crc128_update_impl(Crc128 *crc, const void *bytes, size_t size) {
     size_t i;
 
@@ -665,27 +683,27 @@ static CRC_INLINE crc_u128 crc128_finalize_impl(Crc128 *crc) {
     return ret ^ crc->algo.xorout;
 }
 
-void crc128_init_static_impl(Crc128 *crc, const Crc128BasedAlgo *algo, crc_u128 *table) {
+void crc128_init_static_(Crc128 *crc, const Crc128BasedAlgo *algo, crc_u128 *table) {
     if(!crc || !algo || !table) {
         return;
     }
-    crc->algo = *algo;
-    crc128_table_init(table, crc->algo.width, crc->algo.poly, crc->algo.refin);
-    crc->table = table;
-    crc->value = crc128_init_value(crc->algo.init, crc->algo.width, crc->algo.refin);
+
+    crc128_init_impl(crc, algo, table);
 }
 
-void crc128_init_impl(Crc128 *crc, const Crc128BasedAlgo *algo) {
+void crc128_init_(Crc128 *crc, const Crc128BasedAlgo *algo) {
     crc_u128 *table;
 
     if(!crc || !algo) {
         return;
     }
+
     table = malloc(256 * sizeof(*table));
     if(!table) {
         return;
     }
-    crc128_init_static_impl(crc, algo, table);
+
+    crc128_init_impl(crc, algo, table);
 }
 
 void crc128_destroy(Crc128 *crc) {
