@@ -1,11 +1,16 @@
 #ifndef H_CRC_INTERNAL_DEFINES
 #define H_CRC_INTERNAL_DEFINES
 
+/******************************************************************************/
+/*                                   Utils                                    */
+/******************************************************************************/
 #define CRC_DO_CONCAT(a, b) a##b
 #define CRC_CONCAT(a, b) CRC_DO_CONCAT(a, b)
 
 #define CRC_DO_STR(s) #s
 #define CRC_STR(s) CRC_DO_STR(s)
+
+#define CRC_EXPAND_INITIALIZER_LIST(w, p, i, ri, ro, x, ch) w, p, i, ri, ro, x, ch
 
 /******************************************************************************/
 /*                          Language Standard Detect                          */
@@ -93,7 +98,5 @@
 #else
 #define CRC_HAS_128BIT_ALGO 0
 #endif
-
-#define CRC_EXPAND_INITIALIZER_LIST(w, p, i, ri, ro, x, ch) w, p, i, ri, ro, x, ch
 
 #endif /* H_CRC_INTERNAL_DEFINES */

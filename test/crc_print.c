@@ -25,11 +25,11 @@
     do { \
         Crc128 crc; \
         crc128_init(&crc, CRC_EXPAND_INITIALIZER_LIST(__algo)); \
-        printf("static const uint128_t CRC_TABLE[256] = {\n"); \
+        printf("static const crc_u128 CRC_TABLE[256] = {\n"); \
         for(int i = 0; i < 256; i++) { \
-            printf("    (uint128_t)0x%016" PRIX64 " << 64 | 0x%016" PRIX64 ",\n", \
-                   (uint64_t)(crc.table[i] >> 64), \
-                   (uint64_t)crc.table[i]); \
+            printf("    (crc_u128)0x%016" PRIX64 " << 64 | 0x%016" PRIX64 ",\n", \
+                   (crc_u64)(crc.table[i] >> 64), \
+                   (crc_u64)crc.table[i]); \
         } \
         printf("};\n"); \
     } while(0)

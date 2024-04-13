@@ -11,7 +11,7 @@ const char check[9] = "123456789";
 #define print_hex(a) \
     do { \
         int i; \
-        const uint8_t *as_u8 = (const uint8_t *)&a; \
+        const crc_u8 *as_u8 = (const crc_u8 *)&a; \
         printf("0x"); \
         for(i = sizeof(a) - 1; i >= 0; i--) { \
             printf("%02X", as_u8[i]); \
@@ -20,7 +20,7 @@ const char check[9] = "123456789";
 
 #define crc_test(__algo, __width) \
     do { \
-        uint##__width##_t value; \
+        crc_u##__width value; \
         Crc##__width crc; \
         crc##__width##_init(&crc, CRC_EXPAND_INITIALIZER_LIST(__algo)); \
         value = crc##__width##_checksum(&crc, check, sizeof(check)); \

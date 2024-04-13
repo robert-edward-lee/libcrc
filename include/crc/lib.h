@@ -19,80 +19,80 @@ extern "C" {
 */
 typedef struct {
     int width; /**< Степень порождающего многочлена */
-    uint8_t poly; /**< Порождающий многочлен */
-    uint8_t init; /**< Стартовые данные */
+    crc_u8 poly; /**< Порождающий многочлен */
+    crc_u8 init; /**< Стартовые данные */
     int refin; /**< Начало и направление вычислений */
     int refout; /**< Инвертируется ли порядок битов при складывании по модулю 2 полученного результата */
-    uint8_t xorout; /**< Число, с которым складывается по модулю 2 полученный результат */
-    uint8_t check; /**< Значение CRC для строки «123456789» */
+    crc_u8 xorout; /**< Число, с которым складывается по модулю 2 полученный результат */
+    crc_u8 check; /**< Значение CRC для строки «123456789» */
 } Crc8BasedAlgo;
 /**
     \brief Спецификация алгоритма расчёта циклического избыточного кода ширины не более 16 бит
 */
 typedef struct {
     int width; /**< Степень порождающего многочлена */
-    uint16_t poly; /**< Порождающий многочлен */
-    uint16_t init; /**< Стартовые данные */
+    crc_u16 poly; /**< Порождающий многочлен */
+    crc_u16 init; /**< Стартовые данные */
     int refin; /**< Начало и направление вычислений */
     int refout; /**< Инвертируется ли порядок битов при складывании по модулю 2 полученного результата */
-    uint16_t xorout; /**< Число, с которым складывается по модулю 2 полученный результат */
-    uint16_t check; /**< Значение CRC для строки «123456789» */
+    crc_u16 xorout; /**< Число, с которым складывается по модулю 2 полученный результат */
+    crc_u16 check; /**< Значение CRC для строки «123456789» */
 } Crc16BasedAlgo;
 /**
     \brief Спецификация алгоритма расчёта циклического избыточного кода ширины не более 32 бит
 */
 typedef struct {
     int width; /**< Степень порождающего многочлена */
-    uint32_t poly; /**< Порождающий многочлен */
-    uint32_t init; /**< Стартовые данные */
+    crc_u32 poly; /**< Порождающий многочлен */
+    crc_u32 init; /**< Стартовые данные */
     int refin; /**< Начало и направление вычислений */
     int refout; /**< Инвертируется ли порядок битов при складывании по модулю 2 полученного результата */
-    uint32_t xorout; /**< Число, с которым складывается по модулю 2 полученный результат */
-    uint32_t check; /**< Значение CRC для строки «123456789» */
+    crc_u32 xorout; /**< Число, с которым складывается по модулю 2 полученный результат */
+    crc_u32 check; /**< Значение CRC для строки «123456789» */
 } Crc32BasedAlgo;
 /**
     \brief Спецификация алгоритма расчёта циклического избыточного кода ширины не более 64 бит
 */
 typedef struct {
     int width; /**< Степень порождающего многочлена */
-    uint64_t poly; /**< Порождающий многочлен */
-    uint64_t init; /**< Стартовые данные */
+    crc_u64 poly; /**< Порождающий многочлен */
+    crc_u64 init; /**< Стартовые данные */
     int refin; /**< Начало и направление вычислений */
     int refout; /**< Инвертируется ли порядок битов при складывании по модулю 2 полученного результата */
-    uint64_t xorout; /**< Число, с которым складывается по модулю 2 полученный результат */
-    uint64_t check; /**< Значение CRC для строки «123456789» */
+    crc_u64 xorout; /**< Число, с которым складывается по модулю 2 полученный результат */
+    crc_u64 check; /**< Значение CRC для строки «123456789» */
 } Crc64BasedAlgo;
 /**
     \brief "Объект" для расчёта контрольной суммы ширины не более 8 бит
 */
 typedef struct {
     Crc8BasedAlgo algo; /**< Алгоритм вычисления */
-    const uint8_t *table; /**< Таблица для вычисления */
-    uint8_t value; /**< Промежуточное значение контрольной суммы */
+    const crc_u8 *table; /**< Таблица для вычисления */
+    crc_u8 value; /**< Промежуточное значение контрольной суммы */
 } Crc8;
 /**
     \brief "Объект" для расчёта контрольной суммы ширины не более 16 бит
 */
 typedef struct {
     Crc16BasedAlgo algo; /**< Алгоритм вычисления */
-    const uint16_t *table; /**< Таблица для вычисления */
-    uint16_t value; /**< Промежуточное значение контрольной суммы */
+    const crc_u16 *table; /**< Таблица для вычисления */
+    crc_u16 value; /**< Промежуточное значение контрольной суммы */
 } Crc16;
 /**
     \brief "Объект" для расчёта контрольной суммы ширины не более 32 бит
 */
 typedef struct {
     Crc32BasedAlgo algo; /**< Алгоритм вычисления */
-    const uint32_t *table; /**< Таблица для вычисления */
-    uint32_t value; /**< Промежуточное значение контрольной суммы */
+    const crc_u32 *table; /**< Таблица для вычисления */
+    crc_u32 value; /**< Промежуточное значение контрольной суммы */
 } Crc32;
 /**
     \brief "Объект" для расчёта контрольной суммы ширины не более 64 бит
 */
 typedef struct {
     Crc64BasedAlgo algo; /**< Алгоритм вычисления */
-    const uint64_t *table; /**< Таблица для вычисления */
-    uint64_t value; /**< Промежуточное значение контрольной суммы */
+    const crc_u64 *table; /**< Таблица для вычисления */
+    crc_u64 value; /**< Промежуточное значение контрольной суммы */
 } Crc64;
 
 /**
@@ -101,7 +101,7 @@ typedef struct {
     \param[in] table Предварительно выделенная память размером 256 байт для хранения таблицы расчёта
     \brief Инициализация "объекта" \ref Crc8
 */
-void crc8_init_static_impl(Crc8 *crc, const Crc8BasedAlgo *algo, uint8_t *table);
+void crc8_init_static_impl(Crc8 *crc, const Crc8BasedAlgo *algo, crc_u8 *table);
 #define crc8_init_static(crc, algo, table) \
     do { \
         Crc8BasedAlgo algo_ = algo; \
@@ -113,7 +113,7 @@ void crc8_init_static_impl(Crc8 *crc, const Crc8BasedAlgo *algo, uint8_t *table)
     \param[in] table Предварительно выделенная память размером 2x256 байт для хранения таблицы расчёта
     \brief Инициализация "объекта" \ref Crc16
 */
-void crc16_init_static_impl(Crc16 *crc, const Crc16BasedAlgo *algo, uint16_t *table);
+void crc16_init_static_impl(Crc16 *crc, const Crc16BasedAlgo *algo, crc_u16 *table);
 #define crc16_init_static(crc, algo, table) \
     do { \
         Crc16BasedAlgo algo_ = algo; \
@@ -125,7 +125,7 @@ void crc16_init_static_impl(Crc16 *crc, const Crc16BasedAlgo *algo, uint16_t *ta
     \param[in] table Предварительно выделенная память размером 4x256 байт для хранения таблицы расчёта
     \brief Инициализация "объекта" \ref Crc32
 */
-void crc32_init_static_impl(Crc32 *crc, const Crc32BasedAlgo *algo, uint32_t *table);
+void crc32_init_static_impl(Crc32 *crc, const Crc32BasedAlgo *algo, crc_u32 *table);
 #define crc32_init_static(crc, algo, table) \
     do { \
         Crc32BasedAlgo algo_ = algo; \
@@ -137,7 +137,7 @@ void crc32_init_static_impl(Crc32 *crc, const Crc32BasedAlgo *algo, uint32_t *ta
     \param[in] table Предварительно выделенная память размером 8x256 байт для хранения таблицы расчёта
     \brief Инициализация "объекта" \ref Crc64
 */
-void crc64_init_static_impl(Crc64 *crc, const Crc64BasedAlgo *algo, uint64_t *table);
+void crc64_init_static_impl(Crc64 *crc, const Crc64BasedAlgo *algo, crc_u64 *table);
 #define crc64_init_static(crc, algo, table) \
     do { \
         Crc64BasedAlgo algo_ = algo; \
@@ -246,7 +246,7 @@ void crc64_update(Crc64 *crc, const void *bytes, size_t size);
     помощью \ref crc8_update. Также происходит очистка значения \ref Crc8::value и "объект" crc можно использовать для
     нового вычисления
 */
-uint8_t crc8_finalize(Crc8 *crc);
+crc_u8 crc8_finalize(Crc8 *crc);
 /**
     \param[in,out] crc Экземпляр \ref Crc16
     \return Контрольная сумма
@@ -254,7 +254,7 @@ uint8_t crc8_finalize(Crc8 *crc);
     помощью \ref crc16_update. Также происходит очистка значения \ref Crc16::value и "объект" crc можно использовать для
     нового вычисления
 */
-uint16_t crc16_finalize(Crc16 *crc);
+crc_u16 crc16_finalize(Crc16 *crc);
 /**
     \param[in,out] crc Экземпляр \ref Crc32
     \return Контрольная сумма
@@ -262,7 +262,7 @@ uint16_t crc16_finalize(Crc16 *crc);
     помощью \ref crc32_update. Также происходит очистка значения \ref Crc32::value и "объект" crc можно использовать для
     нового вычисления
 */
-uint32_t crc32_finalize(Crc32 *crc);
+crc_u32 crc32_finalize(Crc32 *crc);
 /**
     \param[in,out] crc Экземпляр \ref Crc64
     \return Контрольная сумма
@@ -270,7 +270,7 @@ uint32_t crc32_finalize(Crc32 *crc);
     помощью \ref crc64_update. Также происходит очистка значения \ref Crc64::value и "объект" crc можно использовать для
     нового вычисления
 */
-uint64_t crc64_finalize(Crc64 *crc);
+crc_u64 crc64_finalize(Crc64 *crc);
 /**
     \param[in,out] crc Экземпляр \ref Crc8
     \param[in] bytes Данные для вычисления
@@ -278,7 +278,7 @@ uint64_t crc64_finalize(Crc64 *crc);
     \return Контрольная сумма
     \brief Вычисление контрольной суммы "за один присест"
 */
-uint8_t crc8_checksum(Crc8 *crc, const void *bytes, size_t size);
+crc_u8 crc8_checksum(Crc8 *crc, const void *bytes, size_t size);
 /**
     \param[in,out] crc Экземпляр \ref Crc16
     \param[in] bytes Данные для вычисления
@@ -286,7 +286,7 @@ uint8_t crc8_checksum(Crc8 *crc, const void *bytes, size_t size);
     \return Контрольная сумма
     \brief Вычисление контрольной суммы "за один присест"
 */
-uint16_t crc16_checksum(Crc16 *crc, const void *bytes, size_t size);
+crc_u16 crc16_checksum(Crc16 *crc, const void *bytes, size_t size);
 /**
     \param[in,out] crc Экземпляр \ref Crc32
     \param[in] bytes Данные для вычисления
@@ -294,7 +294,7 @@ uint16_t crc16_checksum(Crc16 *crc, const void *bytes, size_t size);
     \return Контрольная сумма
     \brief Вычисление контрольной суммы "за один присест"
 */
-uint32_t crc32_checksum(Crc32 *crc, const void *bytes, size_t size);
+crc_u32 crc32_checksum(Crc32 *crc, const void *bytes, size_t size);
 /**
     \param[in,out] crc Экземпляр \ref Crc64
     \param[in] bytes Данные для вычисления
@@ -302,7 +302,7 @@ uint32_t crc32_checksum(Crc32 *crc, const void *bytes, size_t size);
     \return Контрольная сумма
     \brief Вычисление контрольной суммы "за один присест"
 */
-uint64_t crc64_checksum(Crc64 *crc, const void *bytes, size_t size);
+crc_u64 crc64_checksum(Crc64 *crc, const void *bytes, size_t size);
 
 #if CRC_HAS_128BIT_ALGO
 /**
@@ -310,20 +310,20 @@ uint64_t crc64_checksum(Crc64 *crc, const void *bytes, size_t size);
 */
 typedef struct {
     int width; /**< Степень порождающего многочлена */
-    uint128_t poly; /**< Порождающий многочлен */
-    uint128_t init; /**< Стартовые данные */
+    crc_u128 poly; /**< Порождающий многочлен */
+    crc_u128 init; /**< Стартовые данные */
     int refin; /**< Начало и направление вычислений */
     int refout; /**< Инвертируется ли порядок битов при складывании по модулю 2 полученного результата */
-    uint128_t xorout; /**< Число, с которым складывается по модулю 2 полученный результат */
-    uint128_t check; /**< Значение CRC для строки «123456789» */
+    crc_u128 xorout; /**< Число, с которым складывается по модулю 2 полученный результат */
+    crc_u128 check; /**< Значение CRC для строки «123456789» */
 } Crc128BasedAlgo;
 /**
     \brief "Объект" для расчёта контрольной суммы ширины не более 128 бит
 */
 typedef struct {
     Crc128BasedAlgo algo; /**< Алгоритм вычисления */
-    const uint128_t *table; /**< Таблица для вычисления */
-    uint128_t value; /**< Промежуточное значение контрольной суммы */
+    const crc_u128 *table; /**< Таблица для вычисления */
+    crc_u128 value; /**< Промежуточное значение контрольной суммы */
 } Crc128;
 
 /**
@@ -332,7 +332,7 @@ typedef struct {
     \param[in] table Предварительно выделенная память размером 8x256 байт для хранения таблицы расчёта
     \brief Инициализация "объекта" \ref Crc128
 */
-void crc128_init_static_impl(Crc128 *crc, const Crc128BasedAlgo *algo, uint128_t *table);
+void crc128_init_static_impl(Crc128 *crc, const Crc128BasedAlgo *algo, crc_u128 *table);
 #define crc128_init_static(crc, algo, table) \
     do { \
         Crc128BasedAlgo algo_ = algo; \
@@ -369,7 +369,7 @@ void crc128_update(Crc128 *crc, const void *bytes, size_t size);
     помощью \ref crc128_update. Также происходит очистка значения \ref Crc128::value и "объект" crc можно использовать
    для нового вычисления
 */
-uint128_t crc128_finalize(Crc128 *crc);
+crc_u128 crc128_finalize(Crc128 *crc);
 /**
     \param[in,out] crc Экземпляр \ref Crc128
     \param[in] bytes Данные для вычисления
@@ -377,7 +377,7 @@ uint128_t crc128_finalize(Crc128 *crc);
     \return Контрольная сумма
     \brief Вычисление контрольной суммы "за один присест"
 */
-uint128_t crc128_checksum(Crc128 *crc, const void *bytes, size_t size);
+crc_u128 crc128_checksum(Crc128 *crc, const void *bytes, size_t size);
 #endif /* CRC_HAS_128BIT_ALGO */
 
 #ifdef __cplusplus
