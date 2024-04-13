@@ -4,12 +4,20 @@
 Компилятор с поддержкой стандарта **c89**
 
 Тестируемые компиляторы:
-> - **gcc >= 3.2.3**
+> - **gcc 3.2.3**
+> - **clang 16.0.6**
+> - **MSVC 2005**
+> - **Borland C++ 5.6.4**
+> - **ARM Compiler 6.16 (keil armclang)**
+> - **ARM Compiler 5.06 update 7 (build 960) (keil armcc)**
+> - **IAR ANSI C/C++ Compiler V9.50.1.380/W64 for ARM**
+> - **Open Watcom C/C++32 Compile and Link Utility Version 1.9**
 
 ### [Спецификации алгоритмов](./CATALOG.md)
 
 ### Пример использования
 #### С динамическим выделением памяти
+> Перед сборкой библиотеки определить макро `CRC_USE_HEAP`
 ```c
 #include <crc/catalog.h>
 #include <crc/lib.h>
@@ -43,23 +51,15 @@ value = crc16_checksum(&crc, data, sizeof(data) - 1);
 #include <crc/lib.h>
 
 char data[] = "123456789";
+uint16_t table[256];
 uint16_t value;
 Crc16 crc;
 
-// если компилятор не поддерживает C11
-crc16_init(&crc, &CRC16_ARC);
-for(int i = 0; i < sizeof(data); i++) {
+crc16_init_static(&crc, CRC16_ARC, table);
+for(int i = 0; i < sizeof(data) - 1; i++) {
     crc16_update(&crc, &data[i], 1);
 }
 value = crc16_finalize(&crc);
-crc16_destroy(&crc);
-// если компилятор поддерживает C11
-crc_init(&crc, &CRC16_ARC);
-for(int i = 0; i < sizeof(data); i++) {
-    crc_update(&crc, &data[i], 1);
-}
-value = crc_finalize(&crc);
-crc_destroy(&crc);
 ```
 
 #### Использование нестандартного алгоритма
@@ -67,14 +67,14 @@ crc_destroy(&crc);
 #include <crc/lib.h>
 
 char data[] = "123456789";
+uint16_t table[256];
 uint16_t value;
 Crc16 crc;
 
-#define CRC16_CASTOM {<castom_width>, <castom_poly>, <castom_init>, <castom_refin>, <castom_refout>, <castom_xorout>}
+#define CRC16_CUSTOM {<custom_width>, <custom_poly>, <custom_init>, <custom_refin>, <custom_refout>, <custom_xorout>, <custom_check>}
 
-crc16_init(&crc, CRC_CASTOM);
+crc16_init_static(&crc, CRC16_ARC, table);
 value = crc16_checksum(&crc, data, sizeof(data) - 1);
-crc16_destroy(&crc);
 ```
 
 ### Сборка и использование в проекте

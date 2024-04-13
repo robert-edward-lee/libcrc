@@ -1,6 +1,8 @@
 #ifndef H_CRC_INTERNAL_TYPES
 #define H_CRC_INTERNAL_TYPES
 
+#include <stddef.h>
+
 #include "crc/internal/defines.h"
 
 #if defined(__GNUC__)

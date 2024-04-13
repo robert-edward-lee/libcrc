@@ -5,8 +5,6 @@
 #ifndef H_CRC_LIB
 #define H_CRC_LIB
 
-#include <stddef.h>
-
 #include "crc/internal/defines.h"
 #include "crc/internal/types.h"
 
@@ -20,7 +18,7 @@ extern "C" {
 typedef enum {
     CE_OK, /**< Всё ок */
     CE_INVALID_ARG, /**< Как правило нуль-указатель в качестве аргумента */
-    CE_MEM_ERR, /**< Только в случае динамического выделения памяти для таблицы */
+    CE_MEM_ERR /**< Только в случае динамического выделения памяти для таблицы */
 } CrcErrors;
 
 /**
@@ -152,6 +150,7 @@ CrcErrors crc64_init_static_(Crc64 *crc, const Crc64BasedAlgo *algo, crc_u64 *ta
         Crc64BasedAlgo algo_ = algo; \
         crc64_init_static_(crc, &algo_, table); \
     } while(0)
+#if defined(CRC_USE_HEAP)
 /**
     \param[in,out] crc Предварительно созданный экземпляр \ref Crc8
     \param[in] algo Каталожный алгоритм из файла crc/catalog.h или свой собственный
@@ -216,6 +215,7 @@ void crc32_destroy(Crc32 *crc);
     \brief Очистка памяти если crc инициализирован при помощи \ref crc64_init_impl
 */
 void crc64_destroy(Crc64 *crc);
+#endif /* CRC_USE_HEAP */
 /**
     \param[in,out] crc Экземпляр \ref Crc8
     \param[in] bytes Данные для вычисления
@@ -347,6 +347,7 @@ CrcErrors crc128_init_static_(Crc128 *crc, const Crc128BasedAlgo *algo, crc_u128
         Crc128BasedAlgo algo_ = algo; \
         crc128_init_static_(crc, &algo_, table); \
     } while(0)
+#if defined(CRC_USE_HEAP)
 /**
     \param[in,out] crc Предварительно созданный экземпляр \ref Crc128
     \param[in] algo Каталожный алгоритм из файла crc/catalog.h или свой собственный
@@ -363,6 +364,7 @@ CrcErrors crc128_init_(Crc128 *crc, const Crc128BasedAlgo *algo);
     \brief Очистка памяти если crc инициализирован при помощи \ref crc128_init_
 */
 void crc128_destroy(Crc128 *crc);
+#endif /* CRC_USE_HEAP */
 /**
     \param[in,out] crc Экземпляр \ref Crc128
     \param[in] bytes Данные для вычисления

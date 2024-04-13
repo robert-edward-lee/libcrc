@@ -3,7 +3,9 @@
     \brief Реализация библиотеки расчёта циклического избыточного кода
 */
 
+#if defined(CRC_USE_HEAP)
 #include <stdlib.h>
+#endif
 
 #include "crc/internal/defines.h"
 #include "crc/internal/types.h"
@@ -399,7 +401,7 @@ CrcErrors crc64_init_static_(Crc64 *crc, const Crc64BasedAlgo *algo, crc_u64 *ta
     crc64_init_impl(crc, algo, table);
     return CE_OK;
 }
-
+#if defined(CRC_USE_HEAP)
 CrcErrors crc8_init_(Crc8 *crc, const Crc8BasedAlgo *algo) {
     crc_u8 *table;
 
@@ -494,7 +496,7 @@ void crc64_destroy(Crc64 *crc) {
     free((void *)crc->table);
     crc->table = NULL;
 }
-
+#endif /* CRC_USE_HEAP */
 void crc8_update(Crc8 *crc, const void *bytes, size_t size) {
     if(!crc || !bytes) {
         return;
@@ -699,7 +701,7 @@ CrcErrors crc128_init_static_(Crc128 *crc, const Crc128BasedAlgo *algo, crc_u128
     crc128_init_impl(crc, algo, table);
     return CE_OK;
 }
-
+#if defined(CRC_USE_HEAP)
 CrcErrors crc128_init_(Crc128 *crc, const Crc128BasedAlgo *algo) {
     crc_u128 *table;
 
@@ -723,7 +725,7 @@ void crc128_destroy(Crc128 *crc) {
     free((void *)crc->table);
     crc->table = NULL;
 }
-
+#endif /* CRC_USE_HEAP */
 void crc128_update(Crc128 *crc, const void *bytes, size_t size) {
     if(!crc || !bytes) {
         return;

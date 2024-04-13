@@ -16,7 +16,7 @@ BUILDDIR = build/$(TOOLCHAIN_PREFIX)
 SRCDIRS = src
 INCDIRS = include src
 
-DEFINES =
+DEFINES = CRC_USE_HEAP=
 OPTFLAGS =
 # OPTFLAGS += -ffunction-sections
 # OPTFLAGS += -fdata-sections
