@@ -1,3 +1,7 @@
+/**
+    \file defines.h
+    \brief Макроопределения
+*/
 #ifndef H_CRC_INTERNAL_DEFINES
 #define H_CRC_INTERNAL_DEFINES
 
@@ -94,9 +98,9 @@
 #endif
 
 #if defined(__SIZEOF_INT128__)
-#define CRC_HAS_128BIT_ALGO 1
+#define CRC_HAS_GNUC_INT128 1
 #else
-#define CRC_HAS_128BIT_ALGO 0
+#define CRC_HAS_GNUC_INT128 0
 #endif
 
 #endif /* H_CRC_INTERNAL_DEFINES */

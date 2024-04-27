@@ -8,6 +8,11 @@
 #include "crc/internal/defines.h"
 #include "crc/internal/types.h"
 
+#define CRC_VERSION_MAJOR 1
+#define CRC_VERSION_MINOR 0
+#define CRC_VERSION_PATCH 0
+#define CRC_VERSION_STRING CRC_STR(CRC_VERSION_MAJOR) "." CRC_STR(CRC_VERSION_MINOR) "." CRC_STR(CRC_VERSION_PATCH)
+
 #ifdef __cplusplus
 extern "C" {
 #endif

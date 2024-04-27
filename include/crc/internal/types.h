@@ -1,3 +1,7 @@
+/**
+    \file types.h
+    \brief Типы значений полиномов
+*/
 #ifndef H_CRC_INTERNAL_TYPES
 #define H_CRC_INTERNAL_TYPES
 
@@ -28,11 +32,14 @@ typedef unsigned long long crc_u64;
 
 #define CRC_UINT64_C(w1, w2) ((crc_u64)CRC_CONCAT(w1, UL) << 32 | CRC_CONCAT(w2, UL))
 
-#if CRC_HAS_128BIT_ALGO
+#if CRC_HAS_GNUC_INT128
+#define CRC_HAS_128BIT_ALGO 1
 typedef __uint128_t crc_u128;
 #define CRC_UINT128_C(w1, w2, w3, w4) \
     ((crc_u128)CRC_CONCAT(w1, UL) << 96 | (crc_u128)CRC_CONCAT(w2, UL) << 64 | (crc_u128)CRC_CONCAT(w3, UL) << 32 \
      | CRC_CONCAT(w4, UL))
+#else
+#define CRC_HAS_128BIT_ALGO 0
 #endif
 
 #endif /* H_CRC_INTERNAL_TYPES */
