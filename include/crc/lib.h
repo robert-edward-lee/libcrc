@@ -30,49 +30,41 @@ typedef enum {
     \brief Спецификация алгоритма расчёта циклического избыточного кода ширины не более 8 бит
 */
 typedef struct {
-    int width; /**< Степень порождающего многочлена */
+    crc_u8 width; /**< Степень порождающего многочлена */
     crc_u8 poly; /**< Порождающий многочлен */
     crc_u8 init; /**< Стартовые данные */
-    int refin; /**< Начало и направление вычислений */
-    int refout; /**< Инвертируется ли порядок битов при складывании по модулю 2 полученного результата */
+    crc_u8 flags; /**< RefIn и RefOut */
     crc_u8 xorout; /**< Число, с которым складывается по модулю 2 полученный результат */
-    crc_u8 check; /**< Значение CRC для строки «123456789» */
 } Crc8BasedAlgo;
 /**
     \brief Спецификация алгоритма расчёта циклического избыточного кода ширины не более 16 бит
 */
 typedef struct {
-    int width; /**< Степень порождающего многочлена */
+    crc_u8 width; /**< Степень порождающего многочлена */
     crc_u16 poly; /**< Порождающий многочлен */
     crc_u16 init; /**< Стартовые данные */
-    int refin; /**< Начало и направление вычислений */
-    int refout; /**< Инвертируется ли порядок битов при складывании по модулю 2 полученного результата */
+    crc_u8 flags; /**< RefIn и RefOut */
     crc_u16 xorout; /**< Число, с которым складывается по модулю 2 полученный результат */
-    crc_u16 check; /**< Значение CRC для строки «123456789» */
 } Crc16BasedAlgo;
 /**
     \brief Спецификация алгоритма расчёта циклического избыточного кода ширины не более 32 бит
 */
 typedef struct {
-    int width; /**< Степень порождающего многочлена */
+    crc_u8 width; /**< Степень порождающего многочлена */
     crc_u32 poly; /**< Порождающий многочлен */
     crc_u32 init; /**< Стартовые данные */
-    int refin; /**< Начало и направление вычислений */
-    int refout; /**< Инвертируется ли порядок битов при складывании по модулю 2 полученного результата */
+    crc_u8 flags; /**< RefIn и RefOut */
     crc_u32 xorout; /**< Число, с которым складывается по модулю 2 полученный результат */
-    crc_u32 check; /**< Значение CRC для строки «123456789» */
 } Crc32BasedAlgo;
 /**
     \brief Спецификация алгоритма расчёта циклического избыточного кода ширины не более 64 бит
 */
 typedef struct {
-    int width; /**< Степень порождающего многочлена */
+    crc_u8 width; /**< Степень порождающего многочлена */
     crc_u64 poly; /**< Порождающий многочлен */
     crc_u64 init; /**< Стартовые данные */
-    int refin; /**< Начало и направление вычислений */
-    int refout; /**< Инвертируется ли порядок битов при складывании по модулю 2 полученного результата */
+    crc_u8 flags; /**< RefIn и RefOut */
     crc_u64 xorout; /**< Число, с которым складывается по модулю 2 полученный результат */
-    crc_u64 check; /**< Значение CRC для строки «123456789» */
 } Crc64BasedAlgo;
 /**
     \brief "Объект" для расчёта контрольной суммы ширины не более 8 бит
@@ -116,7 +108,7 @@ typedef struct {
 CrcErrors crc8_init_static_(Crc8 *crc, const Crc8BasedAlgo *algo, crc_u8 *table);
 #define crc8_init_static(crc, algo, table) \
     do { \
-        Crc8BasedAlgo algo_ = algo; \
+        Crc8BasedAlgo algo_ = CRC_EXPAND_ALGO(algo); \
         crc8_init_static_(crc, &algo_, table); \
     } while(0)
 /**
@@ -128,7 +120,7 @@ CrcErrors crc8_init_static_(Crc8 *crc, const Crc8BasedAlgo *algo, crc_u8 *table)
 CrcErrors crc16_init_static_(Crc16 *crc, const Crc16BasedAlgo *algo, crc_u16 *table);
 #define crc16_init_static(crc, algo, table) \
     do { \
-        Crc16BasedAlgo algo_ = algo; \
+        Crc16BasedAlgo algo_ = CRC_EXPAND_ALGO(algo); \
         crc16_init_static_(crc, &algo_, table); \
     } while(0)
 /**
@@ -140,7 +132,7 @@ CrcErrors crc16_init_static_(Crc16 *crc, const Crc16BasedAlgo *algo, crc_u16 *ta
 CrcErrors crc32_init_static_(Crc32 *crc, const Crc32BasedAlgo *algo, crc_u32 *table);
 #define crc32_init_static(crc, algo, table) \
     do { \
-        Crc32BasedAlgo algo_ = algo; \
+        Crc32BasedAlgo algo_ = CRC_EXPAND_ALGO(algo); \
         crc32_init_static_(crc, &algo_, table); \
     } while(0)
 /**
@@ -152,7 +144,7 @@ CrcErrors crc32_init_static_(Crc32 *crc, const Crc32BasedAlgo *algo, crc_u32 *ta
 CrcErrors crc64_init_static_(Crc64 *crc, const Crc64BasedAlgo *algo, crc_u64 *table);
 #define crc64_init_static(crc, algo, table) \
     do { \
-        Crc64BasedAlgo algo_ = algo; \
+        Crc64BasedAlgo algo_ = CRC_EXPAND_ALGO(algo); \
         crc64_init_static_(crc, &algo_, table); \
     } while(0)
 #if defined(CRC_USE_HEAP)
@@ -164,7 +156,7 @@ CrcErrors crc64_init_static_(Crc64 *crc, const Crc64BasedAlgo *algo, crc_u64 *ta
 CrcErrors crc8_init_(Crc8 *crc, const Crc8BasedAlgo *algo);
 #define crc8_init(crc, algo) \
     do { \
-        Crc8BasedAlgo algo_ = algo; \
+        Crc8BasedAlgo algo_ = CRC_EXPAND_ALGO(algo); \
         crc8_init_(crc, &algo_); \
     } while(0)
 /**
@@ -175,7 +167,7 @@ CrcErrors crc8_init_(Crc8 *crc, const Crc8BasedAlgo *algo);
 CrcErrors crc16_init_(Crc16 *crc, const Crc16BasedAlgo *algo);
 #define crc16_init(crc, algo) \
     do { \
-        Crc16BasedAlgo algo_ = algo; \
+        Crc16BasedAlgo algo_ = CRC_EXPAND_ALGO(algo); \
         crc16_init_(crc, &algo_); \
     } while(0)
 /**
@@ -186,7 +178,7 @@ CrcErrors crc16_init_(Crc16 *crc, const Crc16BasedAlgo *algo);
 CrcErrors crc32_init_(Crc32 *crc, const Crc32BasedAlgo *algo);
 #define crc32_init(crc, algo) \
     do { \
-        Crc32BasedAlgo algo_ = algo; \
+        Crc32BasedAlgo algo_ = CRC_EXPAND_ALGO(algo); \
         crc32_init_(crc, &algo_); \
     } while(0)
 /**
@@ -197,7 +189,7 @@ CrcErrors crc32_init_(Crc32 *crc, const Crc32BasedAlgo *algo);
 CrcErrors crc64_init_(Crc64 *crc, const Crc64BasedAlgo *algo);
 #define crc64_init(crc, algo) \
     do { \
-        Crc64BasedAlgo algo_ = algo; \
+        Crc64BasedAlgo algo_ = CRC_EXPAND_ALGO(algo); \
         crc64_init_(crc, &algo_); \
     } while(0)
 /**
@@ -323,13 +315,11 @@ crc_u64 crc64_checksum(Crc64 *crc, const void *bytes, size_t size);
     \brief Спецификация алгоритма расчёта циклического избыточного кода ширины не более 128 бит
 */
 typedef struct {
-    int width; /**< Степень порождающего многочлена */
+    crc_u8 width; /**< Степень порождающего многочлена */
     crc_u128 poly; /**< Порождающий многочлен */
     crc_u128 init; /**< Стартовые данные */
-    int refin; /**< Начало и направление вычислений */
-    int refout; /**< Инвертируется ли порядок битов при складывании по модулю 2 полученного результата */
+    crc_u8 flags; /**< RefIn и RefOut */
     crc_u128 xorout; /**< Число, с которым складывается по модулю 2 полученный результат */
-    crc_u128 check; /**< Значение CRC для строки «123456789» */
 } Crc128BasedAlgo;
 /**
     \brief "Объект" для расчёта контрольной суммы ширины не более 128 бит
@@ -349,7 +339,7 @@ typedef struct {
 CrcErrors crc128_init_static_(Crc128 *crc, const Crc128BasedAlgo *algo, crc_u128 *table);
 #define crc128_init_static(crc, algo, table) \
     do { \
-        Crc128BasedAlgo algo_ = algo; \
+        Crc128BasedAlgo algo_ = CRC_EXPAND_ALGO(algo); \
         crc128_init_static_(crc, &algo_, table); \
     } while(0)
 #if defined(CRC_USE_HEAP)
@@ -361,7 +351,7 @@ CrcErrors crc128_init_static_(Crc128 *crc, const Crc128BasedAlgo *algo, crc_u128
 CrcErrors crc128_init_(Crc128 *crc, const Crc128BasedAlgo *algo);
 #define crc128_init(crc, algo) \
     do { \
-        Crc128BasedAlgo algo_ = algo; \
+        Crc128BasedAlgo algo_ = CRC_EXPAND_ALGO(algo); \
         crc128_init_(crc, &algo_); \
     } while(0)
 /**

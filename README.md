@@ -71,9 +71,9 @@ uint16_t table[256];
 uint16_t value;
 Crc16 crc;
 
-#define CRC16_CUSTOM {<custom_width>, <custom_poly>, <custom_init>, <custom_refin>, <custom_refout>, <custom_xorout>, <custom_check>}
+#define CRC16_CUSTOM <custom_width>, <custom_poly>, <custom_init>, <custom_refin>, <custom_refout>, <custom_xorout>, <custom_check>
 
-crc16_init_static(&crc, CRC16_ARC, table);
+crc16_init_static(&crc, CRC16_CUSTOM, table);
 value = crc16_checksum(&crc, data, sizeof(data) - 1);
 ```
 

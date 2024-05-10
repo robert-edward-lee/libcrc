@@ -14,7 +14,17 @@
 #define CRC_DO_STR(s) #s
 #define CRC_STR(s) CRC_DO_STR(s)
 
-#define CRC_EXPAND_INITIALIZER_LIST(w, p, i, ri, ro, x, ch) w, p, i, ri, ro, x, ch
+#define CRC_EXPAND_INITIALIZER_LIST(width, poly, init, refin, refout, xorout, check) \
+    width, poly, init, refin, refout, xorout, check
+#define CRC_EXPAND_CHECK(width, poly, init, refin, refout, xorout, check) check
+
+#define CRC_REFIN_TO_FLAGS(refin) (refin)
+#define CRC_REFOUT_TO_FLAGS(refout) ((refout) << 1)
+#define CRC_FLAGS_TO_REFIN(flags) ((flags) & 1)
+#define CRC_FLAGS_TO_REFOUT(flags) ((flags) >> 1)
+
+#define CRC_EXPAND_ALGO(width, poly, init, refin, refout, xorout, check) \
+    {width, poly, init, CRC_REFIN_TO_FLAGS(refin) | CRC_REFOUT_TO_FLAGS(refout), xorout}
 
 /******************************************************************************/
 /*                          Language Standard Detect                          */
