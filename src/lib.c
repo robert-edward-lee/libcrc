@@ -11,6 +11,18 @@
 #include "crc/lib.h"
 #include "rev.h"
 
+#define CRC_FLAG_REFIN (1 << 0)
+#define CRC_REFIN_TO_FLAGS(refin) (refin << 0)
+#define CRC_FLAGS_TO_REFIN(flags) (((flags) >> 0) & 1)
+
+#define CRC_FLAG_REFOUT (1 << 1)
+#define CRC_REFOUT_TO_FLAGS(refout) ((refout) << 1)
+#define CRC_FLAGS_TO_REFOUT(flags) (((flags) >> 1) & 1)
+
+#define CRC_FLAG_DYN_ALLOC (1 << 2)
+#define CRC_DYN_ALLOC_TO_FLAGS(dyn_alloc) ((dyn_alloc) << 2)
+#define CRC_FLAGS_TO_DYN_ALLOC(flags) (((flags) >> 2) & 1)
+
 /**
     \param poly Порождающий многочлен
     \param refin Начало и направление вычислений
@@ -310,7 +322,7 @@ static CRC_INLINE void crc8_update_impl(Crc8 *crc, const void *bytes, size_t siz
 static CRC_INLINE void crc16_update_impl(Crc16 *crc, const void *bytes, size_t size) {
     size_t i;
 
-    if(CRC_FLAGS_TO_REFIN(crc->algo.flags)) {
+    if(crc->algo.flags & CRC_FLAG_REFIN) {
         for(i = 0; i < size; i++) {
             crc->value = crc->table[(crc->value & 0xFF) ^ ((crc_u8 *)bytes)[i]] ^ (crc->value >> 8);
         }
@@ -324,7 +336,7 @@ static CRC_INLINE void crc16_update_impl(Crc16 *crc, const void *bytes, size_t s
 static CRC_INLINE void crc32_update_impl(Crc32 *crc, const void *bytes, size_t size) {
     size_t i;
 
-    if(CRC_FLAGS_TO_REFIN(crc->algo.flags)) {
+    if(crc->algo.flags & CRC_FLAG_REFIN) {
         for(i = 0; i < size; i++) {
             crc->value = crc->table[(crc->value & 0xFF) ^ ((crc_u8 *)bytes)[i]] ^ (crc->value >> 8);
         }
@@ -338,7 +350,7 @@ static CRC_INLINE void crc32_update_impl(Crc32 *crc, const void *bytes, size_t s
 static CRC_INLINE void crc64_update_impl(Crc64 *crc, const void *bytes, size_t size) {
     size_t i;
 
-    if(CRC_FLAGS_TO_REFIN(crc->algo.flags)) {
+    if(crc->algo.flags & CRC_FLAG_REFIN) {
         for(i = 0; i < size; i++) {
             crc->value = crc->table[(crc->value & 0xFF) ^ ((crc_u8 *)bytes)[i]] ^ (crc->value >> 8);
         }
@@ -358,7 +370,7 @@ static CRC_INLINE crc_u8 crc8_finalize_impl(Crc8 *crc) {
     if(CRC_FLAGS_TO_REFIN(crc->algo.flags) ^ CRC_FLAGS_TO_REFOUT(crc->algo.flags)) {
         ret = rev8(ret);
     }
-    if(!CRC_FLAGS_TO_REFOUT(crc->algo.flags)) {
+    if(!(crc->algo.flags & CRC_FLAG_REFOUT)) {
         ret >>= 8 * sizeof(ret) - crc->algo.width;
     }
     return ret ^ crc->algo.xorout;
@@ -373,7 +385,7 @@ static CRC_INLINE crc_u16 crc16_finalize_impl(Crc16 *crc) {
     if(CRC_FLAGS_TO_REFIN(crc->algo.flags) ^ CRC_FLAGS_TO_REFOUT(crc->algo.flags)) {
         ret = rev16(ret);
     }
-    if(!CRC_FLAGS_TO_REFOUT(crc->algo.flags)) {
+    if(!(crc->algo.flags & CRC_FLAG_REFOUT)) {
         ret >>= 8 * sizeof(ret) - crc->algo.width;
     }
     return ret ^ crc->algo.xorout;
@@ -388,7 +400,7 @@ static CRC_INLINE crc_u32 crc32_finalize_impl(Crc32 *crc) {
     if(CRC_FLAGS_TO_REFIN(crc->algo.flags) ^ CRC_FLAGS_TO_REFOUT(crc->algo.flags)) {
         ret = rev32(ret);
     }
-    if(!CRC_FLAGS_TO_REFOUT(crc->algo.flags)) {
+    if(!(crc->algo.flags & CRC_FLAG_REFOUT)) {
         ret >>= 8 * sizeof(ret) - crc->algo.width;
     }
     return ret ^ crc->algo.xorout;
@@ -403,7 +415,7 @@ static CRC_INLINE crc_u64 crc64_finalize_impl(Crc64 *crc) {
     if(CRC_FLAGS_TO_REFIN(crc->algo.flags) ^ CRC_FLAGS_TO_REFOUT(crc->algo.flags)) {
         ret = rev64(ret);
     }
-    if(!CRC_FLAGS_TO_REFOUT(crc->algo.flags)) {
+    if(!(crc->algo.flags & CRC_FLAG_REFOUT)) {
         ret >>= 8 * sizeof(ret) - crc->algo.width;
     }
     return ret ^ crc->algo.xorout;
@@ -487,6 +499,7 @@ crc8_init_(Crc8 *crc, crc_u8 width, crc_u8 poly, crc_u8 init, crc_bool refin, cr
     }
 
     crc8_init_impl(crc, width, poly, init, refin, refout, xorout, table);
+    crc->algo.flags |= CRC_FLAG_DYN_ALLOC;
     return CE_OK;
 }
 
@@ -503,6 +516,7 @@ crc16_init_(Crc16 *crc, crc_u16 width, crc_u16 poly, crc_u16 init, crc_bool refi
     }
 
     crc16_init_impl(crc, width, poly, init, refin, refout, xorout, table);
+    crc->algo.flags |= CRC_FLAG_DYN_ALLOC;
     return CE_OK;
 }
 
@@ -520,6 +534,7 @@ crc32_init_(Crc32 *crc, crc_u32 width, crc_u32 poly, crc_u32 init, crc_bool refi
     }
 
     crc32_init_impl(crc, width, poly, init, refin, refout, xorout, table);
+    crc->algo.flags |= CRC_FLAG_DYN_ALLOC;
     return CE_OK;
 }
 
@@ -537,11 +552,12 @@ crc64_init_(Crc64 *crc, crc_u64 width, crc_u64 poly, crc_u64 init, crc_bool refi
     }
 
     crc64_init_impl(crc, width, poly, init, refin, refout, xorout, table);
+    crc->algo.flags |= CRC_FLAG_DYN_ALLOC;
     return CE_OK;
 }
 
 void crc8_destroy(Crc8 *crc) {
-    if(!crc || !crc->table) {
+    if(!crc || !crc->table || !(crc->algo.flags & CRC_FLAG_DYN_ALLOC)) {
         return;
     }
     free((void *)crc->table);
@@ -549,7 +565,7 @@ void crc8_destroy(Crc8 *crc) {
 }
 
 void crc16_destroy(Crc16 *crc) {
-    if(!crc || !crc->table) {
+    if(!crc || !crc->table || !(crc->algo.flags & CRC_FLAG_DYN_ALLOC)) {
         return;
     }
     free((void *)crc->table);
@@ -557,7 +573,7 @@ void crc16_destroy(Crc16 *crc) {
 }
 
 void crc32_destroy(Crc32 *crc) {
-    if(!crc || !crc->table) {
+    if(!crc || !crc->table || !(crc->algo.flags & CRC_FLAG_DYN_ALLOC)) {
         return;
     }
     free((void *)crc->table);
@@ -565,7 +581,7 @@ void crc32_destroy(Crc32 *crc) {
 }
 
 void crc64_destroy(Crc64 *crc) {
-    if(!crc || !crc->table) {
+    if(!crc || !crc->table || !(crc->algo.flags & CRC_FLAG_DYN_ALLOC)) {
         return;
     }
     free((void *)crc->table);
@@ -753,7 +769,7 @@ static CRC_INLINE void crc128_init_impl(Crc128 *crc,
 static CRC_INLINE void crc128_update_impl(Crc128 *crc, const void *bytes, size_t size) {
     size_t i;
 
-    if(CRC_FLAGS_TO_REFIN(crc->algo.flags)) {
+    if(crc->algo.flags & CRC_FLAG_REFIN) {
         for(i = 0; i < size; i++) {
             crc->value = crc->table[(crc->value & 0xFF) ^ ((crc_u8 *)bytes)[i]] ^ (crc->value >> 8);
         }
@@ -773,7 +789,7 @@ static CRC_INLINE crc_u128 crc128_finalize_impl(Crc128 *crc) {
     if(CRC_FLAGS_TO_REFIN(crc->algo.flags) ^ CRC_FLAGS_TO_REFOUT(crc->algo.flags)) {
         ret = rev128(ret);
     }
-    if(!CRC_FLAGS_TO_REFOUT(crc->algo.flags)) {
+    if(!(crc->algo.flags & CRC_FLAG_REFOUT)) {
         ret >>= 8 * sizeof(ret) - crc->algo.width;
     }
     return ret ^ crc->algo.xorout;
@@ -814,11 +830,12 @@ CrcErrors crc128_init_(Crc128 *crc,
     }
 
     crc128_init_impl(crc, width, poly, init, refin, refout, xorout, table);
+    crc->algo.flags |= CRC_FLAG_DYN_ALLOC;
     return CE_OK;
 }
 
 void crc128_destroy(Crc128 *crc) {
-    if(!crc || !crc->table) {
+    if(!crc || !crc->table || !(crc->algo.flags & CRC_FLAG_DYN_ALLOC)) {
         return;
     }
     free((void *)crc->table);

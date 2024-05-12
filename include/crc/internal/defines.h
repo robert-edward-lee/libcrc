@@ -20,12 +20,6 @@
 #define CRC_DO_EXPAND_CHECK(width, poly, init, refin, refout, xorout, check) check
 #define CRC_EXPAND_CHECK(algo) CRC_DO_EXPAND_CHECK(algo)
 
-#define CRC_REFIN_TO_FLAGS(refin) (refin)
-#define CRC_FLAGS_TO_REFIN(flags) ((flags) & 1)
-
-#define CRC_REFOUT_TO_FLAGS(refout) ((refout) << 1)
-#define CRC_FLAGS_TO_REFOUT(flags) ((flags) >> 1)
-
 /******************************************************************************/
 /*                          Language Standard Detect                          */
 /******************************************************************************/
