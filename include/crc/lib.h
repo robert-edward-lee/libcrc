@@ -9,7 +9,7 @@
 #include "crc/internal/types.h"
 
 #define CRC_VERSION_MAJOR 1
-#define CRC_VERSION_MINOR 0
+#define CRC_VERSION_MINOR 1
 #define CRC_VERSION_PATCH 0
 #define CRC_VERSION_STRING CRC_STR(CRC_VERSION_MAJOR) "." CRC_STR(CRC_VERSION_MINOR) "." CRC_STR(CRC_VERSION_PATCH)
 
@@ -30,49 +30,41 @@ typedef enum {
     \brief Спецификация алгоритма расчёта циклического избыточного кода ширины не более 8 бит
 */
 typedef struct {
-    int width; /**< Степень порождающего многочлена */
+    crc_u8 width; /**< Степень порождающего многочлена */
     crc_u8 poly; /**< Порождающий многочлен */
     crc_u8 init; /**< Стартовые данные */
-    int refin; /**< Начало и направление вычислений */
-    int refout; /**< Инвертируется ли порядок битов при складывании по модулю 2 полученного результата */
+    crc_u8 flags; /**< RefIn и RefOut */
     crc_u8 xorout; /**< Число, с которым складывается по модулю 2 полученный результат */
-    crc_u8 check; /**< Значение CRC для строки «123456789» */
 } Crc8BasedAlgo;
 /**
     \brief Спецификация алгоритма расчёта циклического избыточного кода ширины не более 16 бит
 */
 typedef struct {
-    int width; /**< Степень порождающего многочлена */
+    crc_u8 width; /**< Степень порождающего многочлена */
     crc_u16 poly; /**< Порождающий многочлен */
     crc_u16 init; /**< Стартовые данные */
-    int refin; /**< Начало и направление вычислений */
-    int refout; /**< Инвертируется ли порядок битов при складывании по модулю 2 полученного результата */
+    crc_u8 flags; /**< RefIn и RefOut */
     crc_u16 xorout; /**< Число, с которым складывается по модулю 2 полученный результат */
-    crc_u16 check; /**< Значение CRC для строки «123456789» */
 } Crc16BasedAlgo;
 /**
     \brief Спецификация алгоритма расчёта циклического избыточного кода ширины не более 32 бит
 */
 typedef struct {
-    int width; /**< Степень порождающего многочлена */
+    crc_u8 width; /**< Степень порождающего многочлена */
     crc_u32 poly; /**< Порождающий многочлен */
     crc_u32 init; /**< Стартовые данные */
-    int refin; /**< Начало и направление вычислений */
-    int refout; /**< Инвертируется ли порядок битов при складывании по модулю 2 полученного результата */
+    crc_u8 flags; /**< RefIn и RefOut */
     crc_u32 xorout; /**< Число, с которым складывается по модулю 2 полученный результат */
-    crc_u32 check; /**< Значение CRC для строки «123456789» */
 } Crc32BasedAlgo;
 /**
     \brief Спецификация алгоритма расчёта циклического избыточного кода ширины не более 64 бит
 */
 typedef struct {
-    int width; /**< Степень порождающего многочлена */
+    crc_u8 width; /**< Степень порождающего многочлена */
     crc_u64 poly; /**< Порождающий многочлен */
     crc_u64 init; /**< Стартовые данные */
-    int refin; /**< Начало и направление вычислений */
-    int refout; /**< Инвертируется ли порядок битов при складывании по модулю 2 полученного результата */
+    crc_u8 flags; /**< RefIn и RefOut */
     crc_u64 xorout; /**< Число, с которым складывается по модулю 2 полученный результат */
-    crc_u64 check; /**< Значение CRC для строки «123456789» */
 } Crc64BasedAlgo;
 /**
     \brief "Объект" для расчёта контрольной суммы ширины не более 8 бит
@@ -109,97 +101,185 @@ typedef struct {
 
 /**
     \param[in,out] crc Предварительно созданный экземпляр \ref Crc8
-    \param[in] algo Каталожный алгоритм из файла crc/catalog.h или свой собственный
+    \param width Степень порождающего многочлена
+    \param poly Порождающий многочлен
+    \param init Стартовые данные
+    \param refin Начало и направление вычислений
+    \param refout Инвертируется ли порядок битов при складывании по модулю 2 полученного результата
+    \param xorout Число, с которым складывается по модулю 2 полученный результат
     \param[in] table Предварительно выделенная память размером 256 байт для хранения таблицы расчёта
+    \return Код ошибки
     \brief Инициализация "объекта" \ref Crc8
 */
-CrcErrors crc8_init_static_(Crc8 *crc, const Crc8BasedAlgo *algo, crc_u8 *table);
-#define crc8_init_static(crc, algo, table) \
-    do { \
-        Crc8BasedAlgo algo_ = algo; \
-        crc8_init_static_(crc, &algo_, table); \
-    } while(0)
+CrcErrors crc8_init_static_(Crc8 *crc,
+                            crc_u8 width,
+                            crc_u8 poly,
+                            crc_u8 init,
+                            crc_bool refin,
+                            crc_bool refout,
+                            crc_u8 xorout,
+                            crc_u8 *table);
+/**
+    \param[in,out] crc Указатель на предварительно созданный экземпляр \ref Crc8
+    \param[in] algo Каталожный алгоритм из файла crc/catalog.h или свой собственный
+    \param[in] table Предварительно выделенная память размером 256 байт для хранения таблицы расчёта
+    \return Код ошибки
+    \brief Обёртка над функцией \ref crc8_init_static_
+*/
+#define crc8_init_static(crc, algo, table) crc8_init_static_(crc, CRC_DO_EXPAND_INIT(algo), table)
 /**
     \param[in,out] crc Предварительно созданный экземпляр \ref Crc16
-    \param[in] algo Каталожный алгоритм из файла crc/catalog.h или свой собственный
+    \param width Степень порождающего многочлена
+    \param poly Порождающий многочлен
+    \param init Стартовые данные
+    \param refin Начало и направление вычислений
+    \param refout Инвертируется ли порядок битов при складывании по модулю 2 полученного результата
+    \param xorout Число, с которым складывается по модулю 2 полученный результат
     \param[in] table Предварительно выделенная память размером 2x256 байт для хранения таблицы расчёта
     \brief Инициализация "объекта" \ref Crc16
 */
-CrcErrors crc16_init_static_(Crc16 *crc, const Crc16BasedAlgo *algo, crc_u16 *table);
-#define crc16_init_static(crc, algo, table) \
-    do { \
-        Crc16BasedAlgo algo_ = algo; \
-        crc16_init_static_(crc, &algo_, table); \
-    } while(0)
+CrcErrors crc16_init_static_(Crc16 *crc,
+                             crc_u16 width,
+                             crc_u16 poly,
+                             crc_u16 init,
+                             crc_bool refin,
+                             crc_bool refout,
+                             crc_u16 xorout,
+                             crc_u16 *table);
+/**
+    \param[in,out] crc Указатель на предварительно созданный экземпляр \ref Crc16
+    \param[in] algo Каталожный алгоритм из файла crc/catalog.h или свой собственный
+    \param[in] table Предварительно выделенная память размером 2x256 байт для хранения таблицы расчёта
+    \return Код ошибки
+    \brief Обёртка над функцией \ref crc16_init_static_
+*/
+#define crc16_init_static(crc, algo, table) crc16_init_static_(crc, CRC_DO_EXPAND_INIT(algo), table)
 /**
     \param[in,out] crc Предварительно созданный экземпляр \ref Crc32
-    \param[in] algo Каталожный алгоритм из файла crc/catalog.h или свой собственный
+    \param width Степень порождающего многочлена
+    \param poly Порождающий многочлен
+    \param init Стартовые данные
+    \param refin Начало и направление вычислений
+    \param refout Инвертируется ли порядок битов при складывании по модулю 2 полученного результата
+    \param xorout Число, с которым складывается по модулю 2 полученный результат
     \param[in] table Предварительно выделенная память размером 4x256 байт для хранения таблицы расчёта
     \brief Инициализация "объекта" \ref Crc32
 */
-CrcErrors crc32_init_static_(Crc32 *crc, const Crc32BasedAlgo *algo, crc_u32 *table);
-#define crc32_init_static(crc, algo, table) \
-    do { \
-        Crc32BasedAlgo algo_ = algo; \
-        crc32_init_static_(crc, &algo_, table); \
-    } while(0)
+CrcErrors crc32_init_static_(Crc32 *crc,
+                             crc_u32 width,
+                             crc_u32 poly,
+                             crc_u32 init,
+                             crc_bool refin,
+                             crc_bool refout,
+                             crc_u32 xorout,
+                             crc_u32 *table);
+/**
+    \param[in,out] crc Указатель на предварительно созданный экземпляр \ref Crc32
+    \param[in] algo Каталожный алгоритм из файла crc/catalog.h или свой собственный
+    \param[in] table Предварительно выделенная память размером 4x256 байт для хранения таблицы расчёта
+    \return Код ошибки
+    \brief Обёртка над функцией \ref crc32_init_static_
+*/
+#define crc32_init_static(crc, algo, table) crc32_init_static_(crc, CRC_DO_EXPAND_INIT(algo), table)
 /**
     \param[in,out] crc Предварительно созданный экземпляр \ref Crc64
-    \param[in] algo Каталожный алгоритм из файла crc/catalog.h или свой собственный
+    \param width Степень порождающего многочлена
+    \param poly Порождающий многочлен
+    \param init Стартовые данные
+    \param refin Начало и направление вычислений
+    \param refout Инвертируется ли порядок битов при складывании по модулю 2 полученного результата
+    \param xorout Число, с которым складывается по модулю 2 полученный результат
     \param[in] table Предварительно выделенная память размером 8x256 байт для хранения таблицы расчёта
     \brief Инициализация "объекта" \ref Crc64
 */
-CrcErrors crc64_init_static_(Crc64 *crc, const Crc64BasedAlgo *algo, crc_u64 *table);
-#define crc64_init_static(crc, algo, table) \
-    do { \
-        Crc64BasedAlgo algo_ = algo; \
-        crc64_init_static_(crc, &algo_, table); \
-    } while(0)
+CrcErrors crc64_init_static_(Crc64 *crc,
+                             crc_u64 width,
+                             crc_u64 poly,
+                             crc_u64 init,
+                             crc_bool refin,
+                             crc_bool refout,
+                             crc_u64 xorout,
+                             crc_u64 *table);
+/**
+    \param[in,out] crc Указатель на предварительно созданный экземпляр \ref Crc64
+    \param[in] algo Каталожный алгоритм из файла crc/catalog.h или свой собственный
+    \param[in] table Предварительно выделенная память размером 8x256 байт для хранения таблицы расчёта
+    \return Код ошибки
+    \brief Обёртка над функцией \ref crc64_init_static_
+*/
+#define crc64_init_static(crc, algo, table) crc64_init_static_(crc, CRC_DO_EXPAND_INIT(algo), table)
 #if defined(CRC_USE_HEAP)
 /**
     \param[in,out] crc Предварительно созданный экземпляр \ref Crc8
-    \param[in] algo Каталожный алгоритм из файла crc/catalog.h или свой собственный
+    \param width Степень порождающего многочлена
+    \param poly Порождающий многочлен
+    \param init Стартовые данные
+    \param refin Начало и направление вычислений
+    \param refout Инвертируется ли порядок битов при складывании по модулю 2 полученного результата
     \brief Инициализация "объекта" \ref Crc8, таблица при этом будет создана динамически
 */
-CrcErrors crc8_init_(Crc8 *crc, const Crc8BasedAlgo *algo);
-#define crc8_init(crc, algo) \
-    do { \
-        Crc8BasedAlgo algo_ = algo; \
-        crc8_init_(crc, &algo_); \
-    } while(0)
+CrcErrors crc8_init_(Crc8 *crc, crc_u8 width, crc_u8 poly, crc_u8 init, crc_bool refin, crc_bool refout, crc_u8 xorout);
+/**
+    \param[in,out] crc Указатель на предварительно созданный экземпляр \ref Crc8
+    \param[in] algo Каталожный алгоритм из файла crc/catalog.h или свой собственный
+    \return Код ошибки
+    \brief Обёртка над функцией \ref crc8_init_
+*/
+#define crc8_init(crc, algo) crc8_init_(crc, CRC_DO_EXPAND_INIT(algo))
 /**
     \param[in,out] crc Предварительно созданный экземпляр \ref Crc16
-    \param[in] algo Каталожный алгоритм из файла crc/catalog.h или свой собственный
+    \param width Степень порождающего многочлена
+    \param poly Порождающий многочлен
+    \param init Стартовые данные
+    \param refin Начало и направление вычислений
+    \param refout Инвертируется ли порядок битов при складывании по модулю 2 полученного результата
     \brief Инициализация "объекта" \ref Crc16, таблица при этом будет создана динамически
 */
-CrcErrors crc16_init_(Crc16 *crc, const Crc16BasedAlgo *algo);
-#define crc16_init(crc, algo) \
-    do { \
-        Crc16BasedAlgo algo_ = algo; \
-        crc16_init_(crc, &algo_); \
-    } while(0)
+CrcErrors
+crc16_init_(Crc16 *crc, crc_u16 width, crc_u16 poly, crc_u16 init, crc_bool refin, crc_bool refout, crc_u16 xorout);
+/**
+    \param[in,out] crc Указатель на предварительно созданный экземпляр \ref Crc16
+    \param[in] algo Каталожный алгоритм из файла crc/catalog.h или свой собственный
+    \return Код ошибки
+    \brief Обёртка над функцией \ref crc16_init_
+*/
+#define crc16_init(crc, algo) crc16_init_(crc, CRC_DO_EXPAND_INIT(algo))
 /**
     \param[in,out] crc Предварительно созданный экземпляр \ref Crc32
-    \param[in] algo Каталожный алгоритм из файла crc/catalog.h или свой собственный
+    \param width Степень порождающего многочлена
+    \param poly Порождающий многочлен
+    \param init Стартовые данные
+    \param refin Начало и направление вычислений
+    \param refout Инвертируется ли порядок битов при складывании по модулю 2 полученного результата
     \brief Инициализация "объекта" \ref Crc32, таблица при этом будет создана динамически
 */
-CrcErrors crc32_init_(Crc32 *crc, const Crc32BasedAlgo *algo);
-#define crc32_init(crc, algo) \
-    do { \
-        Crc32BasedAlgo algo_ = algo; \
-        crc32_init_(crc, &algo_); \
-    } while(0)
+CrcErrors
+crc32_init_(Crc32 *crc, crc_u32 width, crc_u32 poly, crc_u32 init, crc_bool refin, crc_bool refout, crc_u32 xorout);
+/**
+    \param[in,out] crc Указатель на предварительно созданный экземпляр \ref Crc32
+    \param[in] algo Каталожный алгоритм из файла crc/catalog.h или свой собственный
+    \return Код ошибки
+    \brief Обёртка над функцией \ref crc32_init_
+*/
+#define crc32_init(crc, algo) crc32_init_(crc, CRC_DO_EXPAND_INIT(algo))
 /**
     \param[in,out] crc Предварительно созданный экземпляр \ref Crc64
-    \param[in] algo Каталожный алгоритм из файла crc/catalog.h или свой собственный
+    \param width Степень порождающего многочлена
+    \param poly Порождающий многочлен
+    \param init Стартовые данные
+    \param refin Начало и направление вычислений
+    \param refout Инвертируется ли порядок битов при складывании по модулю 2 полученного результата
     \brief Инициализация "объекта" \ref Crc64, таблица при этом будет создана динамически
 */
-CrcErrors crc64_init_(Crc64 *crc, const Crc64BasedAlgo *algo);
-#define crc64_init(crc, algo) \
-    do { \
-        Crc64BasedAlgo algo_ = algo; \
-        crc64_init_(crc, &algo_); \
-    } while(0)
+CrcErrors
+crc64_init_(Crc64 *crc, crc_u64 width, crc_u64 poly, crc_u64 init, crc_bool refin, crc_bool refout, crc_u64 xorout);
+/**
+    \param[in,out] crc Указатель на предварительно созданный экземпляр \ref Crc64
+    \param[in] algo Каталожный алгоритм из файла crc/catalog.h или свой собственный
+    \return Код ошибки
+    \brief Обёртка над функцией \ref crc64_init_
+*/
+#define crc64_init(crc, algo) crc64_init_(crc, CRC_DO_EXPAND_INIT(algo))
 /**
     \param[in,out] crc Экземпляр \ref Crc8
     \brief Очистка памяти если crc инициализирован при помощи \ref crc8_init_impl
@@ -323,13 +403,11 @@ crc_u64 crc64_checksum(Crc64 *crc, const void *bytes, size_t size);
     \brief Спецификация алгоритма расчёта циклического избыточного кода ширины не более 128 бит
 */
 typedef struct {
-    int width; /**< Степень порождающего многочлена */
+    crc_u8 width; /**< Степень порождающего многочлена */
     crc_u128 poly; /**< Порождающий многочлен */
     crc_u128 init; /**< Стартовые данные */
-    int refin; /**< Начало и направление вычислений */
-    int refout; /**< Инвертируется ли порядок битов при складывании по модулю 2 полученного результата */
+    crc_u8 flags; /**< RefIn и RefOut */
     crc_u128 xorout; /**< Число, с которым складывается по модулю 2 полученный результат */
-    crc_u128 check; /**< Значение CRC для строки «123456789» */
 } Crc128BasedAlgo;
 /**
     \brief "Объект" для расчёта контрольной суммы ширины не более 128 бит
@@ -339,34 +417,59 @@ typedef struct {
     const crc_u128 *table; /**< Таблица для вычисления */
     crc_u128 value; /**< Промежуточное значение контрольной суммы */
 } Crc128;
-
 /**
     \param[in,out] crc Предварительно созданный экземпляр \ref Crc128
-    \param[in] algo Каталожный алгоритм из файла crc/catalog.h или свой собственный
-    \param[in] table Предварительно выделенная память размером 8x256 байт для хранения таблицы расчёта
+    \param width Степень порождающего многочлена
+    \param poly Порождающий многочлен
+    \param init Стартовые данные
+    \param refin Начало и направление вычислений
+    \param refout Инвертируется ли порядок битов при складывании по модулю 2 полученного результата
+    \param[in] table Предварительно выделенная память размером 128x256 байт для хранения таблицы расчёта
     \brief Инициализация "объекта" \ref Crc128
 */
-CrcErrors crc128_init_static_(Crc128 *crc, const Crc128BasedAlgo *algo, crc_u128 *table);
-#define crc128_init_static(crc, algo, table) \
-    do { \
-        Crc128BasedAlgo algo_ = algo; \
-        crc128_init_static_(crc, &algo_, table); \
-    } while(0)
+CrcErrors crc128_init_static_(Crc128 *crc,
+                              crc_u128 width,
+                              crc_u128 poly,
+                              crc_u128 init,
+                              crc_bool refin,
+                              crc_bool refout,
+                              crc_u128 xorout,
+                              crc_u128 *table);
+/**
+    \param[in,out] crc Указатель на предварительно созданный экземпляр \ref Crc128
+    \param[in] algo Каталожный алгоритм из файла crc/catalog.h или свой собственный
+    \param[in] table Предварительно выделенная память размером 128x256 байт для хранения таблицы расчёта
+    \return Код ошибки
+    \brief Обёртка над функцией \ref crc128_init_static_
+*/
+#define crc128_init_static(crc, algo, table) crc128_init_static_(crc, CRC_DO_EXPAND_INIT(algo), table)
 #if defined(CRC_USE_HEAP)
 /**
     \param[in,out] crc Предварительно созданный экземпляр \ref Crc128
-    \param[in] algo Каталожный алгоритм из файла crc/catalog.h или свой собственный
+    \param width Степень порождающего многочлена
+    \param poly Порождающий многочлен
+    \param init Стартовые данные
+    \param refin Начало и направление вычислений
+    \param refout Инвертируется ли порядок битов при складывании по модулю 2 полученного результата
     \brief Инициализация "объекта" \ref Crc128, таблица при этом будет создана динамически
 */
-CrcErrors crc128_init_(Crc128 *crc, const Crc128BasedAlgo *algo);
-#define crc128_init(crc, algo) \
-    do { \
-        Crc128BasedAlgo algo_ = algo; \
-        crc128_init_(crc, &algo_); \
-    } while(0)
+CrcErrors crc128_init_(Crc128 *crc,
+                       crc_u128 width,
+                       crc_u128 poly,
+                       crc_u128 init,
+                       crc_bool refin,
+                       crc_bool refout,
+                       crc_u128 xorout);
+/**
+    \param[in,out] crc Указатель на предварительно созданный экземпляр \ref Crc128
+    \param[in] algo Каталожный алгоритм из файла crc/catalog.h или свой собственный
+    \return Код ошибки
+    \brief Обёртка над функцией \ref crc128_init_
+*/
+#define crc128_init(crc, algo, table) crc128_init_(crc, CRC_DO_EXPAND_INIT(algo))
 /**
     \param[in,out] crc Экземпляр \ref Crc128
-    \brief Очистка памяти если crc инициализирован при помощи \ref crc128_init_
+    \brief Очистка памяти если crc инициализирован при помощи \ref crc128_init
 */
 void crc128_destroy(Crc128 *crc);
 #endif /* CRC_USE_HEAP */

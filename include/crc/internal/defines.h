@@ -14,7 +14,11 @@
 #define CRC_DO_STR(s) #s
 #define CRC_STR(s) CRC_DO_STR(s)
 
-#define CRC_EXPAND_INITIALIZER_LIST(w, p, i, ri, ro, x, ch) w, p, i, ri, ro, x, ch
+#define CRC_DO_EXPAND_INIT(width, poly, init, refin, refout, xorout, check) width, poly, init, refin, refout, xorout
+#define CRC_EXPAND_INIT(algo) CRC_DO_EXPAND_INIT(algo)
+
+#define CRC_DO_EXPAND_CHECK(width, poly, init, refin, refout, xorout, check) check
+#define CRC_EXPAND_CHECK(algo) CRC_DO_EXPAND_CHECK(algo)
 
 /******************************************************************************/
 /*                          Language Standard Detect                          */

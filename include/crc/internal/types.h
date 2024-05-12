@@ -30,6 +30,13 @@ typedef unsigned long long crc_u64;
 #endif
 #endif
 
+#if CRC_STDC_VERSION_CHECK(199901)
+#include <stdbool.h>
+typedef bool crc_bool;
+#else
+typedef crc_u8 crc_bool;
+#endif
+
 #define CRC_UINT64_C(w1, w2) ((crc_u64)CRC_CONCAT(w1, UL) << 32 | CRC_CONCAT(w2, UL))
 
 #if CRC_HAS_GNUC_INT128
