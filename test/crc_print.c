@@ -8,7 +8,7 @@
     do { \
         int i; \
         CRC_CONCAT(Crc, __width) crc; \
-        CRC_CONCAT(CRC_CONCAT(crc, __width), _init)(&crc, CRC_EXPAND_INITIALIZER_LIST(__algo)); \
+        CRC_CONCAT(CRC_CONCAT(crc, __width), _init_)(&crc, CRC_DO_EXPAND_INIT(__algo)); \
         printf("static const uint" CRC_STR(__width) "_t CRC_TABLE[256] = {\n"); \
         for(i = 0; i < 256; i++) { \
             printf("%s0x%0*" CRC_CONCAT(PRIX, __width) ",%s", \
@@ -24,7 +24,7 @@
 #define crc128_print_table(__algo) \
     do { \
         Crc128 crc; \
-        crc128_init(&crc, CRC_EXPAND_INITIALIZER_LIST(__algo)); \
+        crc128_init_(&crc, CRC_DO_EXPAND_INIT(__algo)); \
         printf("static const crc_u128 CRC_TABLE[256] = {\n"); \
         for(int i = 0; i < 256; i++) { \
             printf("    (crc_u128)0x%016" PRIX64 " << 64 | 0x%016" PRIX64 ",\n", \

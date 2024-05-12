@@ -20,9 +20,9 @@ const char check[9] = "123456789";
 
 #define crc_test(__algo, __width) \
     do { \
-        crc_u##__width value, check_value = CRC_EXPAND_CHECK(__algo); \
+        crc_u##__width value, check_value = CRC_DO_EXPAND_CHECK(__algo); \
         Crc##__width crc; \
-        crc##__width##_init(&crc, CRC_EXPAND_INITIALIZER_LIST(__algo)); \
+        crc##__width##_init_(&crc, CRC_DO_EXPAND_INIT(__algo)); \
         value = crc##__width##_checksum(&crc, check, sizeof(check)); \
         if(check_value != value) { \
             printf("Invalid CRC check for " #__algo ": "); \
