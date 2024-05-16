@@ -5,7 +5,7 @@
 #ifndef H_CRC_INTERNAL_TYPES
 #define H_CRC_INTERNAL_TYPES
 
-#include <stddef.h>
+#include <stddef.h> /* size_t */
 
 #include "crc/internal/defines.h"
 

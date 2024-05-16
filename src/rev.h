@@ -58,11 +58,11 @@ static CRC_ALWAYS_INLINE crc_u64 rev64(crc_u64 x) {
 #if CRC_HAS_BUILTIN_BITREVERSE
     return __builtin_bitreverse64(x);
 #else
-    x = ((x & ((crc_u64)0x55555555 << 32 | 0x55555555)) << 1) | ((x & ((crc_u64)0xAAAAAAAA << 32 | 0xAAAAAAAA)) >> 1);
-    x = ((x & ((crc_u64)0x33333333 << 32 | 0x33333333)) << 2) | ((x & ((crc_u64)0xCCCCCCCC << 32 | 0xCCCCCCCC)) >> 2);
-    x = ((x & ((crc_u64)0x0F0F0F0F << 32 | 0x0F0F0F0F)) << 4) | ((x & ((crc_u64)0xF0F0F0F0 << 32 | 0xF0F0F0F0)) >> 4);
-    x = ((x & ((crc_u64)0x00FF00FF << 32 | 0x00FF00FF)) << 8) | ((x & ((crc_u64)0xFF00FF00 << 32 | 0xFF00FF00)) >> 8);
-    x = ((x & ((crc_u64)0x0000FFFF << 32 | 0x0000FFFF)) << 16) | ((x & ((crc_u64)0xFFFF0000 << 32 | 0xFFFF0000)) >> 16);
+    x = ((x & CRC_UINT64_C(0x55555555, 0x55555555)) << 1) | ((x & CRC_UINT64_C(0xAAAAAAAA, 0xAAAAAAAA)) >> 1);
+    x = ((x & CRC_UINT64_C(0x33333333, 0x33333333)) << 2) | ((x & CRC_UINT64_C(0xCCCCCCCC, 0xCCCCCCCC)) >> 2);
+    x = ((x & CRC_UINT64_C(0x0F0F0F0F, 0x0F0F0F0F)) << 4) | ((x & CRC_UINT64_C(0xF0F0F0F0, 0xF0F0F0F0)) >> 4);
+    x = ((x & CRC_UINT64_C(0x00FF00FF, 0x00FF00FF)) << 8) | ((x & CRC_UINT64_C(0xFF00FF00, 0xFF00FF00)) >> 8);
+    x = ((x & CRC_UINT64_C(0x0000FFFF, 0x0000FFFF)) << 16) | ((x & CRC_UINT64_C(0xFFFF0000, 0xFFFF0000)) >> 16);
     return x << 32 | x >> 32;
 #endif
 }

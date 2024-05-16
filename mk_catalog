@@ -18,7 +18,6 @@ class Algo(object):
         self.name = header.replace(
             'CRC-', 'CRC').replace('-', '_').replace('/', '_')
 
-        params = params[0:params.find('residue')]
         params = params.split()
 
         self.width = int(params[0].split('=')[1])
@@ -28,6 +27,7 @@ class Algo(object):
         self.refout = str2bool(params[4].split('=')[1])
         self.xorout = int(params[5].split('=')[1], base=16)
         self.check = int(params[6].split('=')[1], base=16)
+        self.residue = int(params[7].split('=')[1], base=16)
 
         if self.width <= 8:
             self.actual_width = 8
@@ -89,7 +89,13 @@ class Algo(object):
             ret += f' CRC_UINT128_C(0x{self.check >> 96:08X},'
             ret += f' 0x{(self.check >> 64) & mask:08X},'
             ret += f' 0x{(self.check >> 32) & mask:08X},'
-            ret += f' 0x{self.check & mask:08X})\n'
+            ret += f' 0x{self.check & mask:08X}),\\\n'
+
+            ret += f'{' ':36}'
+            ret += f' CRC_UINT128_C(0x{self.residue >> 96:08X},'
+            ret += f' 0x{(self.residue >> 64) & mask:08X},'
+            ret += f' 0x{(self.residue >> 32) & mask:08X},'
+            ret += f' 0x{self.residue & mask:08X})\n'
         elif self.actual_width == 64:
             ret += f'{self.width:>2},'
 
@@ -97,16 +103,19 @@ class Algo(object):
             ret += f' 0x{self.poly & mask:08X}),'
 
             ret += f' CRC_UINT64_C(0x{self.init >> 32:08X},'
-            ret += f' 0x{self.init & mask:08X}),\\\n'
+            ret += f' 0x{self.init & mask:08X}),'
 
-            ret += f'{' ':29}'
-            ret += f' {int(self.refin)}, {int(self.refout)},'
+            ret += f' {int(self.refin)}, {int(self.refout)},\\\n'
 
+            ret += f'{' ':35}'
             ret += f' CRC_UINT64_C(0x{self.xorout >> 32:08X},'
             ret += f' 0x{self.xorout & mask:08X}),'
 
             ret += f' CRC_UINT64_C(0x{self.check >> 32:08X},'
-            ret += f' 0x{self.check & mask:08X})\n'
+            ret += f' 0x{self.check & mask:08X}),'
+
+            ret += f' CRC_UINT64_C(0x{self.residue >> 32:08X},'
+            ret += f' 0x{self.residue & mask:08X})\n'
         else:
             align = self.width // 4 + bool(self.width % 4)
             ret += f'{self.width:>2},'
@@ -124,7 +133,10 @@ class Algo(object):
             ret += f'0x{self.xorout:0{align}X},'
 
             ret += f'{' ':>{17 - align}}'
-            ret += f'0x{self.check:0{align}X}\n'
+            ret += f'0x{self.check:0{align}X},'
+
+            ret += f'{' ':>{17 - align}}'
+            ret += f'0x{self.residue:0{align}X}\n'
 
         for alias in self.aliases:
             ret += f'#define {alias:23} {self.name}\n'
@@ -143,6 +155,7 @@ class Algo(object):
         ret += f'`{str(self.refout).lower()}`|'
         ret += f'`0x{self.xorout:0{align}X}`|'
         ret += f'`0x{self.check:0{align}X}`|'
+        ret += f'`0x{self.residue:0{align}X}`|'
         for alias in self.aliases:
             ret += f'`{alias}`, '
         if len(self.aliases):
@@ -179,8 +192,8 @@ for link in links:
 MD_BEGIN = rf"""### Спецификации алгоритмов
 Каталог алгоритмов взят отсюда: {URL}
 
-| Name | Width | Poly | Init | RefIn | RefOut | XorOut | Check | Aliases |
-| ---- | ----: | ---: | ---: | ----: | -----: | -----: | ----: | ------- |
+| Name | Width | Poly | Init | RefIn | RefOut | XorOut | Check | Residue | Aliases |
+| ---- | ----: | ---: | ---: | ----: | -----: | -----: | ----: | ------: | ------- |
 """
 
 with open('CATALOG.md', 'w+', encoding='utf-8', newline='\n') as f:
@@ -201,7 +214,7 @@ BEGIN = rf"""/**
 #define H_CRC_CATALOG
 #include "crc/internal/types.h"
 /* clang-format off */
-/*                              Width              Poly              Init RefIn RefOut         XorOut               Check */
+/*                              Width              Poly              Init RefIn RefOut         XorOut               Check            Residue */
 """
 
 END = r"""/* clang-format on */
