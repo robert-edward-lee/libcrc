@@ -9,7 +9,7 @@
 #include "crc/internal/types.h"
 
 #define CRC_VERSION_MAJOR 1
-#define CRC_VERSION_MINOR 2
+#define CRC_VERSION_MINOR 3
 #define CRC_VERSION_PATCH 0
 #define CRC_VERSION_STRING CRC_STR(CRC_VERSION_MAJOR) "." CRC_STR(CRC_VERSION_MINOR) "." CRC_STR(CRC_VERSION_PATCH)
 
@@ -21,9 +21,9 @@ extern "C" {
     \brief Ошибки возвращаемые при инициализации
 */
 typedef enum {
-    CE_OK, /**< Всё ок */
-    CE_INVALID_ARG, /**< Как правило нуль-указатель в качестве аргумента */
-    CE_MEM_ERR /**< Только в случае динамического выделения памяти для таблицы */
+    CRC_OK, /**< Всё ок */
+    CRC_ERR_INVALID_ARG, /**< Как правило нуль-указатель в качестве аргумента */
+    CRC_ERR_MEM /**< Только в случае динамического выделения памяти для таблицы */
 } CrcErrors;
 
 /**

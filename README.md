@@ -26,7 +26,7 @@ char data[] = "123456789";
 uint16_t value;
 Crc16 crc;
 
-if(crc16_init(&crc, CRC16_ARC) != CE_OK) {
+if(crc16_init(&crc, CRC16_ARC) != CRC_OK) {
     /* отработка ошибки */
 }
 value = crc16_checksum(&crc, data, sizeof(data) - 1);
@@ -43,7 +43,7 @@ uint16_t table[256];
 uint16_t value;
 Crc16 crc;
 
-if(crc16_init_static(&crc, CRC16_ARC, table) != CE_OK) {
+if(crc16_init_static(&crc, CRC16_ARC, table) != CRC_OK) {
     /* отработка ошибки */
 }
 value = crc16_checksum(&crc, data, sizeof(data) - 1);
@@ -59,7 +59,7 @@ uint16_t table[256];
 uint16_t value;
 Crc16 crc;
 
-if(crc16_init_static(&crc, CRC16_ARC, table) != CE_OK) {
+if(crc16_init_static(&crc, CRC16_ARC, table) != CRC_OK) {
     /* отработка ошибки */
 }
 for(int i = 0; i < sizeof(data) - 1; i++) {
@@ -79,7 +79,7 @@ Crc16 crc;
 
 #define CRC16_CUSTOM <custom_width>, <custom_poly>, <custom_init>, <custom_refin>, <custom_refout>, <custom_xorout>, <custom_check>
 
-if(crc16_init_static(&crc, CRC16_CUSTOM, table) != CE_OK) {
+if(crc16_init_static(&crc, CRC16_CUSTOM, table) != CRC_OK) {
     /* отработка ошибки */
 }
 value = crc16_checksum(&crc, data, sizeof(data) - 1);
