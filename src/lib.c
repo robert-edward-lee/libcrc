@@ -485,75 +485,84 @@ CrcErrors crc64_init_static_(Crc64 *crc,
     return CRC_OK;
 }
 #if defined(CRC_USE_HEAP)
-CrcErrors
-crc8_init_(Crc8 *crc, crc_u8 width, crc_u8 poly, crc_u8 init, crc_bool refin, crc_bool refout, crc_u8 xorout) {
+Crc8 *crc8_init_(crc_u8 width, crc_u8 poly, crc_u8 init, crc_bool refin, crc_bool refout, crc_u8 xorout) {
+    Crc8 *crc;
     crc_u8 *table;
 
+    crc = malloc(sizeof(*crc));
     if(!crc) {
-        return CRC_ERR_INVALID_ARG;
+        return NULL;
     }
 
     table = malloc(256 * sizeof(*table));
     if(!table) {
-        return CRC_ERR_MEM;
+        free(crc);
+        return NULL;
     }
 
     crc8_init_impl(crc, width, poly, init, refin, refout, xorout, table);
     crc->algo.flags |= CRC_FLAG_DYN_ALLOC;
-    return CRC_OK;
+    return crc;
 }
 
-CrcErrors
-crc16_init_(Crc16 *crc, crc_u16 width, crc_u16 poly, crc_u16 init, crc_bool refin, crc_bool refout, crc_u16 xorout) {
+Crc16 *crc16_init_(crc_u16 width, crc_u16 poly, crc_u16 init, crc_bool refin, crc_bool refout, crc_u16 xorout) {
+    Crc16 *crc;
     crc_u16 *table;
 
+    crc = malloc(sizeof(*crc));
     if(!crc) {
-        return CRC_ERR_INVALID_ARG;
+        return NULL;
     }
+
     table = malloc(256 * sizeof(*table));
     if(!table) {
-        return CRC_ERR_MEM;
+        free(crc);
+        return NULL;
     }
 
     crc16_init_impl(crc, width, poly, init, refin, refout, xorout, table);
     crc->algo.flags |= CRC_FLAG_DYN_ALLOC;
-    return CRC_OK;
+    return crc;
 }
 
-CrcErrors
-crc32_init_(Crc32 *crc, crc_u32 width, crc_u32 poly, crc_u32 init, crc_bool refin, crc_bool refout, crc_u32 xorout) {
+Crc32 *crc32_init_(crc_u32 width, crc_u32 poly, crc_u32 init, crc_bool refin, crc_bool refout, crc_u32 xorout) {
+    Crc32 *crc;
     crc_u32 *table;
 
+    crc = malloc(sizeof(*crc));
     if(!crc) {
-        return CRC_ERR_INVALID_ARG;
+        return NULL;
     }
 
     table = malloc(256 * sizeof(*table));
     if(!table) {
-        return CRC_ERR_MEM;
+        free(crc);
+        return NULL;
     }
 
     crc32_init_impl(crc, width, poly, init, refin, refout, xorout, table);
     crc->algo.flags |= CRC_FLAG_DYN_ALLOC;
-    return CRC_OK;
+    return crc;
 }
 
-CrcErrors
-crc64_init_(Crc64 *crc, crc_u64 width, crc_u64 poly, crc_u64 init, crc_bool refin, crc_bool refout, crc_u64 xorout) {
+Crc64 *crc64_init_(crc_u64 width, crc_u64 poly, crc_u64 init, crc_bool refin, crc_bool refout, crc_u64 xorout) {
+    Crc64 *crc;
     crc_u64 *table;
 
+    crc = malloc(sizeof(*crc));
     if(!crc) {
-        return CRC_ERR_INVALID_ARG;
+        return NULL;
     }
 
     table = malloc(256 * sizeof(*table));
     if(!table) {
-        return CRC_ERR_MEM;
+        free(crc);
+        return NULL;
     }
 
     crc64_init_impl(crc, width, poly, init, refin, refout, xorout, table);
     crc->algo.flags |= CRC_FLAG_DYN_ALLOC;
-    return CRC_OK;
+    return crc;
 }
 
 void crc8_destroy(Crc8 *crc) {
@@ -562,6 +571,7 @@ void crc8_destroy(Crc8 *crc) {
     }
     free((void *)crc->table);
     crc->table = NULL;
+    free(crc);
 }
 
 void crc16_destroy(Crc16 *crc) {
@@ -570,6 +580,7 @@ void crc16_destroy(Crc16 *crc) {
     }
     free((void *)crc->table);
     crc->table = NULL;
+    free(crc);
 }
 
 void crc32_destroy(Crc32 *crc) {
@@ -578,6 +589,7 @@ void crc32_destroy(Crc32 *crc) {
     }
     free((void *)crc->table);
     crc->table = NULL;
+    free(crc);
 }
 
 void crc64_destroy(Crc64 *crc) {
@@ -586,6 +598,7 @@ void crc64_destroy(Crc64 *crc) {
     }
     free((void *)crc->table);
     crc->table = NULL;
+    free(crc);
 }
 #endif /* CRC_USE_HEAP */
 void crc8_update(Crc8 *crc, const void *bytes, size_t size) {
@@ -811,27 +824,24 @@ CrcErrors crc128_init_static_(Crc128 *crc,
     return CRC_OK;
 }
 #if defined(CRC_USE_HEAP)
-CrcErrors crc128_init_(Crc128 *crc,
-                       crc_u128 width,
-                       crc_u128 poly,
-                       crc_u128 init,
-                       crc_bool refin,
-                       crc_bool refout,
-                       crc_u128 xorout) {
+Crc128 *crc128_init_(crc_u128 width, crc_u128 poly, crc_u128 init, crc_bool refin, crc_bool refout, crc_u128 xorout) {
+    Crc128 *crc;
     crc_u128 *table;
 
+    crc = malloc(sizeof(*crc));
     if(!crc) {
-        return CRC_ERR_INVALID_ARG;
+        return NULL;
     }
 
     table = malloc(256 * sizeof(*table));
     if(!table) {
-        return CRC_ERR_MEM;
+        free(crc);
+        return NULL;
     }
 
     crc128_init_impl(crc, width, poly, init, refin, refout, xorout, table);
     crc->algo.flags |= CRC_FLAG_DYN_ALLOC;
-    return CRC_OK;
+    return crc;
 }
 
 void crc128_destroy(Crc128 *crc) {
@@ -840,6 +850,7 @@ void crc128_destroy(Crc128 *crc) {
     }
     free((void *)crc->table);
     crc->table = NULL;
+    free(crc);
 }
 #endif /* CRC_USE_HEAP */
 void crc128_update(Crc128 *crc, const void *bytes, size_t size) {
