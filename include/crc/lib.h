@@ -8,8 +8,8 @@
 #include "crc/internal/defines.h"
 #include "crc/internal/types.h"
 
-#define CRC_VERSION_MAJOR 1
-#define CRC_VERSION_MINOR 3
+#define CRC_VERSION_MAJOR 2
+#define CRC_VERSION_MINOR 0
 #define CRC_VERSION_PATCH 0
 #define CRC_VERSION_STRING CRC_STR(CRC_VERSION_MAJOR) "." CRC_STR(CRC_VERSION_MINOR) "." CRC_STR(CRC_VERSION_PATCH)
 
@@ -22,8 +22,7 @@ extern "C" {
 */
 typedef enum {
     CRC_OK, /**< Всё ок */
-    CRC_ERR_INVALID_ARG, /**< Как правило нуль-указатель в качестве аргумента */
-    CRC_ERR_MEM /**< Только в случае динамического выделения памяти для таблицы */
+    CRC_ERR_INVALID_ARG /**< Как правило нуль-указатель в качестве аргумента */
 } CrcErrors;
 
 /**
@@ -210,91 +209,91 @@ CrcErrors crc64_init_static_(Crc64 *crc,
 #define crc64_init_static(crc, algo, table) crc64_init_static_(crc, CRC_DO_EXPAND_INIT(algo), table)
 #if defined(CRC_USE_HEAP)
 /**
-    \param[in,out] crc Предварительно созданный экземпляр \ref Crc8
     \param width Степень порождающего многочлена
     \param poly Порождающий многочлен
     \param init Стартовые данные
     \param refin Начало и направление вычислений
     \param refout Инвертируется ли порядок битов при складывании по модулю 2 полученного результата
+    \return Указатель на объект Crc
     \brief Инициализация "объекта" \ref Crc8, таблица при этом будет создана динамически
 */
 Crc8 *crc8_init_(crc_u8 width, crc_u8 poly, crc_u8 init, crc_bool refin, crc_bool refout, crc_u8 xorout);
 /**
     \param[in,out] crc Указатель на предварительно созданный экземпляр \ref Crc8
     \param[in] algo Каталожный алгоритм из файла crc/catalog.h или свой собственный
-    \return Код ошибки
+    \return Указатель на объект Crc
     \brief Обёртка над функцией \ref crc8_init_
 */
 #define crc8_init(algo) crc8_init_(CRC_DO_EXPAND_INIT(algo))
 /**
-    \param[in,out] crc Предварительно созданный экземпляр \ref Crc16
     \param width Степень порождающего многочлена
     \param poly Порождающий многочлен
     \param init Стартовые данные
     \param refin Начало и направление вычислений
     \param refout Инвертируется ли порядок битов при складывании по модулю 2 полученного результата
+    \return Указатель на объект Crc
     \brief Инициализация "объекта" \ref Crc16, таблица при этом будет создана динамически
 */
 Crc16 *crc16_init_(crc_u16 width, crc_u16 poly, crc_u16 init, crc_bool refin, crc_bool refout, crc_u16 xorout);
 /**
     \param[in,out] crc Указатель на предварительно созданный экземпляр \ref Crc16
     \param[in] algo Каталожный алгоритм из файла crc/catalog.h или свой собственный
-    \return Код ошибки
+    \return Указатель на объект Crc
     \brief Обёртка над функцией \ref crc16_init_
 */
 #define crc16_init(algo) crc16_init_(CRC_DO_EXPAND_INIT(algo))
 /**
-    \param[in,out] crc Предварительно созданный экземпляр \ref Crc32
     \param width Степень порождающего многочлена
     \param poly Порождающий многочлен
     \param init Стартовые данные
     \param refin Начало и направление вычислений
     \param refout Инвертируется ли порядок битов при складывании по модулю 2 полученного результата
+    \return Указатель на объект Crc
     \brief Инициализация "объекта" \ref Crc32, таблица при этом будет создана динамически
 */
 Crc32 *crc32_init_(crc_u32 width, crc_u32 poly, crc_u32 init, crc_bool refin, crc_bool refout, crc_u32 xorout);
 /**
     \param[in,out] crc Указатель на предварительно созданный экземпляр \ref Crc32
     \param[in] algo Каталожный алгоритм из файла crc/catalog.h или свой собственный
-    \return Код ошибки
+    \return Указатель на объект Crc
     \brief Обёртка над функцией \ref crc32_init_
 */
 #define crc32_init(algo) crc32_init_(CRC_DO_EXPAND_INIT(algo))
 /**
-    \param[in,out] crc Предварительно созданный экземпляр \ref Crc64
     \param width Степень порождающего многочлена
     \param poly Порождающий многочлен
     \param init Стартовые данные
     \param refin Начало и направление вычислений
     \param refout Инвертируется ли порядок битов при складывании по модулю 2 полученного результата
+    \return Указатель на объект Crc
     \brief Инициализация "объекта" \ref Crc64, таблица при этом будет создана динамически
 */
 Crc64 *crc64_init_(crc_u64 width, crc_u64 poly, crc_u64 init, crc_bool refin, crc_bool refout, crc_u64 xorout);
 /**
     \param[in,out] crc Указатель на предварительно созданный экземпляр \ref Crc64
     \param[in] algo Каталожный алгоритм из файла crc/catalog.h или свой собственный
-    \return Код ошибки
+    \return Указатель на объект Crc
     \brief Обёртка над функцией \ref crc64_init_
 */
 #define crc64_init(algo) crc64_init_(CRC_DO_EXPAND_INIT(algo))
 /**
     \param[in,out] crc Экземпляр \ref Crc8
-    \brief Очистка памяти если crc инициализирован при помощи \ref crc8_init_impl
+    \brief Очистка памяти если crc инициализирован при помощи \ref crc8_init_
 */
 void crc8_destroy(Crc8 *crc);
 /**
     \param[in,out] crc Экземпляр \ref Crc16
-    \brief Очистка памяти если crc инициализирован при помощи \ref crc16_init_impl
+    \brief Очистка памяти если crc инициализирован при помощи \ref crc16_init_
 */
 void crc16_destroy(Crc16 *crc);
 /**
     \param[in,out] crc Экземпляр \ref Crc32
-    \brief Очистка памяти если crc инициализирован при помощи \ref crc32_init_impl
+    \brief Очистка памяти если crc инициализирован при помощи \ref crc32_init_
 */
 void crc32_destroy(Crc32 *crc);
 /**
     \param[in,out] crc Экземпляр \ref Crc64
-    \brief Очистка памяти если crc инициализирован при помощи \ref crc64_init_impl
+    \brief Очистка памяти если crc инициализирован при помощи \ref crc64_init_
 */
 void crc64_destroy(Crc64 *crc);
 #endif /* CRC_USE_HEAP */
@@ -442,25 +441,25 @@ CrcErrors crc128_init_static_(Crc128 *crc,
 #define crc128_init_static(crc, algo, table) crc128_init_static_(crc, CRC_DO_EXPAND_INIT(algo), table)
 #if defined(CRC_USE_HEAP)
 /**
-    \param[in,out] crc Предварительно созданный экземпляр \ref Crc128
     \param width Степень порождающего многочлена
     \param poly Порождающий многочлен
     \param init Стартовые данные
     \param refin Начало и направление вычислений
     \param refout Инвертируется ли порядок битов при складывании по модулю 2 полученного результата
+    \return Указатель на объект Crc
     \brief Инициализация "объекта" \ref Crc128, таблица при этом будет создана динамически
 */
 Crc128 *crc128_init_(crc_u128 width, crc_u128 poly, crc_u128 init, crc_bool refin, crc_bool refout, crc_u128 xorout);
 /**
     \param[in,out] crc Указатель на предварительно созданный экземпляр \ref Crc128
     \param[in] algo Каталожный алгоритм из файла crc/catalog.h или свой собственный
-    \return Код ошибки
+    \return Указатель на объект Crc
     \brief Обёртка над функцией \ref crc128_init_
 */
 #define crc128_init(algo) crc128_init_(CRC_DO_EXPAND_INIT(algo))
 /**
     \param[in,out] crc Экземпляр \ref Crc128
-    \brief Очистка памяти если crc инициализирован при помощи \ref crc128_init
+    \brief Очистка памяти если crc инициализирован при помощи \ref crc128_
 */
 void crc128_destroy(Crc128 *crc);
 #endif /* CRC_USE_HEAP */
