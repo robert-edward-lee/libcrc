@@ -12,7 +12,7 @@
 #include "rev.h"
 
 #define CRC_FLAG_REFIN (1 << 0)
-#define CRC_REFIN_TO_FLAGS(refin) (refin << 0)
+#define CRC_REFIN_TO_FLAGS(refin) ((refin) << 0)
 #define CRC_FLAGS_TO_REFIN(flags) (((flags) >> 0) & 1)
 
 #define CRC_FLAG_REFOUT (1 << 1)
