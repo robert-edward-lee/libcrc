@@ -6,7 +6,7 @@
 Тестируемые компиляторы:
 > - **gcc 3.2.3**
 > - **clang 16.0.6**
-> - **MSVC 2005**
+> - **MSVC** c поддержкой ключа `/Zc:preprocessor` или `/experimental:preprocessor`
 > - **Borland C++ 5.6.4**
 > - **ARM Compiler 6.16 (keil armclang)**
 > - **ARM Compiler 5.06 update 7 (build 960) (keil armcc)**
@@ -30,8 +30,8 @@ crc = crc16_init(CRC16_ARC);
 if(!crc) {
     /* отработка ошибки */
 }
-value = crc16_checksum(&crc, data, sizeof(data) - 1);
-crc16_destroy(&crc);
+value = crc16_checksum(crc, data, sizeof(data) - 1);
+crc16_destroy(crc);
 ```
 
 #### Со статическим выделением памяти
