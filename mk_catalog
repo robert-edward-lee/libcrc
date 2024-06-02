@@ -2,6 +2,7 @@
 from typing import List
 
 import requests
+import urllib3
 from bs4 import BeautifulSoup as bSoup
 
 URL = 'https://reveng.sourceforge.io/crc-catalogue/all.htm'
@@ -170,6 +171,7 @@ class Algo(object):
 ################################################################################
 test_algos: List[Algo] = []
 
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 resp = requests.get(URL, verify=False)
 resp.raise_for_status()
 
