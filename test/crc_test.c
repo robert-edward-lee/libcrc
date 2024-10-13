@@ -113,6 +113,7 @@ int main(void) {
     crc_test(CRC64_ECMA_182, 64);
     crc_test(CRC64_GO_ISO, 64);
     crc_test(CRC64_MS, 64);
+    crc_test(CRC64_NVME, 64);
     crc_test(CRC64_REDIS, 64);
     crc_test(CRC64_WE, 64);
     crc_test(CRC64_XZ, 64);
