@@ -16,8 +16,7 @@ def str2bool(s: str) -> bool:
 
 class Algo(object):
     def __init__(self, header: str, params: str, desc: str) -> None:
-        self.name = header.replace(
-            'CRC-', 'CRC').replace('-', '_').replace('/', '_')
+        self.name = header.replace('CRC-', 'CRC').replace('-', '_').replace('/', '_')
 
         params = params.split()
 
@@ -219,8 +218,7 @@ BEGIN = rf"""/**
 /*                              Width              Poly              Init RefIn RefOut         XorOut               Check            Residue */
 """
 
-END = r"""/* clang-format on */
-#endif /* H_CRC_CATALOG */
+END = r"""#endif /* H_CRC_CATALOG */
 """
 
 flag128 = False
@@ -235,7 +233,7 @@ with open('include/crc/catalog.h', 'w+', encoding='utf-8', newline='\n') as f:
         f.write(algo.str_c())
 
     if flag128:
-        f.write('#endif\n')
+        f.write('#endif /* CRC_HAS_128BIT_ALGO */\n')
 
     f.write(END)
 
@@ -249,6 +247,7 @@ int passed = 0;
 int percents;
 
 int main(void) {
+    printf("test libcrc ver." CRC_VERSION_STRING "\n");
 """
 
 TEST_END = r"""

@@ -179,6 +179,5 @@
                                      CRC_UINT128_C(0x00000000, 0x00000000, 0x00000000, 0x00000000),\
                                      CRC_UINT128_C(0x00000000, 0x00009EA8, 0x3F625023, 0x801FD612),\
                                      CRC_UINT128_C(0x00000000, 0x00000000, 0x00000000, 0x00000000)
-#endif
-/* clang-format on */
+#endif /* CRC_HAS_128BIT_ALGO */
 #endif /* H_CRC_CATALOG */

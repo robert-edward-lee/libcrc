@@ -122,7 +122,7 @@ static CRC_INLINE crc_u64 crc64(crc_u64 poly, crc_bool refin, crc_u64 init) {
     \brief Инициализация таблицы
 */
 static void crc8_table_init(crc_u8 *table, crc_u8 width, crc_u8 poly, crc_bool refin) {
-    int i = 256;
+    crc_u8 i;
 
     if(refin) {
         poly = rev8(poly);
@@ -131,9 +131,10 @@ static void crc8_table_init(crc_u8 *table, crc_u8 width, crc_u8 poly, crc_bool r
         poly <<= 8 * sizeof(poly) - width;
     }
 
-    while(i--) {
+    i = 255;
+    do {
         table[i] = crc8(poly, refin, i);
-    }
+    } while(--i != 255);
 }
 /**
     \param[out] table Таблица для заполнения
@@ -143,7 +144,7 @@ static void crc8_table_init(crc_u8 *table, crc_u8 width, crc_u8 poly, crc_bool r
     \brief Инициализация таблицы
 */
 static void crc16_table_init(crc_u16 *table, crc_u8 width, crc_u16 poly, crc_bool refin) {
-    int i = 256;
+    crc_u8 i;
 
     if(refin) {
         poly = rev16(poly);
@@ -152,9 +153,10 @@ static void crc16_table_init(crc_u16 *table, crc_u8 width, crc_u16 poly, crc_boo
         poly <<= 8 * sizeof(poly) - width;
     }
 
-    while(i--) {
+    i = 255;
+    do {
         table[i] = crc16(poly, refin, i);
-    }
+    } while(--i != 255);
 }
 /**
     \param[out] table Таблица для заполнения
@@ -164,7 +166,7 @@ static void crc16_table_init(crc_u16 *table, crc_u8 width, crc_u16 poly, crc_boo
     \brief Инициализация таблицы
 */
 static void crc32_table_init(crc_u32 *table, crc_u8 width, crc_u32 poly, crc_bool refin) {
-    int i = 256;
+    crc_u8 i;
 
     if(refin) {
         poly = rev32(poly);
@@ -173,9 +175,10 @@ static void crc32_table_init(crc_u32 *table, crc_u8 width, crc_u32 poly, crc_boo
         poly <<= 8 * sizeof(poly) - width;
     }
 
-    while(i--) {
+    i = 255;
+    do {
         table[i] = crc32(poly, refin, i);
-    }
+    } while(--i != 255);
 }
 /**
     \param[out] table Таблица для заполнения
@@ -185,7 +188,7 @@ static void crc32_table_init(crc_u32 *table, crc_u8 width, crc_u32 poly, crc_boo
     \brief Инициализация таблицы
 */
 static void crc64_table_init(crc_u64 *table, crc_u8 width, crc_u64 poly, crc_bool refin) {
-    int i = 256;
+    crc_u8 i;
 
     if(refin) {
         poly = rev64(poly);
@@ -194,9 +197,10 @@ static void crc64_table_init(crc_u64 *table, crc_u8 width, crc_u64 poly, crc_boo
         poly <<= 8 * sizeof(poly) - width;
     }
 
-    while(i--) {
+    i = 255;
+    do {
         table[i] = crc64(poly, refin, i);
-    }
+    } while(--i != 255);
 }
 /**
     \param init Стартовые данные
@@ -258,7 +262,7 @@ static CRC_INLINE void crc8_init_impl(Crc8 *crc,
 }
 
 static CRC_INLINE void crc16_init_impl(Crc16 *crc,
-                                       crc_u16 width,
+                                       crc_u8 width,
                                        crc_u16 poly,
                                        crc_u16 init,
                                        crc_bool refin,
@@ -276,7 +280,7 @@ static CRC_INLINE void crc16_init_impl(Crc16 *crc,
 }
 
 static CRC_INLINE void crc32_init_impl(Crc32 *crc,
-                                       crc_u32 width,
+                                       crc_u8 width,
                                        crc_u32 poly,
                                        crc_u32 init,
                                        crc_bool refin,
@@ -294,7 +298,7 @@ static CRC_INLINE void crc32_init_impl(Crc32 *crc,
 }
 
 static CRC_INLINE void crc64_init_impl(Crc64 *crc,
-                                       crc_u64 width,
+                                       crc_u8 width,
                                        crc_u64 poly,
                                        crc_u64 init,
                                        crc_bool refin,
@@ -421,15 +425,15 @@ static CRC_INLINE crc_u64 crc64_finalize_impl(Crc64 *crc) {
     return ret ^ crc->algo.xorout;
 }
 
-CrcErrors crc8_init_static_(Crc8 *crc,
-                            crc_u8 width,
-                            crc_u8 poly,
-                            crc_u8 init,
-                            crc_bool refin,
-                            crc_bool refout,
-                            crc_u8 xorout,
-                            crc_u8 *table) {
-    if(!crc || !table) {
+CRC_NOTHROW CrcErrors crc8_init_static_(Crc8 *crc,
+                                        crc_u8 width,
+                                        crc_u8 poly,
+                                        crc_u8 init,
+                                        crc_bool refin,
+                                        crc_bool refout,
+                                        crc_u8 xorout,
+                                        crc_u8 *table) {
+    if(CRC_UNLIKELY(!crc || !table)) {
         return CRC_ERR_INVALID_ARG;
     }
 
@@ -437,15 +441,15 @@ CrcErrors crc8_init_static_(Crc8 *crc,
     return CRC_OK;
 }
 
-CrcErrors crc16_init_static_(Crc16 *crc,
-                             crc_u16 width,
-                             crc_u16 poly,
-                             crc_u16 init,
-                             crc_bool refin,
-                             crc_bool refout,
-                             crc_u16 xorout,
-                             crc_u16 *table) {
-    if(!crc || !table) {
+CRC_NOTHROW CrcErrors crc16_init_static_(Crc16 *crc,
+                                         crc_u8 width,
+                                         crc_u16 poly,
+                                         crc_u16 init,
+                                         crc_bool refin,
+                                         crc_bool refout,
+                                         crc_u16 xorout,
+                                         crc_u16 *table) {
+    if(CRC_UNLIKELY(!crc || !table)) {
         return CRC_ERR_INVALID_ARG;
     }
 
@@ -453,15 +457,15 @@ CrcErrors crc16_init_static_(Crc16 *crc,
     return CRC_OK;
 }
 
-CrcErrors crc32_init_static_(Crc32 *crc,
-                             crc_u32 width,
-                             crc_u32 poly,
-                             crc_u32 init,
-                             crc_bool refin,
-                             crc_bool refout,
-                             crc_u32 xorout,
-                             crc_u32 *table) {
-    if(!crc || !table) {
+CRC_NOTHROW CrcErrors crc32_init_static_(Crc32 *crc,
+                                         crc_u8 width,
+                                         crc_u32 poly,
+                                         crc_u32 init,
+                                         crc_bool refin,
+                                         crc_bool refout,
+                                         crc_u32 xorout,
+                                         crc_u32 *table) {
+    if(CRC_UNLIKELY(!crc || !table)) {
         return CRC_ERR_INVALID_ARG;
     }
 
@@ -469,15 +473,15 @@ CrcErrors crc32_init_static_(Crc32 *crc,
     return CRC_OK;
 }
 
-CrcErrors crc64_init_static_(Crc64 *crc,
-                             crc_u64 width,
-                             crc_u64 poly,
-                             crc_u64 init,
-                             crc_bool refin,
-                             crc_bool refout,
-                             crc_u64 xorout,
-                             crc_u64 *table) {
-    if(!crc || !table) {
+CRC_NOTHROW CrcErrors crc64_init_static_(Crc64 *crc,
+                                         crc_u8 width,
+                                         crc_u64 poly,
+                                         crc_u64 init,
+                                         crc_bool refin,
+                                         crc_bool refout,
+                                         crc_u64 xorout,
+                                         crc_u64 *table) {
+    if(CRC_UNLIKELY(!crc || !table)) {
         return CRC_ERR_INVALID_ARG;
     }
 
@@ -485,17 +489,17 @@ CrcErrors crc64_init_static_(Crc64 *crc,
     return CRC_OK;
 }
 #if defined(CRC_USE_HEAP)
-Crc8 *crc8_init_(crc_u8 width, crc_u8 poly, crc_u8 init, crc_bool refin, crc_bool refout, crc_u8 xorout) {
+CRC_NOTHROW Crc8 *crc8_init_(crc_u8 width, crc_u8 poly, crc_u8 init, crc_bool refin, crc_bool refout, crc_u8 xorout) {
     Crc8 *crc;
     crc_u8 *table;
 
-    crc = malloc(sizeof(*crc));
-    if(!crc) {
+    crc = (Crc8 *)malloc(sizeof(*crc));
+    if(CRC_UNLIKELY(!crc)) {
         return NULL;
     }
 
-    table = malloc(256 * sizeof(*table));
-    if(!table) {
+    table = (crc_u8 *)malloc(256 * sizeof(*table));
+    if(CRC_UNLIKELY(!table)) {
         free(crc);
         return NULL;
     }
@@ -505,17 +509,18 @@ Crc8 *crc8_init_(crc_u8 width, crc_u8 poly, crc_u8 init, crc_bool refin, crc_boo
     return crc;
 }
 
-Crc16 *crc16_init_(crc_u16 width, crc_u16 poly, crc_u16 init, crc_bool refin, crc_bool refout, crc_u16 xorout) {
+CRC_NOTHROW Crc16 *
+crc16_init_(crc_u8 width, crc_u16 poly, crc_u16 init, crc_bool refin, crc_bool refout, crc_u16 xorout) {
     Crc16 *crc;
     crc_u16 *table;
 
-    crc = malloc(sizeof(*crc));
-    if(!crc) {
+    crc = (Crc16 *)malloc(sizeof(*crc));
+    if(CRC_UNLIKELY(!crc)) {
         return NULL;
     }
 
-    table = malloc(256 * sizeof(*table));
-    if(!table) {
+    table = (crc_u16 *)malloc(256 * sizeof(*table));
+    if(CRC_UNLIKELY(!table)) {
         free(crc);
         return NULL;
     }
@@ -525,17 +530,18 @@ Crc16 *crc16_init_(crc_u16 width, crc_u16 poly, crc_u16 init, crc_bool refin, cr
     return crc;
 }
 
-Crc32 *crc32_init_(crc_u32 width, crc_u32 poly, crc_u32 init, crc_bool refin, crc_bool refout, crc_u32 xorout) {
+CRC_NOTHROW Crc32 *
+crc32_init_(crc_u8 width, crc_u32 poly, crc_u32 init, crc_bool refin, crc_bool refout, crc_u32 xorout) {
     Crc32 *crc;
     crc_u32 *table;
 
-    crc = malloc(sizeof(*crc));
-    if(!crc) {
+    crc = (Crc32 *)malloc(sizeof(*crc));
+    if(CRC_UNLIKELY(!crc)) {
         return NULL;
     }
 
-    table = malloc(256 * sizeof(*table));
-    if(!table) {
+    table = (crc_u32 *)malloc(256 * sizeof(*table));
+    if(CRC_UNLIKELY(!table)) {
         free(crc);
         return NULL;
     }
@@ -545,17 +551,18 @@ Crc32 *crc32_init_(crc_u32 width, crc_u32 poly, crc_u32 init, crc_bool refin, cr
     return crc;
 }
 
-Crc64 *crc64_init_(crc_u64 width, crc_u64 poly, crc_u64 init, crc_bool refin, crc_bool refout, crc_u64 xorout) {
+CRC_NOTHROW Crc64 *
+crc64_init_(crc_u8 width, crc_u64 poly, crc_u64 init, crc_bool refin, crc_bool refout, crc_u64 xorout) {
     Crc64 *crc;
     crc_u64 *table;
 
-    crc = malloc(sizeof(*crc));
-    if(!crc) {
+    crc = (Crc64 *)malloc(sizeof(*crc));
+    if(CRC_UNLIKELY(!crc)) {
         return NULL;
     }
 
-    table = malloc(256 * sizeof(*table));
-    if(!table) {
+    table = (crc_u64 *)malloc(256 * sizeof(*table));
+    if(CRC_UNLIKELY(!table)) {
         free(crc);
         return NULL;
     }
@@ -565,8 +572,8 @@ Crc64 *crc64_init_(crc_u64 width, crc_u64 poly, crc_u64 init, crc_bool refin, cr
     return crc;
 }
 
-void crc8_destroy(Crc8 *crc) {
-    if(!crc || !crc->table || !(crc->algo.flags & CRC_FLAG_DYN_ALLOC)) {
+CRC_NOTHROW void crc8_destroy(Crc8 *crc) {
+    if(CRC_UNLIKELY(!crc || !crc->table || !(crc->algo.flags & CRC_FLAG_DYN_ALLOC))) {
         return;
     }
     free((void *)crc->table);
@@ -574,8 +581,8 @@ void crc8_destroy(Crc8 *crc) {
     free(crc);
 }
 
-void crc16_destroy(Crc16 *crc) {
-    if(!crc || !crc->table || !(crc->algo.flags & CRC_FLAG_DYN_ALLOC)) {
+CRC_NOTHROW void crc16_destroy(Crc16 *crc) {
+    if(CRC_UNLIKELY(!crc || !crc->table || !(crc->algo.flags & CRC_FLAG_DYN_ALLOC))) {
         return;
     }
     free((void *)crc->table);
@@ -583,8 +590,8 @@ void crc16_destroy(Crc16 *crc) {
     free(crc);
 }
 
-void crc32_destroy(Crc32 *crc) {
-    if(!crc || !crc->table || !(crc->algo.flags & CRC_FLAG_DYN_ALLOC)) {
+CRC_NOTHROW void crc32_destroy(Crc32 *crc) {
+    if(CRC_UNLIKELY(!crc || !crc->table || !(crc->algo.flags & CRC_FLAG_DYN_ALLOC))) {
         return;
     }
     free((void *)crc->table);
@@ -592,8 +599,8 @@ void crc32_destroy(Crc32 *crc) {
     free(crc);
 }
 
-void crc64_destroy(Crc64 *crc) {
-    if(!crc || !crc->table || !(crc->algo.flags & CRC_FLAG_DYN_ALLOC)) {
+CRC_NOTHROW void crc64_destroy(Crc64 *crc) {
+    if(CRC_UNLIKELY(!crc || !crc->table || !(crc->algo.flags & CRC_FLAG_DYN_ALLOC))) {
         return;
     }
     free((void *)crc->table);
@@ -601,72 +608,72 @@ void crc64_destroy(Crc64 *crc) {
     free(crc);
 }
 #endif /* CRC_USE_HEAP */
-void crc8_update(Crc8 *crc, const void *bytes, size_t size) {
-    if(!crc || !bytes) {
+CRC_NOTHROW void crc8_update(Crc8 *crc, const void *bytes, size_t size) {
+    if(CRC_UNLIKELY(!crc || !bytes)) {
         return;
     }
 
     crc8_update_impl(crc, bytes, size);
 }
 
-void crc16_update(Crc16 *crc, const void *bytes, size_t size) {
-    if(!crc || !bytes) {
+CRC_NOTHROW void crc16_update(Crc16 *crc, const void *bytes, size_t size) {
+    if(CRC_UNLIKELY(!crc || !bytes)) {
         return;
     }
 
     crc16_update_impl(crc, bytes, size);
 }
 
-void crc32_update(Crc32 *crc, const void *bytes, size_t size) {
-    if(!crc || !bytes) {
+CRC_NOTHROW void crc32_update(Crc32 *crc, const void *bytes, size_t size) {
+    if(CRC_UNLIKELY(!crc || !bytes)) {
         return;
     }
 
     crc32_update_impl(crc, bytes, size);
 }
 
-void crc64_update(Crc64 *crc, const void *bytes, size_t size) {
-    if(!crc || !bytes) {
+CRC_NOTHROW void crc64_update(Crc64 *crc, const void *bytes, size_t size) {
+    if(CRC_UNLIKELY(!crc || !bytes)) {
         return;
     }
 
     crc64_update_impl(crc, bytes, size);
 }
 
-crc_u8 crc8_finalize(Crc8 *crc) {
-    if(!crc) {
+CRC_NOTHROW crc_u8 crc8_finalize(Crc8 *crc) {
+    if(CRC_UNLIKELY(!crc)) {
         return 0;
     }
 
     return crc8_finalize_impl(crc);
 }
 
-crc_u16 crc16_finalize(Crc16 *crc) {
-    if(!crc) {
+CRC_NOTHROW crc_u16 crc16_finalize(Crc16 *crc) {
+    if(CRC_UNLIKELY(!crc)) {
         return 0;
     }
 
     return crc16_finalize_impl(crc);
 }
 
-crc_u32 crc32_finalize(Crc32 *crc) {
-    if(!crc) {
+CRC_NOTHROW crc_u32 crc32_finalize(Crc32 *crc) {
+    if(CRC_UNLIKELY(!crc)) {
         return 0;
     }
 
     return crc32_finalize_impl(crc);
 }
 
-crc_u64 crc64_finalize(Crc64 *crc) {
-    if(!crc) {
+CRC_NOTHROW crc_u64 crc64_finalize(Crc64 *crc) {
+    if(CRC_UNLIKELY(!crc)) {
         return 0;
     }
 
     return crc64_finalize_impl(crc);
 }
 
-crc_u8 crc8_checksum(Crc8 *crc, const void *bytes, size_t size) {
-    if(!crc || !bytes) {
+CRC_NOTHROW crc_u8 crc8_checksum(Crc8 *crc, const void *bytes, size_t size) {
+    if(CRC_UNLIKELY(!crc || !bytes)) {
         return 0;
     }
 
@@ -674,8 +681,8 @@ crc_u8 crc8_checksum(Crc8 *crc, const void *bytes, size_t size) {
     return crc8_finalize_impl(crc);
 }
 
-crc_u16 crc16_checksum(Crc16 *crc, const void *bytes, size_t size) {
-    if(!crc || !bytes) {
+CRC_NOTHROW crc_u16 crc16_checksum(Crc16 *crc, const void *bytes, size_t size) {
+    if(CRC_UNLIKELY(!crc || !bytes)) {
         return 0;
     }
 
@@ -683,8 +690,8 @@ crc_u16 crc16_checksum(Crc16 *crc, const void *bytes, size_t size) {
     return crc16_finalize_impl(crc);
 }
 
-crc_u32 crc32_checksum(Crc32 *crc, const void *bytes, size_t size) {
-    if(!crc || !bytes) {
+CRC_NOTHROW crc_u32 crc32_checksum(Crc32 *crc, const void *bytes, size_t size) {
+    if(CRC_UNLIKELY(!crc || !bytes)) {
         return 0;
     }
 
@@ -692,8 +699,8 @@ crc_u32 crc32_checksum(Crc32 *crc, const void *bytes, size_t size) {
     return crc32_finalize_impl(crc);
 }
 
-crc_u64 crc64_checksum(Crc64 *crc, const void *bytes, size_t size) {
-    if(!crc || !bytes) {
+CRC_NOTHROW crc_u64 crc64_checksum(Crc64 *crc, const void *bytes, size_t size) {
+    if(CRC_UNLIKELY(!crc || !bytes)) {
         return 0;
     }
 
@@ -733,9 +740,9 @@ static CRC_INLINE crc_u128 crc128(crc_u128 poly, crc_bool refin, crc_u128 init) 
     \brief Инициализация таблицы
 */
 static void crc128_table_init(crc_u128 *table, crc_u8 width, crc_u128 poly, crc_bool refin) {
-    int i = 256;
+    crc_u8 i;
 
-    if(!table) {
+    if(CRC_UNLIKELY(!table)) {
         return;
     }
 
@@ -746,9 +753,10 @@ static void crc128_table_init(crc_u128 *table, crc_u8 width, crc_u128 poly, crc_
         poly <<= 8 * sizeof(poly) - width;
     }
 
-    while(i--) {
+    i = 255;
+    do {
         table[i] = crc128(poly, refin, i);
-    }
+    } while(--i != 255);
 }
 /**
     \param init Стартовые данные
@@ -808,15 +816,15 @@ static CRC_INLINE crc_u128 crc128_finalize_impl(Crc128 *crc) {
     return ret ^ crc->algo.xorout;
 }
 
-CrcErrors crc128_init_static_(Crc128 *crc,
-                              crc_u128 width,
-                              crc_u128 poly,
-                              crc_u128 init,
-                              crc_bool refin,
-                              crc_bool refout,
-                              crc_u128 xorout,
-                              crc_u128 *table) {
-    if(!crc || !table) {
+CRC_NOTHROW CrcErrors crc128_init_static_(Crc128 *crc,
+                                          crc_u8 width,
+                                          crc_u128 poly,
+                                          crc_u128 init,
+                                          crc_bool refin,
+                                          crc_bool refout,
+                                          crc_u128 xorout,
+                                          crc_u128 *table) {
+    if(CRC_UNLIKELY(!crc || !table)) {
         return CRC_ERR_INVALID_ARG;
     }
 
@@ -824,17 +832,18 @@ CrcErrors crc128_init_static_(Crc128 *crc,
     return CRC_OK;
 }
 #if defined(CRC_USE_HEAP)
-Crc128 *crc128_init_(crc_u128 width, crc_u128 poly, crc_u128 init, crc_bool refin, crc_bool refout, crc_u128 xorout) {
+CRC_NOTHROW Crc128 *
+crc128_init_(crc_u8 width, crc_u128 poly, crc_u128 init, crc_bool refin, crc_bool refout, crc_u128 xorout) {
     Crc128 *crc;
     crc_u128 *table;
 
-    crc = malloc(sizeof(*crc));
-    if(!crc) {
+    crc = (Crc128 *)malloc(sizeof(*crc));
+    if(CRC_UNLIKELY(!crc)) {
         return NULL;
     }
 
-    table = malloc(256 * sizeof(*table));
-    if(!table) {
+    table = (crc_u128 *)malloc(256 * sizeof(*table));
+    if(CRC_UNLIKELY(!table)) {
         free(crc);
         return NULL;
     }
@@ -844,8 +853,8 @@ Crc128 *crc128_init_(crc_u128 width, crc_u128 poly, crc_u128 init, crc_bool refi
     return crc;
 }
 
-void crc128_destroy(Crc128 *crc) {
-    if(!crc || !crc->table || !(crc->algo.flags & CRC_FLAG_DYN_ALLOC)) {
+CRC_NOTHROW void crc128_destroy(Crc128 *crc) {
+    if(CRC_UNLIKELY(!crc || !crc->table || !(crc->algo.flags & CRC_FLAG_DYN_ALLOC))) {
         return;
     }
     free((void *)crc->table);
@@ -853,24 +862,24 @@ void crc128_destroy(Crc128 *crc) {
     free(crc);
 }
 #endif /* CRC_USE_HEAP */
-void crc128_update(Crc128 *crc, const void *bytes, size_t size) {
-    if(!crc || !bytes) {
+CRC_NOTHROW void crc128_update(Crc128 *crc, const void *bytes, size_t size) {
+    if(CRC_UNLIKELY(!crc || !bytes)) {
         return;
     }
 
     crc128_update_impl(crc, bytes, size);
 }
 
-crc_u128 crc128_finalize(Crc128 *crc) {
-    if(!crc) {
+CRC_NOTHROW crc_u128 crc128_finalize(Crc128 *crc) {
+    if(CRC_UNLIKELY(!crc)) {
         return 0;
     }
 
     return crc128_finalize_impl(crc);
 }
 
-crc_u128 crc128_checksum(Crc128 *crc, const void *bytes, size_t size) {
-    if(!crc || !bytes) {
+CRC_NOTHROW crc_u128 crc128_checksum(Crc128 *crc, const void *bytes, size_t size) {
+    if(CRC_UNLIKELY(!crc || !bytes)) {
         return 0;
     }
 

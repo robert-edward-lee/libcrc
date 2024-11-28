@@ -49,4 +49,13 @@ typedef __uint128_t crc_u128;
 #define CRC_HAS_128BIT_ALGO 0
 #endif
 
+CRC_STATIC_ASSERT(sizeof(crc_bool) == 1);
+CRC_STATIC_ASSERT(sizeof(crc_u8) == 1);
+CRC_STATIC_ASSERT(sizeof(crc_u16) == 2);
+CRC_STATIC_ASSERT(sizeof(crc_u32) == 4);
+CRC_STATIC_ASSERT(sizeof(crc_u64) == 8);
+#if CRC_HAS_128BIT_ALGO
+CRC_STATIC_ASSERT(sizeof(crc_u128) == 16);
+#endif
+
 #endif /* H_CRC_INTERNAL_TYPES */
