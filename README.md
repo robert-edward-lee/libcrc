@@ -92,11 +92,11 @@ value = crc16_checksum(&crc, data, sizeof(data) - 1);
 Для тестирования алгоритмов вызвать `make test`
 
 ### Кросс-компиляция
-Для сборки кросс-компилятором можно передать префикс компилятора и дополнительные флаги через переменные `TOOLCHAIN_PREFIX` и `EXTRAFLAGS`, например:
+Для сборки кросс-компилятором можно передать префикс компилятора и дополнительные флаги через переменные `TOOLCHAIN_PREFIX` и `EXTRA_FLAGS`, например:
 ```bash
-make TOOLCHAIN_PREFIX=arm-none-eabi- EXTRAFLAGS="-mtune=arm8 -mthumb" static
+make TOOLCHAIN_PREFIX=arm-none-eabi- EXTRA_FLAGS="-mtune=arm8 -mthumb" static
 ```
-Собранная библиотека будет находится в папке *build/$TOOLCHAIN_PREFIX*
+Собранная библиотека будет находится в папке *build/$CC/$TOOLCHAIN_PREFIX*
 
 ### Печать готовой таблицы
 Если необходимо распечатать только таблицу конкретного алгоритма, то делается это целью `print`, передав имя алгоритма и ширину через переменные `CRC_NAME` и `CRC_WIDTH`, например:

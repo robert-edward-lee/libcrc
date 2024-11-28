@@ -13,15 +13,11 @@ PROJECT_VERSION = $(PROJECT_VERSION_MAJOR).$(PROJECT_VERSION_MINOR).$(PROJECT_VE
 BUILD_DIR = build/$(TOOLCHAIN_PREFIX)$(CC)
 SOURCE_DIRS = src
 INCLUDE_DIRS = include src
+TEST_DIR = test
 
-TEST_DIR = tests
-TEST_DIRS = $(sort $(TEST_DIR)/ $(dir $(wildcard $(TEST_DIR)/*/)))
-TEST_SRCS = $(foreach dir,$(TEST_DIRS),$(wildcard $(dir)*.cpp))
-TEST_BINS = $(patsubst %.cpp,%,$(TEST_SRCS))
-
-WORK_DIRS = $(sort . $(TEST_DIRS) \
-			$(dir $(wildcard include/sb/*/)) \
-			$(dir $(wildcard include/sb/*/*/)))
+WORK_DIRS = $(sort . src $(TEST_DIR) \
+			$(dir $(wildcard include/crc/*/)) \
+			$(dir $(wildcard include/crc/*/*/)))
 
 VPATH = $(TEST_DIR):$(BUILD_DIR):$(subst $() $(),:,$(SOURCE_DIRS)):$(subst $() $(),:,$(INCLUDE_DIRS))
 SOURCES = $(wildcard $(SOURCE_DIRS)/*.c)
