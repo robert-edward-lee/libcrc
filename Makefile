@@ -16,6 +16,7 @@ INCLUDE_DIRS = include src
 TEST_DIR = test
 
 WORK_DIRS = $(sort . src $(TEST_DIR) \
+			$(dir $(wildcard build/*/)) \
 			$(dir $(wildcard include/crc/*/)) \
 			$(dir $(wildcard include/crc/*/*/)))
 
@@ -82,10 +83,11 @@ clean:
 		$(foreach dir,$(WORK_DIRS),$(addsuffix /*.d,$(dir))) \
 		$(foreach dir,$(WORK_DIRS),$(addsuffix /*.dll,$(dir))) \
 		$(foreach dir,$(WORK_DIRS),$(addsuffix /*.exe,$(dir))) \
+		$(foreach dir,$(WORK_DIRS),$(addsuffix /*.lib,$(dir))) \
 		$(foreach dir,$(WORK_DIRS),$(addsuffix /*.o,$(dir))) \
 		$(foreach dir,$(WORK_DIRS),$(addsuffix /*.obj,$(dir))) \
-		$(foreach dir,$(WORK_DIRS),$(addsuffix /*.tds,$(dir))) \
-		$(BUILD_DIR)/*
+		$(foreach dir,$(WORK_DIRS),$(addsuffix /*.so,$(dir))) \
+		$(foreach dir,$(WORK_DIRS),$(addsuffix /*.tds,$(dir)))
 
 format:
 	@clang-format -style=file:./.clang-format -i \
