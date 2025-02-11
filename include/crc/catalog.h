@@ -5,6 +5,7 @@
 */
 #ifndef H_CRC_CATALOG
 #define H_CRC_CATALOG
+#include "crc/internal/catalog_ex.h"
 #include "crc/internal/types.h"
 /* clang-format off */
 /*                              Width              Poly              Init RefIn RefOut         XorOut               Check            Residue */

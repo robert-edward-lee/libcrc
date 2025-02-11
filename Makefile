@@ -41,7 +41,7 @@ CFLAGS = \
 	$(DEPEND_FLAGS)
 
 DEFINES = CRC_USE_HEAP=
-OPT_LEVEL = 2
+OPT_LEVEL = 3
 
 ifeq ($(CC),gcc)
 include platforms/gcc.mk
