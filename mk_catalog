@@ -164,6 +164,9 @@ class Algo(object):
         ret += '|\n'
         return ret
 
+    def str_bench(self) -> str:
+        return f'crc_bench({self.name}, {self.actual_width});\n'
+
 
 ################################################################################
 #                              Create object list                              #
@@ -274,3 +277,28 @@ with open('test/crc_test.c', 'w+', encoding='utf-8', newline='\n') as f:
         f.write('#endif\n')
 
     f.write(TEST_END)
+
+################################################################################
+#                             Create crc_bench.cpp                             #
+################################################################################
+BENCH_BEGIN = r"""#include <crc/catalog.h>
+#include <crc/lib.h>
+
+#include "crc_bench.h"
+
+#define PICOBENCH_IMPLEMENT_WITH_MAIN
+#include <picobench/picobench.hpp>
+
+"""
+
+BENCH_END = r""""""
+
+flag128 = False
+with open('bench/crc_bench.cpp', 'w+', encoding='utf-8', newline='\n') as f:
+    f.write(BENCH_BEGIN)
+
+    for algo in test_algos:
+        if algo.actual_width != 128:
+            f.write(algo.str_bench())
+
+    f.write(BENCH_END)

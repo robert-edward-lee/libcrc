@@ -13,7 +13,7 @@ STRIP = $(TOOLCHAIN_PREFIX)strip
 INC_FLAGS = $(addprefix -I,$(INCLUDE_DIRS))
 DEF_FLAGS = $(addprefix -D,$(DEFINES))
 OPT_FLAGS = $(addprefix -O,$(OPT_LEVEL))
-STDC_FLAGS = -ansi
+# STDC_FLAGS = -ansi
 WARN_FLAGS = -Wall -Wextra -pedantic
 DEPEND_FLAGS = -MMD -MP
 
@@ -39,4 +39,11 @@ test: version $(BUILD_DIR) $(STATIC_LIB)
 
 print: $(BUILD_DIR) $(STATIC_LIB)
 	@$(CC) $(CFLAGS) -DCRC_NAME=$(CRC_NAME) -DCRC_WIDTH=$(CRC_WIDTH) test/crc_print.c $(STATIC_LIB) -o $(BUILD_DIR)/$@
+	@$(BUILD_DIR)/$@
+
+CXX = $(TOOLCHAIN_PREFIX)g++
+CXXFLAGS = $(CFLAGS) -Ipicobench/include
+
+bench: version $(BUILD_DIR) $(STATIC_LIB)
+	@$(CXX) $(CXXFLAGS) $(TEST_CFLAGS) bench/crc_bench.cpp $(STATIC_LIB) -o $(BUILD_DIR)/$@
 	@$(BUILD_DIR)/$@
