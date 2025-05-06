@@ -11,6 +11,9 @@
 #define CRC_DO_CONCAT(a, b) a##b
 #define CRC_CONCAT(a, b) CRC_DO_CONCAT(a, b)
 
+#define CRC_DO_TRICAT(a, b, c) a##b##c
+#define CRC_TRICAT(a, b, c) CRC_DO_TRICAT(a, b, c)
+
 #define CRC_DO_STR(s) #s
 #define CRC_STR(s) CRC_DO_STR(s)
 
@@ -20,6 +23,10 @@
 
 #define CRC_DO_EXPAND_CHECK(width, poly, init, refin, refout, xorout, check, residue) check
 #define CRC_EXPAND_CHECK(algo) CRC_DO_EXPAND_CHECK(algo)
+
+#include "crc/internal/real_width_helper.h"
+#define CRC_DO_EXPAND_REAL_WIDTH(width, poly, init, refin, refout, xorout, check, residue) CRC_REAL_WIDTH_HELPER(width)
+#define CRC_EXPAND_REAL_WIDTH(algo) CRC_DO_EXPAND_REAL_WIDTH(algo)
 
 /******************************************************************************/
 /*                          Language Standard Detect                          */

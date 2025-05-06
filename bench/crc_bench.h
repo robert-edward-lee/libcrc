@@ -1,18 +1,27 @@
 #ifndef H_CRC_BENCH
 #define H_CRC_BENCH
 
-const volatile char bench_data[4096] = {0};
+#include "crc/catalog.h"
+#include "crc/lib.h"
 
-#define crc_bench(__algo, __width) \
-    void crc_bench_##__algo(picobench::state &s) { \
-        crc_u##__width value; \
-        Crc##__width *crc = crc##__width##_init_(CRC_DO_EXPAND_INIT(__algo)); \
+#define PICOBENCH_IMPLEMENT_WITH_MAIN
+#include "picobench/picobench.hpp"
+
+static const volatile char bench_data[4096] = {0};
+
+#define crc_bench(__algo) \
+    void crc_bench_##__algo(picobench::state & s) { \
+        CRC_CONCAT(crc_u, CRC_DO_EXPAND_REAL_WIDTH(__algo)) value; \
+        CRC_CONCAT(Crc, CRC_DO_EXPAND_REAL_WIDTH(__algo)) *crc = \
+            CRC_TRICAT(crc, CRC_DO_EXPAND_REAL_WIDTH(__algo), _init_)(CRC_DO_EXPAND_INIT(__algo)); \
         for(auto _: s) { \
-            value = crc##__width##_checksum(crc, (void *)bench_data, sizeof(bench_data)); \
+            value = CRC_TRICAT(crc, CRC_DO_EXPAND_REAL_WIDTH(__algo), _checksum)(crc, \
+                                                                                 (void *)bench_data, \
+                                                                                 sizeof(bench_data)); \
             (void)value; \
             (void)_; \
         } \
-        crc##__width##_destroy(crc); \
+        CRC_TRICAT(crc, CRC_DO_EXPAND_REAL_WIDTH(__algo), _destroy)(crc); \
     } \
     PICOBENCH(crc_bench_##__algo).label(#__algo)
 

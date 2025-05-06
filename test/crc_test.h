@@ -18,12 +18,12 @@ const char check[] = {'1', '2', '3', '4', '5', '6', '7', '8', '9'};
         } \
     } while(0)
 
-#define crc_test(__algo, __width) \
+#define crc_test(__algo) \
     do { \
-        crc_u##__width value, check_value = CRC_DO_EXPAND_CHECK(__algo); \
-        Crc##__width *crc; \
-        crc = crc##__width##_init_(CRC_DO_EXPAND_INIT(__algo)); \
-        value = crc##__width##_checksum(crc, check, sizeof(check)); \
+        CRC_CONCAT(crc_u, CRC_DO_EXPAND_REAL_WIDTH(__algo)) value, check_value = CRC_DO_EXPAND_CHECK(__algo); \
+        CRC_CONCAT(Crc, CRC_DO_EXPAND_REAL_WIDTH(__algo)) * crc; \
+        crc = CRC_TRICAT(crc, CRC_DO_EXPAND_REAL_WIDTH(__algo), _init_)(CRC_DO_EXPAND_INIT(__algo)); \
+        value = CRC_TRICAT(crc, CRC_DO_EXPAND_REAL_WIDTH(__algo), _checksum)(crc, check, sizeof(check)); \
         if(check_value != value) { \
             printf("Invalid CRC check for " #__algo ": "); \
             print_hex(value); \
@@ -35,7 +35,7 @@ const char check[] = {'1', '2', '3', '4', '5', '6', '7', '8', '9'};
             printf(#__algo " passed\n"); \
             passed++; \
         } \
-        crc##__width##_destroy(crc); \
+        CRC_TRICAT(crc, CRC_DO_EXPAND_REAL_WIDTH(__algo), _destroy)(crc); \
     } while(0)
 
 #endif /* H_CRC_TEST */
