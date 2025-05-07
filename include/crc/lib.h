@@ -7,15 +7,9 @@
 
 #include "crc/internal/defines.h"
 #include "crc/internal/types.h"
+#include "crc/version.h"
 
-#define CRC_VERSION_MAJOR 2
-#define CRC_VERSION_MINOR 0
-#define CRC_VERSION_PATCH 0
-#define CRC_VERSION_STRING CRC_STR(CRC_VERSION_MAJOR) "." CRC_STR(CRC_VERSION_MINOR) "." CRC_STR(CRC_VERSION_PATCH)
-
-#ifdef __cplusplus
-extern "C" {
-#endif
+CRC_EXTERN_C_BEGIN
 
 /**
     \brief Ошибки возвращаемые при инициализации
@@ -26,7 +20,7 @@ typedef enum {
 } CrcErrors;
 
 /**
-    \brief Спецификация алгоритма расчёта циклического избыточного кода ширины не более 8 бит
+    \brief Спецификация алгоритма расчёта циклического избыточного кода шириной 8 бит
 */
 typedef struct {
     crc_u8 width; /**< Степень порождающего многочлена */
@@ -36,7 +30,7 @@ typedef struct {
     crc_u8 xorout; /**< Число, с которым складывается по модулю 2 полученный результат */
 } Crc8BasedAlgo;
 /**
-    \brief Спецификация алгоритма расчёта циклического избыточного кода ширины не более 16 бит
+    \brief Спецификация алгоритма расчёта циклического избыточного кода шириной 16 бит
 */
 typedef struct {
     crc_u8 width; /**< Степень порождающего многочлена */
@@ -46,7 +40,7 @@ typedef struct {
     crc_u16 xorout; /**< Число, с которым складывается по модулю 2 полученный результат */
 } Crc16BasedAlgo;
 /**
-    \brief Спецификация алгоритма расчёта циклического избыточного кода ширины не более 32 бит
+    \brief Спецификация алгоритма расчёта циклического избыточного кода шириной 32 бит
 */
 typedef struct {
     crc_u8 width; /**< Степень порождающего многочлена */
@@ -56,7 +50,7 @@ typedef struct {
     crc_u32 xorout; /**< Число, с которым складывается по модулю 2 полученный результат */
 } Crc32BasedAlgo;
 /**
-    \brief Спецификация алгоритма расчёта циклического избыточного кода ширины не более 64 бит
+    \brief Спецификация алгоритма расчёта циклического избыточного кода шириной 64 бит
 */
 typedef struct {
     crc_u8 width; /**< Степень порождающего многочлена */
@@ -66,7 +60,7 @@ typedef struct {
     crc_u64 xorout; /**< Число, с которым складывается по модулю 2 полученный результат */
 } Crc64BasedAlgo;
 /**
-    \brief "Объект" для расчёта контрольной суммы ширины не более 8 бит
+    \brief "Объект" для расчёта контрольной суммы шириной 8 бит
 */
 typedef struct {
     Crc8BasedAlgo algo; /**< Алгоритм вычисления */
@@ -74,7 +68,7 @@ typedef struct {
     crc_u8 value; /**< Промежуточное значение контрольной суммы */
 } Crc8;
 /**
-    \brief "Объект" для расчёта контрольной суммы ширины не более 16 бит
+    \brief "Объект" для расчёта контрольной суммы шириной 16 бит
 */
 typedef struct {
     Crc16BasedAlgo algo; /**< Алгоритм вычисления */
@@ -82,7 +76,7 @@ typedef struct {
     crc_u16 value; /**< Промежуточное значение контрольной суммы */
 } Crc16;
 /**
-    \brief "Объект" для расчёта контрольной суммы ширины не более 32 бит
+    \brief "Объект" для расчёта контрольной суммы шириной 32 бит
 */
 typedef struct {
     Crc32BasedAlgo algo; /**< Алгоритм вычисления */
@@ -90,7 +84,7 @@ typedef struct {
     crc_u32 value; /**< Промежуточное значение контрольной суммы */
 } Crc32;
 /**
-    \brief "Объект" для расчёта контрольной суммы ширины не более 64 бит
+    \brief "Объект" для расчёта контрольной суммы шириной 64 бит
 */
 typedef struct {
     Crc64BasedAlgo algo; /**< Алгоритм вычисления */
@@ -110,14 +104,14 @@ typedef struct {
     \return Код ошибки
     \brief Инициализация "объекта" \ref Crc8
 */
-CrcErrors crc8_init_static_(Crc8 *crc,
-                            crc_u8 width,
-                            crc_u8 poly,
-                            crc_u8 init,
-                            crc_bool refin,
-                            crc_bool refout,
-                            crc_u8 xorout,
-                            crc_u8 *table);
+CRC_NOTHROW CrcErrors crc8_init_static_(Crc8 *crc,
+                                        crc_u8 width,
+                                        crc_u8 poly,
+                                        crc_u8 init,
+                                        crc_bool refin,
+                                        crc_bool refout,
+                                        crc_u8 xorout,
+                                        crc_u8 *table);
 /**
     \param[in,out] crc Указатель на предварительно созданный экземпляр \ref Crc8
     \param[in] algo Каталожный алгоритм из файла crc/catalog.h или свой собственный
@@ -125,7 +119,7 @@ CrcErrors crc8_init_static_(Crc8 *crc,
     \return Код ошибки
     \brief Обёртка над функцией \ref crc8_init_static_
 */
-#define crc8_init_static(crc, algo, table) crc8_init_static_(crc, CRC_DO_EXPAND_INIT(algo), table)
+#define crc8_init_static(crc, algo, table) crc8_init_static_(crc, CRC_DO_EXPAND_CTOR(algo), table)
 /**
     \param[in,out] crc Предварительно созданный экземпляр \ref Crc16
     \param width Степень порождающего многочлена
@@ -137,14 +131,14 @@ CrcErrors crc8_init_static_(Crc8 *crc,
     \param[in] table Предварительно выделенная память размером 2x256 байт для хранения таблицы расчёта
     \brief Инициализация "объекта" \ref Crc16
 */
-CrcErrors crc16_init_static_(Crc16 *crc,
-                             crc_u16 width,
-                             crc_u16 poly,
-                             crc_u16 init,
-                             crc_bool refin,
-                             crc_bool refout,
-                             crc_u16 xorout,
-                             crc_u16 *table);
+CRC_NOTHROW CrcErrors crc16_init_static_(Crc16 *crc,
+                                         crc_u8 width,
+                                         crc_u16 poly,
+                                         crc_u16 init,
+                                         crc_bool refin,
+                                         crc_bool refout,
+                                         crc_u16 xorout,
+                                         crc_u16 *table);
 /**
     \param[in,out] crc Указатель на предварительно созданный экземпляр \ref Crc16
     \param[in] algo Каталожный алгоритм из файла crc/catalog.h или свой собственный
@@ -152,7 +146,7 @@ CrcErrors crc16_init_static_(Crc16 *crc,
     \return Код ошибки
     \brief Обёртка над функцией \ref crc16_init_static_
 */
-#define crc16_init_static(crc, algo, table) crc16_init_static_(crc, CRC_DO_EXPAND_INIT(algo), table)
+#define crc16_init_static(crc, algo, table) crc16_init_static_(crc, CRC_DO_EXPAND_CTOR(algo), table)
 /**
     \param[in,out] crc Предварительно созданный экземпляр \ref Crc32
     \param width Степень порождающего многочлена
@@ -164,14 +158,14 @@ CrcErrors crc16_init_static_(Crc16 *crc,
     \param[in] table Предварительно выделенная память размером 4x256 байт для хранения таблицы расчёта
     \brief Инициализация "объекта" \ref Crc32
 */
-CrcErrors crc32_init_static_(Crc32 *crc,
-                             crc_u32 width,
-                             crc_u32 poly,
-                             crc_u32 init,
-                             crc_bool refin,
-                             crc_bool refout,
-                             crc_u32 xorout,
-                             crc_u32 *table);
+CRC_NOTHROW CrcErrors crc32_init_static_(Crc32 *crc,
+                                         crc_u8 width,
+                                         crc_u32 poly,
+                                         crc_u32 init,
+                                         crc_bool refin,
+                                         crc_bool refout,
+                                         crc_u32 xorout,
+                                         crc_u32 *table);
 /**
     \param[in,out] crc Указатель на предварительно созданный экземпляр \ref Crc32
     \param[in] algo Каталожный алгоритм из файла crc/catalog.h или свой собственный
@@ -179,7 +173,7 @@ CrcErrors crc32_init_static_(Crc32 *crc,
     \return Код ошибки
     \brief Обёртка над функцией \ref crc32_init_static_
 */
-#define crc32_init_static(crc, algo, table) crc32_init_static_(crc, CRC_DO_EXPAND_INIT(algo), table)
+#define crc32_init_static(crc, algo, table) crc32_init_static_(crc, CRC_DO_EXPAND_CTOR(algo), table)
 /**
     \param[in,out] crc Предварительно созданный экземпляр \ref Crc64
     \param width Степень порождающего многочлена
@@ -191,14 +185,14 @@ CrcErrors crc32_init_static_(Crc32 *crc,
     \param[in] table Предварительно выделенная память размером 8x256 байт для хранения таблицы расчёта
     \brief Инициализация "объекта" \ref Crc64
 */
-CrcErrors crc64_init_static_(Crc64 *crc,
-                             crc_u64 width,
-                             crc_u64 poly,
-                             crc_u64 init,
-                             crc_bool refin,
-                             crc_bool refout,
-                             crc_u64 xorout,
-                             crc_u64 *table);
+CRC_NOTHROW CrcErrors crc64_init_static_(Crc64 *crc,
+                                         crc_u8 width,
+                                         crc_u64 poly,
+                                         crc_u64 init,
+                                         crc_bool refin,
+                                         crc_bool refout,
+                                         crc_u64 xorout,
+                                         crc_u64 *table);
 /**
     \param[in,out] crc Указатель на предварительно созданный экземпляр \ref Crc64
     \param[in] algo Каталожный алгоритм из файла crc/catalog.h или свой собственный
@@ -206,7 +200,7 @@ CrcErrors crc64_init_static_(Crc64 *crc,
     \return Код ошибки
     \brief Обёртка над функцией \ref crc64_init_static_
 */
-#define crc64_init_static(crc, algo, table) crc64_init_static_(crc, CRC_DO_EXPAND_INIT(algo), table)
+#define crc64_init_static(crc, algo, table) crc64_init_static_(crc, CRC_DO_EXPAND_CTOR(algo), table)
 #if defined(CRC_USE_HEAP)
 /**
     \param width Степень порождающего многочлена
@@ -217,14 +211,14 @@ CrcErrors crc64_init_static_(Crc64 *crc,
     \return Указатель на объект Crc
     \brief Инициализация "объекта" \ref Crc8, таблица при этом будет создана динамически
 */
-Crc8 *crc8_init_(crc_u8 width, crc_u8 poly, crc_u8 init, crc_bool refin, crc_bool refout, crc_u8 xorout);
+CRC_NOTHROW Crc8 *crc8_init_(crc_u8 width, crc_u8 poly, crc_u8 init, crc_bool refin, crc_bool refout, crc_u8 xorout);
 /**
     \param[in,out] crc Указатель на предварительно созданный экземпляр \ref Crc8
     \param[in] algo Каталожный алгоритм из файла crc/catalog.h или свой собственный
     \return Указатель на объект Crc
     \brief Обёртка над функцией \ref crc8_init_
 */
-#define crc8_init(algo) crc8_init_(CRC_DO_EXPAND_INIT(algo))
+#define crc8_init(algo) crc8_init_(CRC_DO_EXPAND_CTOR(algo))
 /**
     \param width Степень порождающего многочлена
     \param poly Порождающий многочлен
@@ -234,14 +228,15 @@ Crc8 *crc8_init_(crc_u8 width, crc_u8 poly, crc_u8 init, crc_bool refin, crc_boo
     \return Указатель на объект Crc
     \brief Инициализация "объекта" \ref Crc16, таблица при этом будет создана динамически
 */
-Crc16 *crc16_init_(crc_u16 width, crc_u16 poly, crc_u16 init, crc_bool refin, crc_bool refout, crc_u16 xorout);
+CRC_NOTHROW Crc16 *
+crc16_init_(crc_u8 width, crc_u16 poly, crc_u16 init, crc_bool refin, crc_bool refout, crc_u16 xorout);
 /**
     \param[in,out] crc Указатель на предварительно созданный экземпляр \ref Crc16
     \param[in] algo Каталожный алгоритм из файла crc/catalog.h или свой собственный
     \return Указатель на объект Crc
     \brief Обёртка над функцией \ref crc16_init_
 */
-#define crc16_init(algo) crc16_init_(CRC_DO_EXPAND_INIT(algo))
+#define crc16_init(algo) crc16_init_(CRC_DO_EXPAND_CTOR(algo))
 /**
     \param width Степень порождающего многочлена
     \param poly Порождающий многочлен
@@ -251,14 +246,15 @@ Crc16 *crc16_init_(crc_u16 width, crc_u16 poly, crc_u16 init, crc_bool refin, cr
     \return Указатель на объект Crc
     \brief Инициализация "объекта" \ref Crc32, таблица при этом будет создана динамически
 */
-Crc32 *crc32_init_(crc_u32 width, crc_u32 poly, crc_u32 init, crc_bool refin, crc_bool refout, crc_u32 xorout);
+CRC_NOTHROW Crc32 *
+crc32_init_(crc_u8 width, crc_u32 poly, crc_u32 init, crc_bool refin, crc_bool refout, crc_u32 xorout);
 /**
     \param[in,out] crc Указатель на предварительно созданный экземпляр \ref Crc32
     \param[in] algo Каталожный алгоритм из файла crc/catalog.h или свой собственный
     \return Указатель на объект Crc
     \brief Обёртка над функцией \ref crc32_init_
 */
-#define crc32_init(algo) crc32_init_(CRC_DO_EXPAND_INIT(algo))
+#define crc32_init(algo) crc32_init_(CRC_DO_EXPAND_CTOR(algo))
 /**
     \param width Степень порождающего многочлена
     \param poly Порождающий многочлен
@@ -268,34 +264,35 @@ Crc32 *crc32_init_(crc_u32 width, crc_u32 poly, crc_u32 init, crc_bool refin, cr
     \return Указатель на объект Crc
     \brief Инициализация "объекта" \ref Crc64, таблица при этом будет создана динамически
 */
-Crc64 *crc64_init_(crc_u64 width, crc_u64 poly, crc_u64 init, crc_bool refin, crc_bool refout, crc_u64 xorout);
+CRC_NOTHROW Crc64 *
+crc64_init_(crc_u8 width, crc_u64 poly, crc_u64 init, crc_bool refin, crc_bool refout, crc_u64 xorout);
 /**
     \param[in,out] crc Указатель на предварительно созданный экземпляр \ref Crc64
     \param[in] algo Каталожный алгоритм из файла crc/catalog.h или свой собственный
     \return Указатель на объект Crc
     \brief Обёртка над функцией \ref crc64_init_
 */
-#define crc64_init(algo) crc64_init_(CRC_DO_EXPAND_INIT(algo))
+#define crc64_init(algo) crc64_init_(CRC_DO_EXPAND_CTOR(algo))
 /**
     \param[in,out] crc Экземпляр \ref Crc8
     \brief Очистка памяти если crc инициализирован при помощи \ref crc8_init_
 */
-void crc8_destroy(Crc8 *crc);
+CRC_NOTHROW void crc8_destroy(Crc8 *crc);
 /**
     \param[in,out] crc Экземпляр \ref Crc16
     \brief Очистка памяти если crc инициализирован при помощи \ref crc16_init_
 */
-void crc16_destroy(Crc16 *crc);
+CRC_NOTHROW void crc16_destroy(Crc16 *crc);
 /**
     \param[in,out] crc Экземпляр \ref Crc32
     \brief Очистка памяти если crc инициализирован при помощи \ref crc32_init_
 */
-void crc32_destroy(Crc32 *crc);
+CRC_NOTHROW void crc32_destroy(Crc32 *crc);
 /**
     \param[in,out] crc Экземпляр \ref Crc64
     \brief Очистка памяти если crc инициализирован при помощи \ref crc64_init_
 */
-void crc64_destroy(Crc64 *crc);
+CRC_NOTHROW void crc64_destroy(Crc64 *crc);
 #endif /* CRC_USE_HEAP */
 /**
     \param[in,out] crc Экземпляр \ref Crc8
@@ -304,7 +301,7 @@ void crc64_destroy(Crc64 *crc);
     \brief Обновление промежуточного значения контрольной суммы в \ref Crc8::value. Функция позволяет вычислять CRC
     итеративно
 */
-void crc8_update(Crc8 *crc, const void *bytes, size_t size);
+CRC_NOTHROW void crc8_update(Crc8 *crc, const void *bytes, size_t size);
 /**
     \param[in,out] crc Экземпляр \ref Crc16
     \param[in] bytes Данные для вычисления
@@ -312,7 +309,7 @@ void crc8_update(Crc8 *crc, const void *bytes, size_t size);
     \brief Обновление промежуточного значения контрольной суммы в \ref Crc16::value. Функция позволяет вычислять CRC
     итеративно
 */
-void crc16_update(Crc16 *crc, const void *bytes, size_t size);
+CRC_NOTHROW void crc16_update(Crc16 *crc, const void *bytes, size_t size);
 /**
     \param[in,out] crc Экземпляр \ref Crc32
     \param[in] bytes Данные для вычисления
@@ -320,7 +317,7 @@ void crc16_update(Crc16 *crc, const void *bytes, size_t size);
     \brief Обновление промежуточного значения контрольной суммы в \ref Crc32::value. Функция позволяет вычислять CRC
     итеративно
 */
-void crc32_update(Crc32 *crc, const void *bytes, size_t size);
+CRC_NOTHROW void crc32_update(Crc32 *crc, const void *bytes, size_t size);
 /**
     \param[in,out] crc Экземпляр \ref Crc64
     \param[in] bytes Данные для вычисления
@@ -328,7 +325,7 @@ void crc32_update(Crc32 *crc, const void *bytes, size_t size);
     \brief Обновление промежуточного значения контрольной суммы в \ref Crc64::value. Функция позволяет вычислять CRC
     итеративно
 */
-void crc64_update(Crc64 *crc, const void *bytes, size_t size);
+CRC_NOTHROW void crc64_update(Crc64 *crc, const void *bytes, size_t size);
 /**
     \param[in,out] crc Экземпляр \ref Crc8
     \return Контрольная сумма
@@ -336,7 +333,7 @@ void crc64_update(Crc64 *crc, const void *bytes, size_t size);
     помощью \ref crc8_update. Также происходит очистка значения \ref Crc8::value и "объект" crc можно использовать для
     нового вычисления
 */
-crc_u8 crc8_finalize(Crc8 *crc);
+CRC_NOTHROW crc_u8 crc8_finalize(Crc8 *crc);
 /**
     \param[in,out] crc Экземпляр \ref Crc16
     \return Контрольная сумма
@@ -344,7 +341,7 @@ crc_u8 crc8_finalize(Crc8 *crc);
     помощью \ref crc16_update. Также происходит очистка значения \ref Crc16::value и "объект" crc можно использовать для
     нового вычисления
 */
-crc_u16 crc16_finalize(Crc16 *crc);
+CRC_NOTHROW crc_u16 crc16_finalize(Crc16 *crc);
 /**
     \param[in,out] crc Экземпляр \ref Crc32
     \return Контрольная сумма
@@ -352,7 +349,7 @@ crc_u16 crc16_finalize(Crc16 *crc);
     помощью \ref crc32_update. Также происходит очистка значения \ref Crc32::value и "объект" crc можно использовать для
     нового вычисления
 */
-crc_u32 crc32_finalize(Crc32 *crc);
+CRC_NOTHROW crc_u32 crc32_finalize(Crc32 *crc);
 /**
     \param[in,out] crc Экземпляр \ref Crc64
     \return Контрольная сумма
@@ -360,7 +357,7 @@ crc_u32 crc32_finalize(Crc32 *crc);
     помощью \ref crc64_update. Также происходит очистка значения \ref Crc64::value и "объект" crc можно использовать для
     нового вычисления
 */
-crc_u64 crc64_finalize(Crc64 *crc);
+CRC_NOTHROW crc_u64 crc64_finalize(Crc64 *crc);
 /**
     \param[in,out] crc Экземпляр \ref Crc8
     \param[in] bytes Данные для вычисления
@@ -368,7 +365,7 @@ crc_u64 crc64_finalize(Crc64 *crc);
     \return Контрольная сумма
     \brief Вычисление контрольной суммы "за один присест"
 */
-crc_u8 crc8_checksum(Crc8 *crc, const void *bytes, size_t size);
+CRC_NOTHROW crc_u8 crc8_checksum(Crc8 *crc, const void *bytes, size_t size);
 /**
     \param[in,out] crc Экземпляр \ref Crc16
     \param[in] bytes Данные для вычисления
@@ -376,7 +373,7 @@ crc_u8 crc8_checksum(Crc8 *crc, const void *bytes, size_t size);
     \return Контрольная сумма
     \brief Вычисление контрольной суммы "за один присест"
 */
-crc_u16 crc16_checksum(Crc16 *crc, const void *bytes, size_t size);
+CRC_NOTHROW crc_u16 crc16_checksum(Crc16 *crc, const void *bytes, size_t size);
 /**
     \param[in,out] crc Экземпляр \ref Crc32
     \param[in] bytes Данные для вычисления
@@ -384,7 +381,7 @@ crc_u16 crc16_checksum(Crc16 *crc, const void *bytes, size_t size);
     \return Контрольная сумма
     \brief Вычисление контрольной суммы "за один присест"
 */
-crc_u32 crc32_checksum(Crc32 *crc, const void *bytes, size_t size);
+CRC_NOTHROW crc_u32 crc32_checksum(Crc32 *crc, const void *bytes, size_t size);
 /**
     \param[in,out] crc Экземпляр \ref Crc64
     \param[in] bytes Данные для вычисления
@@ -392,11 +389,11 @@ crc_u32 crc32_checksum(Crc32 *crc, const void *bytes, size_t size);
     \return Контрольная сумма
     \brief Вычисление контрольной суммы "за один присест"
 */
-crc_u64 crc64_checksum(Crc64 *crc, const void *bytes, size_t size);
+CRC_NOTHROW crc_u64 crc64_checksum(Crc64 *crc, const void *bytes, size_t size);
 
 #if CRC_HAS_128BIT_ALGO
 /**
-    \brief Спецификация алгоритма расчёта циклического избыточного кода ширины не более 128 бит
+    \brief Спецификация алгоритма расчёта циклического избыточного кода шириной 128 бит
 */
 typedef struct {
     crc_u8 width; /**< Степень порождающего многочлена */
@@ -406,7 +403,7 @@ typedef struct {
     crc_u128 xorout; /**< Число, с которым складывается по модулю 2 полученный результат */
 } Crc128BasedAlgo;
 /**
-    \brief "Объект" для расчёта контрольной суммы ширины не более 128 бит
+    \brief "Объект" для расчёта контрольной суммы шириной 128 бит
 */
 typedef struct {
     Crc128BasedAlgo algo; /**< Алгоритм вычисления */
@@ -423,14 +420,14 @@ typedef struct {
     \param[in] table Предварительно выделенная память размером 128x256 байт для хранения таблицы расчёта
     \brief Инициализация "объекта" \ref Crc128
 */
-CrcErrors crc128_init_static_(Crc128 *crc,
-                              crc_u128 width,
-                              crc_u128 poly,
-                              crc_u128 init,
-                              crc_bool refin,
-                              crc_bool refout,
-                              crc_u128 xorout,
-                              crc_u128 *table);
+CRC_NOTHROW CrcErrors crc128_init_static_(Crc128 *crc,
+                                          crc_u8 width,
+                                          crc_u128 poly,
+                                          crc_u128 init,
+                                          crc_bool refin,
+                                          crc_bool refout,
+                                          crc_u128 xorout,
+                                          crc_u128 *table);
 /**
     \param[in,out] crc Указатель на предварительно созданный экземпляр \ref Crc128
     \param[in] algo Каталожный алгоритм из файла crc/catalog.h или свой собственный
@@ -438,7 +435,7 @@ CrcErrors crc128_init_static_(Crc128 *crc,
     \return Код ошибки
     \brief Обёртка над функцией \ref crc128_init_static_
 */
-#define crc128_init_static(crc, algo, table) crc128_init_static_(crc, CRC_DO_EXPAND_INIT(algo), table)
+#define crc128_init_static(crc, algo, table) crc128_init_static_(crc, CRC_DO_EXPAND_CTOR(algo), table)
 #if defined(CRC_USE_HEAP)
 /**
     \param width Степень порождающего многочлена
@@ -449,19 +446,20 @@ CrcErrors crc128_init_static_(Crc128 *crc,
     \return Указатель на объект Crc
     \brief Инициализация "объекта" \ref Crc128, таблица при этом будет создана динамически
 */
-Crc128 *crc128_init_(crc_u128 width, crc_u128 poly, crc_u128 init, crc_bool refin, crc_bool refout, crc_u128 xorout);
+CRC_NOTHROW Crc128 *
+crc128_init_(crc_u8 width, crc_u128 poly, crc_u128 init, crc_bool refin, crc_bool refout, crc_u128 xorout);
 /**
     \param[in,out] crc Указатель на предварительно созданный экземпляр \ref Crc128
     \param[in] algo Каталожный алгоритм из файла crc/catalog.h или свой собственный
     \return Указатель на объект Crc
     \brief Обёртка над функцией \ref crc128_init_
 */
-#define crc128_init(algo) crc128_init_(CRC_DO_EXPAND_INIT(algo))
+#define crc128_init(algo) crc128_init_(CRC_DO_EXPAND_CTOR(algo))
 /**
     \param[in,out] crc Экземпляр \ref Crc128
     \brief Очистка памяти если crc инициализирован при помощи \ref crc128_
 */
-void crc128_destroy(Crc128 *crc);
+CRC_NOTHROW void crc128_destroy(Crc128 *crc);
 #endif /* CRC_USE_HEAP */
 /**
     \param[in,out] crc Экземпляр \ref Crc128
@@ -470,7 +468,7 @@ void crc128_destroy(Crc128 *crc);
     \brief Обновление промежуточного значения контрольной суммы в \ref Crc128::value. Функция позволяет вычислять CRC
     итеративно
 */
-void crc128_update(Crc128 *crc, const void *bytes, size_t size);
+CRC_NOTHROW void crc128_update(Crc128 *crc, const void *bytes, size_t size);
 /**
     \param[in,out] crc Экземпляр \ref Crc128
     \return Контрольная сумма
@@ -478,7 +476,7 @@ void crc128_update(Crc128 *crc, const void *bytes, size_t size);
     помощью \ref crc128_update. Также происходит очистка значения \ref Crc128::value и "объект" crc можно использовать
    для нового вычисления
 */
-crc_u128 crc128_finalize(Crc128 *crc);
+CRC_NOTHROW crc_u128 crc128_finalize(Crc128 *crc);
 /**
     \param[in,out] crc Экземпляр \ref Crc128
     \param[in] bytes Данные для вычисления
@@ -486,11 +484,9 @@ crc_u128 crc128_finalize(Crc128 *crc);
     \return Контрольная сумма
     \brief Вычисление контрольной суммы "за один присест"
 */
-crc_u128 crc128_checksum(Crc128 *crc, const void *bytes, size_t size);
+CRC_NOTHROW crc_u128 crc128_checksum(Crc128 *crc, const void *bytes, size_t size);
 #endif /* CRC_HAS_128BIT_ALGO */
 
-#ifdef __cplusplus
-}
-#endif
+CRC_EXTERN_C_END
 
 #endif /* H_CRC_LIB */

@@ -5,6 +5,7 @@ int passed = 0;
 int percents;
 
 int main(void) {
+    printf("test libcrc ver." CRC_VERSION_STRING "\n");
     crc_test(CRC3_GSM, 8);
     crc_test(CRC3_ROHC, 8);
     crc_test(CRC4_G_704, 8);
