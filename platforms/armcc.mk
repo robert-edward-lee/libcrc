@@ -24,5 +24,5 @@ test: version $(BUILD_DIR) $(STATIC_LIB)
 	@$(BUILD_DIR)/$@
 
 print: $(BUILD_DIR) $(STATIC_LIB)
-	@$(CC) $(CFLAGS) -DCRC_NAME=$(CRC_NAME) -DCRC_WIDTH=$(CRC_WIDTH) test/crc_print.c $(STATIC_LIB) -o $(BUILD_DIR)/$@
+	@$(CC) $(CFLAGS) -DCRC_NAME=$(CRC_NAME) test/crc_print.c $(STATIC_LIB) -o $(BUILD_DIR)/$@
 	@$(BUILD_DIR)/$@

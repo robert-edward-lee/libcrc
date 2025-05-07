@@ -13,7 +13,7 @@ STDC_FLAGS =
 WARN_FLAGS = /W4
 DEPEND_FLAGS =
 
-EXTRA_FLAGS += /nologo /Zc:preprocessor
+EXTRA_FLAGS += /nologo #/Zc:preprocessor
 
 $(STATIC_LIB): $(OBJECTS)
 	@echo '  AR      ' $@
@@ -32,5 +32,5 @@ test: version $(BUILD_DIR) $(STATIC_LIB)
 	@$(BUILD_DIR)/$@
 
 print: $(BUILD_DIR) $(STATIC_LIB)
-	@$(CC) $(CFLAGS) /DCRC_NAME=$(CRC_NAME) /DCRC_WIDTH=$(CRC_WIDTH) test/crc_print.c $(STATIC_LIB) /Fe:$(BUILD_DIR)/$@
+	@$(CC) $(CFLAGS) /DCRC_NAME=$(CRC_NAME) test/crc_print.c $(STATIC_LIB) /Fe:$(BUILD_DIR)/$@
 	@$(BUILD_DIR)/$@
