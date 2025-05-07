@@ -63,41 +63,41 @@ class Algo(object):
 
         mask = (1 << 32) - 1
         if self.actual_width == 128:
-            ret += f'{self.width:>3},'
+            ret += f'({self.width:>3},'
 
             ret += f' CRC_UINT128_C(0x{self.poly >> 96:08X},'
             ret += f' 0x{(self.poly >> 64) & mask:08X},'
             ret += f' 0x{(self.poly >> 32) & mask:08X},'
             ret += f' 0x{self.poly & mask:08X}),\\\n'
 
-            ret += f'{' ':36}'
+            ret += f'{' ':37}'
             ret += f' CRC_UINT128_C(0x{self.init >> 96:08X},'
             ret += f' 0x{(self.init >> 64) & mask:08X},'
             ret += f' 0x{(self.init >> 32) & mask:08X},'
             ret += f' 0x{self.init & mask:08X}),\\\n'
 
-            ret += f'{' ':36}'
+            ret += f'{' ':37}'
             ret += f' {int(self.refin)}, {int(self.refout)},\\\n'
 
-            ret += f'{' ':36}'
+            ret += f'{' ':37}'
             ret += f' CRC_UINT128_C(0x{self.xorout >> 96:08X},'
             ret += f' 0x{(self.xorout >> 64) & mask:08X},'
             ret += f' 0x{(self.xorout >> 32) & mask:08X},'
             ret += f' 0x{self.xorout & mask:08X}),\\\n'
 
-            ret += f'{' ':36}'
+            ret += f'{' ':37}'
             ret += f' CRC_UINT128_C(0x{self.check >> 96:08X},'
             ret += f' 0x{(self.check >> 64) & mask:08X},'
             ret += f' 0x{(self.check >> 32) & mask:08X},'
             ret += f' 0x{self.check & mask:08X}),\\\n'
 
-            ret += f'{' ':36}'
+            ret += f'{' ':37}'
             ret += f' CRC_UINT128_C(0x{self.residue >> 96:08X},'
             ret += f' 0x{(self.residue >> 64) & mask:08X},'
             ret += f' 0x{(self.residue >> 32) & mask:08X},'
-            ret += f' 0x{self.residue & mask:08X})\n'
+            ret += f' 0x{self.residue & mask:08X}))\n'
         elif self.actual_width == 64:
-            ret += f'{self.width:>2},'
+            ret += f'({self.width:>2},'
 
             ret += f' CRC_UINT64_C(0x{self.poly >> 32:08X},'
             ret += f' 0x{self.poly & mask:08X}),'
@@ -107,7 +107,7 @@ class Algo(object):
 
             ret += f' {int(self.refin)}, {int(self.refout)},\\\n'
 
-            ret += f'{' ':35}'
+            ret += f'{' ':36}'
             ret += f' CRC_UINT64_C(0x{self.xorout >> 32:08X},'
             ret += f' 0x{self.xorout & mask:08X}),'
 
@@ -115,10 +115,10 @@ class Algo(object):
             ret += f' 0x{self.check & mask:08X}),'
 
             ret += f' CRC_UINT64_C(0x{self.residue >> 32:08X},'
-            ret += f' 0x{self.residue & mask:08X})\n'
+            ret += f' 0x{self.residue & mask:08X}))\n'
         else:
             align = self.width // 4 + bool(self.width % 4)
-            ret += f'{self.width:>2},'
+            ret += f'({self.width:>2},'
 
             ret += f'{' ':>{17 - align}}'
             ret += f'0x{self.poly:0{align}X},'
@@ -136,7 +136,7 @@ class Algo(object):
             ret += f'0x{self.check:0{align}X},'
 
             ret += f'{' ':>{17 - align}}'
-            ret += f'0x{self.residue:0{align}X}\n'
+            ret += f'0x{self.residue:0{align}X})\n'
 
         for alias in self.aliases:
             ret += f'#define {alias:23} {self.name}\n'

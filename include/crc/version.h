@@ -2,8 +2,8 @@
 #define H_CRC_VERSION
 
 #define CRC_VERSION_MAJOR 2
-#define CRC_VERSION_MINOR 1
-#define CRC_VERSION_PATCH 1
-#define CRC_VERSION_STRING "2.1.1"
+#define CRC_VERSION_MINOR 2
+#define CRC_VERSION_PATCH 0
+#define CRC_VERSION_STRING "2.2.0"
 
 #endif /* H_CRC_VERSION */

@@ -13,7 +13,7 @@ STDC_FLAGS =
 WARN_FLAGS = /W4
 DEPEND_FLAGS =
 
-EXTRA_FLAGS += /nologo /Zc:preprocessor
+EXTRA_FLAGS += /nologo
 
 $(STATIC_LIB): $(OBJECTS)
 	@echo '  AR      ' $@

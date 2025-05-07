@@ -16,10 +16,10 @@
 
 #define CRC_DO_EXPAND_INIT(width, poly, init, refin, refout, xorout, check, residue) \
     width, poly, init, refin, refout, xorout
-#define CRC_EXPAND_INIT(algo) CRC_DO_EXPAND_INIT(algo)
+#define CRC_EXPAND_INIT(algo) CRC_DO_EXPAND_INIT algo
 
 #define CRC_DO_EXPAND_CHECK(width, poly, init, refin, refout, xorout, check, residue) check
-#define CRC_EXPAND_CHECK(algo) CRC_DO_EXPAND_CHECK(algo)
+#define CRC_EXPAND_CHECK(algo) CRC_DO_EXPAND_CHECK algo
 
 /******************************************************************************/
 /*                          Language Standard Detect                          */

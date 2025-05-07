@@ -3,8 +3,8 @@
 ################################################################################
 PROJECT_NAME = crc
 PROJECT_VERSION_MAJOR = 2
-PROJECT_VERSION_MINOR = 1
-PROJECT_VERSION_PATCH = 1
+PROJECT_VERSION_MINOR = 2
+PROJECT_VERSION_PATCH = 0
 PROJECT_VERSION = $(PROJECT_VERSION_MAJOR).$(PROJECT_VERSION_MINOR).$(PROJECT_VERSION_PATCH)
 
 ################################################################################

@@ -1,12 +1,12 @@
 ## Библиотека расчёта циклического избыточного кода
 
 ### Требования
-Компилятор с поддержкой стандарта **c89**
+Компилятор с поддержкой стандарта **ansi**
 
 Тестируемые компиляторы:
 > - **gcc 3.2.3**
 > - **clang 16.0.6**
-> - **MSVC** c поддержкой ключа `/Zc:preprocessor` или `/experimental:preprocessor`
+> - **MSVC 2005**
 > - **Borland C++ 5.6.4**
 > - **ARM Compiler 6.16 (keil armclang)**
 > - **ARM Compiler 5.06 update 7 (build 960) (keil armcc)**
@@ -78,7 +78,7 @@ uint16_t table[256];
 uint16_t value;
 Crc16 crc;
 
-#define CRC16_CUSTOM <custom_width>, <custom_poly>, <custom_init>, <custom_refin>, <custom_refout>, <custom_xorout>, <custom_check>, <custom_residue>
+#define CRC16_CUSTOM (<custom_width>, <custom_poly>, <custom_init>, <custom_refin>, <custom_refout>, <custom_xorout>, <custom_check>, <custom_residue>)
 
 if(crc16_init_static(&crc, CRC16_CUSTOM, table) != CRC_OK) {
     /* отработка ошибки */
