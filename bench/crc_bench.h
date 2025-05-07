@@ -6,7 +6,7 @@ const volatile char bench_data[4096] = {0};
 #define crc_bench(__algo, __width) \
     void crc_bench_##__algo(picobench::state &s) { \
         crc_u##__width value; \
-        Crc##__width *crc = crc##__width##_init_(CRC_EXPAND_INIT(__algo)); \
+        Crc##__width *crc = crc##__width##_init_(CRC_EXPAND_CTOR(__algo)); \
         for(auto _: s) { \
             value = crc##__width##_checksum(crc, (void *)bench_data, sizeof(bench_data)); \
             (void)value; \

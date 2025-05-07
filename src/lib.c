@@ -31,8 +31,9 @@
     \brief Ручное вычисление контрольной суммы. Необходимо для заполнения таблицы в \ref crc8_init_value
 */
 static CRC_INLINE crc_u8 crc8(crc_u8 poly, crc_bool refin, crc_u8 init) {
-    int i = 8;
+    int i;
 
+    i = 8;
     if(refin) {
         while(i--) {
             init = (init >> 1) ^ (poly * (init & 1));
@@ -53,8 +54,9 @@ static CRC_INLINE crc_u8 crc8(crc_u8 poly, crc_bool refin, crc_u8 init) {
     \brief Ручное вычисление контрольной суммы. Необходимо для заполнения таблицы в \ref crc16_init_value
 */
 static CRC_INLINE crc_u16 crc16(crc_u16 poly, crc_bool refin, crc_u16 init) {
-    int i = 8;
+    int i;
 
+    i = 8;
     if(refin) {
         while(i--) {
             init = (init >> 1) ^ (poly * (init & 1));
@@ -76,8 +78,9 @@ static CRC_INLINE crc_u16 crc16(crc_u16 poly, crc_bool refin, crc_u16 init) {
     \brief Ручное вычисление контрольной суммы. Необходимо для заполнения таблицы в \ref crc32_init_value
 */
 static CRC_INLINE crc_u32 crc32(crc_u32 poly, crc_bool refin, crc_u32 init) {
-    int i = 8;
+    int i;
 
+    i = 8;
     if(refin) {
         while(i--) {
             init = (init >> 1) ^ (poly * (init & 1));
@@ -99,8 +102,9 @@ static CRC_INLINE crc_u32 crc32(crc_u32 poly, crc_bool refin, crc_u32 init) {
     \brief Ручное вычисление контрольной суммы. Необходимо для заполнения таблицы в \ref crc64_init_value
 */
 static CRC_INLINE crc_u64 crc64(crc_u64 poly, crc_bool refin, crc_u64 init) {
-    int i = 8;
+    int i;
 
+    i = 8;
     if(refin) {
         while(i--) {
             init = (init >> 1) ^ (poly * (init & 1));
@@ -319,7 +323,7 @@ static CRC_INLINE void crc8_update_impl(Crc8 *crc, const void *bytes, size_t siz
     size_t i;
 
     for(i = 0; i < size; i++) {
-        crc->value = crc->table[crc->value ^ ((crc_u8 *)bytes)[i]];
+        crc->value = crc->table[crc->value ^ ((const crc_u8 *)bytes)[i]];
     }
 }
 
@@ -328,11 +332,11 @@ static CRC_INLINE void crc16_update_impl(Crc16 *crc, const void *bytes, size_t s
 
     if(crc->algo.flags & CRC_FLAG_REFIN) {
         for(i = 0; i < size; i++) {
-            crc->value = crc->table[(crc->value & 0xFF) ^ ((crc_u8 *)bytes)[i]] ^ (crc->value >> 8);
+            crc->value = crc->table[(crc->value & 0xFF) ^ ((const crc_u8 *)bytes)[i]] ^ (crc->value >> 8);
         }
     } else {
         for(i = 0; i < size; i++) {
-            crc->value = crc->table[(crc->value >> 8) ^ ((crc_u8 *)bytes)[i]] ^ (crc->value << 8);
+            crc->value = crc->table[(crc->value >> 8) ^ ((const crc_u8 *)bytes)[i]] ^ (crc->value << 8);
         }
     }
 }
@@ -342,11 +346,11 @@ static CRC_INLINE void crc32_update_impl(Crc32 *crc, const void *bytes, size_t s
 
     if(crc->algo.flags & CRC_FLAG_REFIN) {
         for(i = 0; i < size; i++) {
-            crc->value = crc->table[(crc->value & 0xFF) ^ ((crc_u8 *)bytes)[i]] ^ (crc->value >> 8);
+            crc->value = crc->table[(crc->value & 0xFF) ^ ((const crc_u8 *)bytes)[i]] ^ (crc->value >> 8);
         }
     } else {
         for(i = 0; i < size; i++) {
-            crc->value = crc->table[(crc->value >> 24) ^ ((crc_u8 *)bytes)[i]] ^ (crc->value << 8);
+            crc->value = crc->table[(crc->value >> 24) ^ ((const crc_u8 *)bytes)[i]] ^ (crc->value << 8);
         }
     }
 }
@@ -356,11 +360,11 @@ static CRC_INLINE void crc64_update_impl(Crc64 *crc, const void *bytes, size_t s
 
     if(crc->algo.flags & CRC_FLAG_REFIN) {
         for(i = 0; i < size; i++) {
-            crc->value = crc->table[(crc->value & 0xFF) ^ ((crc_u8 *)bytes)[i]] ^ (crc->value >> 8);
+            crc->value = crc->table[(crc->value & 0xFF) ^ ((const crc_u8 *)bytes)[i]] ^ (crc->value >> 8);
         }
     } else {
         for(i = 0; i < size; i++) {
-            crc->value = crc->table[(crc->value >> 56) ^ ((crc_u8 *)bytes)[i]] ^ (crc->value << 8);
+            crc->value = crc->table[(crc->value >> 56) ^ ((const crc_u8 *)bytes)[i]] ^ (crc->value << 8);
         }
     }
 }
@@ -717,8 +721,9 @@ CRC_NOTHROW crc_u64 crc64_checksum(Crc64 *crc, const void *bytes, size_t size) {
     \brief Ручное вычисление контрольной суммы. Необходимо для заполнения таблицы в \ref crc128_init_value
 */
 static CRC_INLINE crc_u128 crc128(crc_u128 poly, crc_bool refin, crc_u128 init) {
-    int i = 8;
+    int i;
 
+    i = 8;
     if(refin) {
         while(i--) {
             init = (init >> 1) ^ (poly * (init & 1));
@@ -792,11 +797,11 @@ static CRC_INLINE void crc128_update_impl(Crc128 *crc, const void *bytes, size_t
 
     if(crc->algo.flags & CRC_FLAG_REFIN) {
         for(i = 0; i < size; i++) {
-            crc->value = crc->table[(crc->value & 0xFF) ^ ((crc_u8 *)bytes)[i]] ^ (crc->value >> 8);
+            crc->value = crc->table[(crc->value & 0xFF) ^ ((const crc_u8 *)bytes)[i]] ^ (crc->value >> 8);
         }
     } else {
         for(i = 0; i < size; i++) {
-            crc->value = crc->table[(crc->value >> 120) ^ ((crc_u8 *)bytes)[i]] ^ (crc->value << 8);
+            crc->value = crc->table[(crc->value >> 120) ^ ((const crc_u8 *)bytes)[i]] ^ (crc->value << 8);
         }
     }
 }

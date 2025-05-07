@@ -119,7 +119,7 @@ CRC_NOTHROW CrcErrors crc8_init_static_(Crc8 *crc,
     \return Код ошибки
     \brief Обёртка над функцией \ref crc8_init_static_
 */
-#define crc8_init_static(crc, algo, table) crc8_init_static_(crc, CRC_DO_EXPAND_INIT(algo), table)
+#define crc8_init_static(crc, algo, table) crc8_init_static_(crc, CRC_DO_EXPAND_CTOR(algo), table)
 /**
     \param[in,out] crc Предварительно созданный экземпляр \ref Crc16
     \param width Степень порождающего многочлена
@@ -146,7 +146,7 @@ CRC_NOTHROW CrcErrors crc16_init_static_(Crc16 *crc,
     \return Код ошибки
     \brief Обёртка над функцией \ref crc16_init_static_
 */
-#define crc16_init_static(crc, algo, table) crc16_init_static_(crc, CRC_DO_EXPAND_INIT(algo), table)
+#define crc16_init_static(crc, algo, table) crc16_init_static_(crc, CRC_DO_EXPAND_CTOR(algo), table)
 /**
     \param[in,out] crc Предварительно созданный экземпляр \ref Crc32
     \param width Степень порождающего многочлена
@@ -173,7 +173,7 @@ CRC_NOTHROW CrcErrors crc32_init_static_(Crc32 *crc,
     \return Код ошибки
     \brief Обёртка над функцией \ref crc32_init_static_
 */
-#define crc32_init_static(crc, algo, table) crc32_init_static_(crc, CRC_DO_EXPAND_INIT(algo), table)
+#define crc32_init_static(crc, algo, table) crc32_init_static_(crc, CRC_DO_EXPAND_CTOR(algo), table)
 /**
     \param[in,out] crc Предварительно созданный экземпляр \ref Crc64
     \param width Степень порождающего многочлена
@@ -200,7 +200,7 @@ CRC_NOTHROW CrcErrors crc64_init_static_(Crc64 *crc,
     \return Код ошибки
     \brief Обёртка над функцией \ref crc64_init_static_
 */
-#define crc64_init_static(crc, algo, table) crc64_init_static_(crc, CRC_DO_EXPAND_INIT(algo), table)
+#define crc64_init_static(crc, algo, table) crc64_init_static_(crc, CRC_DO_EXPAND_CTOR(algo), table)
 #if defined(CRC_USE_HEAP)
 /**
     \param width Степень порождающего многочлена
@@ -218,7 +218,7 @@ CRC_NOTHROW Crc8 *crc8_init_(crc_u8 width, crc_u8 poly, crc_u8 init, crc_bool re
     \return Указатель на объект Crc
     \brief Обёртка над функцией \ref crc8_init_
 */
-#define crc8_init(algo) crc8_init_(CRC_DO_EXPAND_INIT(algo))
+#define crc8_init(algo) crc8_init_(CRC_DO_EXPAND_CTOR(algo))
 /**
     \param width Степень порождающего многочлена
     \param poly Порождающий многочлен
@@ -236,7 +236,7 @@ crc16_init_(crc_u8 width, crc_u16 poly, crc_u16 init, crc_bool refin, crc_bool r
     \return Указатель на объект Crc
     \brief Обёртка над функцией \ref crc16_init_
 */
-#define crc16_init(algo) crc16_init_(CRC_DO_EXPAND_INIT(algo))
+#define crc16_init(algo) crc16_init_(CRC_DO_EXPAND_CTOR(algo))
 /**
     \param width Степень порождающего многочлена
     \param poly Порождающий многочлен
@@ -254,7 +254,7 @@ crc32_init_(crc_u8 width, crc_u32 poly, crc_u32 init, crc_bool refin, crc_bool r
     \return Указатель на объект Crc
     \brief Обёртка над функцией \ref crc32_init_
 */
-#define crc32_init(algo) crc32_init_(CRC_DO_EXPAND_INIT(algo))
+#define crc32_init(algo) crc32_init_(CRC_DO_EXPAND_CTOR(algo))
 /**
     \param width Степень порождающего многочлена
     \param poly Порождающий многочлен
@@ -272,7 +272,7 @@ crc64_init_(crc_u8 width, crc_u64 poly, crc_u64 init, crc_bool refin, crc_bool r
     \return Указатель на объект Crc
     \brief Обёртка над функцией \ref crc64_init_
 */
-#define crc64_init(algo) crc64_init_(CRC_DO_EXPAND_INIT(algo))
+#define crc64_init(algo) crc64_init_(CRC_DO_EXPAND_CTOR(algo))
 /**
     \param[in,out] crc Экземпляр \ref Crc8
     \brief Очистка памяти если crc инициализирован при помощи \ref crc8_init_
@@ -435,7 +435,7 @@ CRC_NOTHROW CrcErrors crc128_init_static_(Crc128 *crc,
     \return Код ошибки
     \brief Обёртка над функцией \ref crc128_init_static_
 */
-#define crc128_init_static(crc, algo, table) crc128_init_static_(crc, CRC_DO_EXPAND_INIT(algo), table)
+#define crc128_init_static(crc, algo, table) crc128_init_static_(crc, CRC_DO_EXPAND_CTOR(algo), table)
 #if defined(CRC_USE_HEAP)
 /**
     \param width Степень порождающего многочлена
@@ -454,7 +454,7 @@ crc128_init_(crc_u8 width, crc_u128 poly, crc_u128 init, crc_bool refin, crc_boo
     \return Указатель на объект Crc
     \brief Обёртка над функцией \ref crc128_init_
 */
-#define crc128_init(algo) crc128_init_(CRC_DO_EXPAND_INIT(algo))
+#define crc128_init(algo) crc128_init_(CRC_DO_EXPAND_CTOR(algo))
 /**
     \param[in,out] crc Экземпляр \ref Crc128
     \brief Очистка памяти если crc инициализирован при помощи \ref crc128_

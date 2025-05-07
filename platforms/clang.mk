@@ -38,3 +38,10 @@ test: version $(BUILD_DIR) $(STATIC_LIB)
 print: $(BUILD_DIR) $(STATIC_LIB)
 	@$(CC) $(CFLAGS) -DCRC_NAME=$(CRC_NAME) -DCRC_WIDTH=$(CRC_WIDTH) test/crc_print.c $(STATIC_LIB) -o $(BUILD_DIR)/$@
 	@$(BUILD_DIR)/$@
+
+CXX = $(TOOLCHAIN_PREFIX)g++
+STDCXX_FLAGS = -std=gnu++11
+
+bench: version $(BUILD_DIR) $(STATIC_LIB)
+	@$(CXX) -Ipicobench/include $(CXXFLAGS) $(TEST_CFLAGS) bench/crc_bench.cpp $(STATIC_LIB) -o $(BUILD_DIR)/$@
+	@$(BUILD_DIR)/$@
