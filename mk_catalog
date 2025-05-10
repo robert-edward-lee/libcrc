@@ -63,41 +63,45 @@ class Algo(object):
 
         mask = (1 << 32) - 1
         if self.actual_width == 128:
-            ret += f'({self.width:>3},'
+            ret += f'({self.actual_width:>3},'
+
+            ret += f'{self.width:>3},'
 
             ret += f' CRC_UINT128_C(0x{self.poly >> 96:08X},'
             ret += f' 0x{(self.poly >> 64) & mask:08X},'
             ret += f' 0x{(self.poly >> 32) & mask:08X},'
             ret += f' 0x{self.poly & mask:08X}),\\\n'
 
-            ret += f'{' ':37}'
+            ret += f'{' ':41}'
             ret += f' CRC_UINT128_C(0x{self.init >> 96:08X},'
             ret += f' 0x{(self.init >> 64) & mask:08X},'
             ret += f' 0x{(self.init >> 32) & mask:08X},'
             ret += f' 0x{self.init & mask:08X}),\\\n'
 
-            ret += f'{' ':37}'
+            ret += f'{' ':41}'
             ret += f' {int(self.refin)}, {int(self.refout)},\\\n'
 
-            ret += f'{' ':37}'
+            ret += f'{' ':41}'
             ret += f' CRC_UINT128_C(0x{self.xorout >> 96:08X},'
             ret += f' 0x{(self.xorout >> 64) & mask:08X},'
             ret += f' 0x{(self.xorout >> 32) & mask:08X},'
             ret += f' 0x{self.xorout & mask:08X}),\\\n'
 
-            ret += f'{' ':37}'
+            ret += f'{' ':41}'
             ret += f' CRC_UINT128_C(0x{self.check >> 96:08X},'
             ret += f' 0x{(self.check >> 64) & mask:08X},'
             ret += f' 0x{(self.check >> 32) & mask:08X},'
             ret += f' 0x{self.check & mask:08X}),\\\n'
 
-            ret += f'{' ':37}'
+            ret += f'{' ':41}'
             ret += f' CRC_UINT128_C(0x{self.residue >> 96:08X},'
             ret += f' 0x{(self.residue >> 64) & mask:08X},'
             ret += f' 0x{(self.residue >> 32) & mask:08X},'
             ret += f' 0x{self.residue & mask:08X}))\n'
         elif self.actual_width == 64:
-            ret += f'({self.width:>2},'
+            ret += f'({self.actual_width:>2},'
+
+            ret += f' {self.width:>2},'
 
             ret += f' CRC_UINT64_C(0x{self.poly >> 32:08X},'
             ret += f' 0x{self.poly & mask:08X}),'
@@ -107,7 +111,7 @@ class Algo(object):
 
             ret += f' {int(self.refin)}, {int(self.refout)},\\\n'
 
-            ret += f'{' ':36}'
+            ret += f'{' ':40}'
             ret += f' CRC_UINT64_C(0x{self.xorout >> 32:08X},'
             ret += f' 0x{self.xorout & mask:08X}),'
 
@@ -118,24 +122,27 @@ class Algo(object):
             ret += f' 0x{self.residue & mask:08X}))\n'
         else:
             align = self.width // 4 + bool(self.width % 4)
-            ret += f'({self.width:>2},'
+            ret += f'({self.actual_width:>2},'
 
-            ret += f'{' ':>{17 - align}}'
+            # ret += f'{' ':>{17 - align}}'
+            ret += f' {self.width:>2},'
+
+            ret += f'{' ':>{9 - align}}'
             ret += f'0x{self.poly:0{align}X},'
 
-            ret += f'{' ':>{17 - align}}'
+            ret += f'{' ':>{9 - align}}'
             ret += f'0x{self.init:0{align}X},'
 
             ret += f' {int(self.refin)},'
             ret += f' {int(self.refout)},'
 
-            ret += f'{' ':>{17 - align}}'
+            ret += f'{' ':>{9 - align}}'
             ret += f'0x{self.xorout:0{align}X},'
 
-            ret += f'{' ':>{17 - align}}'
+            ret += f'{' ':>{9 - align}}'
             ret += f'0x{self.check:0{align}X},'
 
-            ret += f'{' ':>{17 - align}}'
+            ret += f'{' ':>{9 - align}}'
             ret += f'0x{self.residue:0{align}X})\n'
 
         for alias in self.aliases:
@@ -144,7 +151,7 @@ class Algo(object):
         return ret
 
     def str_test(self) -> str:
-        return f'    crc_test({self.name}, {self.actual_width});\n'
+        return f'    crc_test({self.name});\n'
 
     def str_md(self) -> str:
         ret = f'|`{self.name}`|`{self.width}`|'
@@ -165,7 +172,7 @@ class Algo(object):
         return ret
 
     def str_bench(self) -> str:
-        return f'crc_bench({self.name}, {self.actual_width});\n'
+        return f'crc_bench({self.name});\n'
 
 
 ################################################################################
@@ -219,7 +226,7 @@ BEGIN = rf"""/**
 #include "crc/internal/catalog_ex.h"
 #include "crc/internal/types.h"
 /* clang-format off */
-/*                              Width              Poly              Init RefIn RefOut         XorOut               Check            Residue */
+/*                           RWidth Width      Poly      Init RefIn RefOut XorOut       Check      Residue */
 """
 
 END = r"""#endif /* H_CRC_CATALOG */
@@ -281,13 +288,7 @@ with open('test/crc_test.c', 'w+', encoding='utf-8', newline='\n') as f:
 ################################################################################
 #                             Create crc_bench.cpp                             #
 ################################################################################
-BENCH_BEGIN = r"""#include <crc/catalog.h>
-#include <crc/lib.h>
-
-#include "crc_bench.h"
-
-#define PICOBENCH_IMPLEMENT_WITH_MAIN
-#include <picobench/picobench.hpp>
+BENCH_BEGIN = r"""#include "crc_bench.h"
 
 """
 

@@ -11,14 +11,20 @@
 #define CRC_DO_CONCAT(a, b) a##b
 #define CRC_CONCAT(a, b) CRC_DO_CONCAT(a, b)
 
+#define CRC_DO_TRICAT(a, b, c) a##b##c
+#define CRC_TRICAT(a, b, c) CRC_DO_TRICAT(a, b, c)
+
 #define CRC_DO_STR(s) #s
 #define CRC_STR(s) CRC_DO_STR(s)
 
-#define CRC_DO_EXPAND_CTOR(width, poly, init, refin, refout, xorout, check, residue) \
+#define CRC_DO_EXPAND_CTOR(rwidth, width, poly, init, refin, refout, xorout, check, residue) \
     width, poly, init, refin, refout, xorout
 #define CRC_EXPAND_CTOR(algo) CRC_DO_EXPAND_CTOR algo
 
-#define CRC_DO_EXPAND_CHECK(width, poly, init, refin, refout, xorout, check, residue) check
+#define CRC_DO_EXPAND_RWIDTH(rwidth, width, poly, init, refin, refout, xorout, check, residue) rwidth
+#define CRC_EXPAND_RWIDTH(algo) CRC_DO_EXPAND_RWIDTH algo
+
+#define CRC_DO_EXPAND_CHECK(rwidth, width, poly, init, refin, refout, xorout, check, residue) check
 #define CRC_EXPAND_CHECK(algo) CRC_DO_EXPAND_CHECK algo
 
 /******************************************************************************/
