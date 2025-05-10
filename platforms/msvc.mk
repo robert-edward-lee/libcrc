@@ -26,15 +26,15 @@ DEPEND_FLAGS =
 EXTRA_FLAGS += /nologo
 
 $(STATIC_LIB): $(OBJECTS)
-	@echo '  AR      ' $@
+	$(info AR       $@)
 	@$(AR) $(ARFLAGS) /out:$@ $^
 
 $(SHARED_LIB): $(OBJECTS)
-	@echo '  LD      ' $@
+	$(info LD       $@)
 	@$(LD) $(LDFLAGS) /out:$@ $^
 
 $(BUILD_DIR)/%.o: %.c
-	@echo '  CC      ' $@
+	$(info CC       $@)
 	@$(CC) /c $(CFLAGS) /Fo:$@ $<
 
 test: version $(BUILD_DIR) $(STATIC_LIB)

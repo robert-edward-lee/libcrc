@@ -71,18 +71,33 @@ endif
 #                                  ОБЩИЕ ЦЕЛИ                                  #
 ################################################################################
 .DEFAULT_GOAL = all
-
 all: version static shared
 
 static: $(BUILD_DIR) $(STATIC_LIB)
 
 shared: $(BUILD_DIR) $(SHARED_LIB)
 
+ifeq ($(TERM),)
+define mk_dir
+	cmd /E:ON /C mkdir $(subst /,\,$(1))
+endef
+define rm_dir
+	cmd /E:ON /C rmdir /q /s $(subst /,\,$(1))
+endef
+else
+define mk_dir
+	mkdir -p $(1)
+endef
+define rm_dir
+	rm -rf $(1)
+endef
+endif
+
 $(BUILD_DIR):
-	@mkdir -p $@
+	@$(call mk_dir,$@)
 
 dox:
-	@mkdir -p doc
+	@$(call mk_dir,doc)
 	@doxygen doxyfile
 
 clean:
@@ -95,7 +110,10 @@ clean:
 		$(foreach dir,$(WORK_DIRS),$(addsuffix /*.o,$(dir))) \
 		$(foreach dir,$(WORK_DIRS),$(addsuffix /*.obj,$(dir))) \
 		$(foreach dir,$(WORK_DIRS),$(addsuffix /*.so,$(dir))) \
-		$(foreach dir,$(WORK_DIRS),$(addsuffix /*.tds,$(dir)))
+		$(foreach dir,$(WORK_DIRS),$(addsuffix /*.tds,$(dir))) \
+		2> /dev/null ||:
+	@$(call rm_dir,build) 2> /dev/null ||:
+	@$(call rm_dir,doc) 2> /dev/null ||:
 
 format:
 	@clang-format -style=file:./.clang-format -i \
