@@ -11,14 +11,11 @@ static const char bench_data[4096] = {0};
 
 #define crc_bench(__algo) \
     void crc_bench_##__algo(picobench::state &s) { \
-        CRC_CONCAT(crc_u, CRC_DO_EXPAND_RWIDTH __algo) value; \
-        CRC_CONCAT(Crc, CRC_DO_EXPAND_RWIDTH __algo) *crc = \
-            CRC_TRICAT(crc, CRC_DO_EXPAND_RWIDTH __algo, _init_)(CRC_EXPAND_CTOR(__algo)); \
+        auto crc = CRC_TRICAT(crc, CRC_DO_EXPAND_RWIDTH __algo, _init_)(CRC_EXPAND_CTOR(__algo)); \
         for(auto _: s) { \
-            value = \
-                CRC_TRICAT(crc, CRC_DO_EXPAND_RWIDTH __algo, _checksum)(crc, (void *)bench_data, sizeof(bench_data)); \
-            (void)value; \
-            (void)_; \
+            const volatile auto value = \
+                CRC_TRICAT(crc, CRC_DO_EXPAND_RWIDTH __algo, _checksum)(crc, bench_data, sizeof(bench_data)); \
+            (void)value, (void)_; \
         } \
         CRC_TRICAT(crc, CRC_DO_EXPAND_RWIDTH __algo, _destroy)(crc); \
     } \

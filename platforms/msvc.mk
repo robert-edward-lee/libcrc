@@ -47,7 +47,8 @@ print: $(BUILD_DIR) $(STATIC_LIB)
 
 CXX = cl
 STDCXX_FLAGS = /EHsc
+BENCH_FLAGS = /Ipicobench/include
 
 bench: version $(BUILD_DIR) $(STATIC_LIB)
-	@$(CXX) /Ipicobench/include $(CXXFLAGS) $(TEST_CFLAGS) bench/crc_bench.cpp $(STATIC_LIB) /Fe:$(BUILD_DIR)/$@
+	@$(CXX) $(CXXFLAGS) $(BENCH_FLAGS) $(TEST_CFLAGS) bench/crc_bench.cpp $(STATIC_LIB) /Fe:$(BUILD_DIR)/$@
 	@$(BUILD_DIR)/$@

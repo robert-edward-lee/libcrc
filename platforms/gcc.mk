@@ -43,7 +43,8 @@ print: $(BUILD_DIR) $(STATIC_LIB)
 
 CXX = $(TOOLCHAIN_PREFIX)g++
 STDCXX_FLAGS = -std=gnu++11
+BENCH_FLAGS = -Ipicobench/include -march=native
 
 bench: version $(BUILD_DIR) $(STATIC_LIB)
-	@$(CXX) -Ipicobench/include $(CXXFLAGS) $(TEST_CFLAGS) bench/crc_bench.cpp $(STATIC_LIB) -o $(BUILD_DIR)/$@
+	@$(CXX) $(CXXFLAGS) $(BENCH_FLAGS) $(TEST_CFLAGS) bench/crc_bench.cpp $(STATIC_LIB) -o $(BUILD_DIR)/$@
 	@$(BUILD_DIR)/$@
